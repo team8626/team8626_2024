@@ -15,10 +15,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import frc.robot.subsystems.Dashboard.DashboardUses;
+import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase implements ImplementDashboard {
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.Constants.kFrontLeftDrivingCanId,
@@ -240,4 +242,18 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.Constants.kGyroReversed ? -1.0 : 1.0);
   }
+
+@Override
+public void initDashboard() {}
+
+@Override
+public void updateDashboard() {}
+
+@Override
+public DashboardUses getDashboardUses() {
+    return DashboardUses.SHORT_INTERVAL;
+}
+
+
+
 }

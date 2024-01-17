@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
@@ -16,11 +17,15 @@ public class RobotContainer {
 
 DriveSubsystem m_drive = new DriveSubsystem();
 
+Dashboard m_dashboard;
+
 XboxController m_xboxController = new XboxController(0);
 
   public RobotContainer() {
     configureBindings();
     configureDefaultCommands();
+
+    m_dashboard = new Dashboard(null);
   }
   private void configureBindings() {}
   private void configureDefaultCommands() {
