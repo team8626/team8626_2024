@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Dashboard extends SubsystemBase {
@@ -45,8 +48,15 @@ public Dashboard(ImplementDashboard... subsystems) {
   // Run dashboard initialize functions at construction (which is at RobotContainer construction therefore robotInit)
   s.initDashboard();
   }
+
+  startCommandLogs();
 }
 
+public void startCommandLogs() {
+  CommandScheduler.getInstance().onCommandInterrupt((Command action) -> 
+  SmartDashboard.putString(action.getSubsystem() + "Command Log", action.getName() + " Command has been interrupted")
+  );
+}
 
   @Override
   public void periodic() {

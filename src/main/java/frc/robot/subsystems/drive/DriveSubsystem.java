@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.SwerveUtils;
@@ -247,7 +248,10 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
 public void initDashboard() {}
 
 @Override
-public void updateDashboard() {}
+public void updateDashboard() {
+  SmartDashboard.putNumber("Heading", getHeading());
+  SmartDashboard.putNumber("Turn Rate", getTurnRate());
+}
 
 @Override
 public DashboardUses getDashboardUses() {
