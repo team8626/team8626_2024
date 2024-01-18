@@ -9,17 +9,21 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.kitbotshooter.KitBotShooterSubsystem;
+import frc.robot.subsystems.kitbotshooter.commands.AcitvateShooterCommand;
 
 public class RobotContainer {
 
 DriveSubsystem m_drive = new DriveSubsystem();
+KitBotShooterSubsystem m_kitShooter = new KitBotShooterSubsystem();
 
 Dashboard m_dashboard;
 
-XboxController m_xboxController = new XboxController(0);
+CommandXboxController m_xboxController = new CommandXboxController(0);
 
   public RobotContainer() {
     configureBindings();
@@ -27,7 +31,12 @@ XboxController m_xboxController = new XboxController(0);
 
     m_dashboard = new Dashboard(m_drive);
   }
-  private void configureBindings() {}
+  private void configureBindings() {
+
+    m_xboxController.x().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, 0.8));
+    m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -0.4));
+
+  }
   private void configureDefaultCommands() {
           m_drive.setDefaultCommand(
         // The left stick controls translation of the robot.
