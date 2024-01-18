@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
@@ -28,20 +29,41 @@ Dashboard m_dashboard;
 
 CommandXboxController m_xboxController = new CommandXboxController(0);
 
+private double m_shooterSpeedMultiplier;
+private boolean m_isSlowShooter;
+
   public RobotContainer() {
     configureBindings();
     configureDefaultCommands();
 
+    m_isSlowShooter = false;
+    m_shooterSpeedMultiplier = 1;
+
     m_dashboard = new Dashboard(m_drive);
   }
+
+private void toggleWesShooterSpeed() {
+if(m_isSlowShooter) {
+  m_shooterSpeedMultiplier = 1;
+}
+else {
+  m_shooterSpeedMultiplier = 0.5;
+}
+m_isSlowShooter = !m_isSlowShooter;
+}
+
   private void configureBindings() {
 
     m_xboxController.x().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, 0.4, 0.4));
     m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, .4));
     m_xboxController.a().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, -1));
 
-    m_xboxController.leftBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, -0.25));
-    m_xboxController.rightBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, 1));
+    m_xboxController.leftBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, () -> -0.25 * m_shooterSpeedMultiplier));
+    m_xboxController.rightBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, () -> m_shooterSpeedMultiplier));
+
+    m_xboxController.rightTrigger().onTrue(
+      new InstantCommand(() -> toggleWesShooterSpeed())
+    );
   }
   private void configureDefaultCommands() {
           m_drive.setDefaultCommand(

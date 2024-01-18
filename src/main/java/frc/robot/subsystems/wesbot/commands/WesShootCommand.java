@@ -4,15 +4,17 @@
 
 package frc.robot.subsystems.wesbot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.wesbot.WesBotSubsystem;
 
 public class WesShootCommand extends Command {
  
 private WesBotSubsystem m_shooter;
-private double m_output;
+private DoubleSupplier m_output;
 
-  public WesShootCommand(WesBotSubsystem shooter, double output) {
+  public WesShootCommand(WesBotSubsystem shooter, DoubleSupplier output) {
     m_shooter = shooter;
     m_output = output;
 
@@ -22,7 +24,7 @@ private double m_output;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotors(m_output);
+    m_shooter.setMotors(m_output.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
