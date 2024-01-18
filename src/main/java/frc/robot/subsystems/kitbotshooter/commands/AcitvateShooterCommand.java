@@ -10,21 +10,26 @@ import frc.robot.subsystems.kitbotshooter.KitBotShooterSubsystem;
 public class AcitvateShooterCommand extends Command {
 
   private final KitBotShooterSubsystem m_shooter;
-  private final double m_output;
+  private final double m_outputShoot;
+  private final double m_outputMove;
 
-  public AcitvateShooterCommand(KitBotShooterSubsystem shooter, double output) {
+
+  public AcitvateShooterCommand(KitBotShooterSubsystem shooter, double outputShoot, double outputMove) {
     m_shooter = shooter;
-    m_output = output;
+    m_outputShoot = outputShoot;
+    m_outputMove = outputMove;
 
     setName("Acitvate Kitbot Shooter");
     addRequirements(m_shooter);
-    withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
+    //withInterruptBehavior(Command.InterruptionBehavior.kCancelSelf);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotors(m_output);
+    m_shooter.setShoot(m_outputShoot);
+    m_shooter.setMove(m_outputMove);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,7 +39,8 @@ public class AcitvateShooterCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setMotors(0);
+    m_shooter.setShoot(0);
+    m_shooter.setMove(0);
   }
 
   // Returns true when the command should end.

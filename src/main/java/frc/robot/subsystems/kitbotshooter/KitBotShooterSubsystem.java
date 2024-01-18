@@ -5,6 +5,8 @@
 package frc.robot.subsystems.kitbotshooter;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
@@ -14,17 +16,18 @@ import frc.robot.subsystems.climber.ClimberConstants;
 
 public class KitBotShooterSubsystem extends SubsystemBase {
 
-  private static VictorSP m_motorLeft = new VictorSP(7);
- private static VictorSP m_motorRight = new VictorSP(23);
+  private static VictorSPX m_motorFront = new VictorSPX(7);
+ private static VictorSPX m_motorBack = new VictorSPX(23);
 
 
   public KitBotShooterSubsystem() {
-    m_motorRight.setInverted(false);
   }
 
-public void setMotors(double output) {
-  m_motorLeft.set(output);
-  m_motorRight.set(output);
+public void setShoot(double output) {
+  m_motorFront.set(ControlMode.PercentOutput, output);
+}
+public void setMove(double output) {
+  m_motorBack.set(ControlMode.PercentOutput,output);
 }
 
   @Override

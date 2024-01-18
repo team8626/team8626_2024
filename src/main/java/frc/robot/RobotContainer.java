@@ -33,8 +33,9 @@ CommandXboxController m_xboxController = new CommandXboxController(0);
   }
   private void configureBindings() {
 
-    m_xboxController.x().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, 0.8));
-    m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -0.4));
+    m_xboxController.x().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, 0.4, 0.4));
+    m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, .4));
+    m_xboxController.a().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, -1));
 
   }
   private void configureDefaultCommands() {
