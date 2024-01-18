@@ -15,11 +15,14 @@ import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.kitbotshooter.KitBotShooterSubsystem;
 import frc.robot.subsystems.kitbotshooter.commands.AcitvateShooterCommand;
+import frc.robot.subsystems.wesbot.WesBotSubsystem;
+import frc.robot.subsystems.wesbot.commands.WesShootCommand;
 
 public class RobotContainer {
 
 DriveSubsystem m_drive = new DriveSubsystem();
 KitBotShooterSubsystem m_kitShooter = new KitBotShooterSubsystem();
+WesBotSubsystem m_wesShooter = new WesBotSubsystem();
 
 Dashboard m_dashboard;
 
@@ -37,6 +40,8 @@ CommandXboxController m_xboxController = new CommandXboxController(0);
     m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, .4));
     m_xboxController.a().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, -1));
 
+    m_xboxController.leftBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, -0.25));
+    m_xboxController.rightBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, 1));
   }
   private void configureDefaultCommands() {
           m_drive.setDefaultCommand(
