@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,6 +49,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  
+
+
+  // The April Tag Camera Wrapper
+  public PhotonCameraWrapper pcw = new PhotonCameraWrapper();
+  private final Field2d m_field = new Field2d();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -70,14 +83,10 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
+      updateOdometry();
+
+        SmartDashboard.putData("Field", m_field);
+        m_field.setRobotPose(this.getPose()); 
   }
 
   /**
@@ -86,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -96,7 +105,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)/180 * Math.PI),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -240,4 +249,43 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.Constants.kGyroReversed ? -1.0 : 1.0);
   }
+
+    //Photon Vision and Apriltags
+
+  private final SwerveDrivePoseEstimator m_poseEstimator =
+            new SwerveDrivePoseEstimator(
+              DriveConstants.Constants.kDriveKinematics, new Rotation2d(m_gyro.getAngle(IMUAxis.kZ)/180 * Math.PI), new SwerveModulePosition[] {
+                m_frontLeft.getPosition(),
+                m_frontRight.getPosition(),
+                m_rearLeft.getPosition(),
+                m_rearRight.getPosition()
+            } , new Pose2d());
+
+  private Field2d m_fieldSim = new Field2d();
+                 
+  public void updateOdometry() {
+    m_poseEstimator.update(
+                  new Rotation2d(m_gyro.getAngle(IMUAxis.kZ)/180 * Math.PI),new SwerveModulePosition[] {
+                  m_frontLeft.getPosition(),
+                  m_frontRight.getPosition(),
+                  m_rearLeft.getPosition(),
+                  m_rearRight.getPosition()});
+
+        Optional<EstimatedRobotPose> result =
+                pcw.getEstimatedGlobalPose(m_poseEstimator.getEstimatedPosition());
+
+        if (result.isPresent()) {
+            EstimatedRobotPose camPose = result.get();
+            m_poseEstimator.addVisionMeasurement(
+                    camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+            m_fieldSim.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
+        } else {
+            // move it way off the screen to make it disappear
+            m_fieldSim.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+        }
+
+        m_fieldSim.getObject("Actual Pos").setPose(0,0, new Rotation2d(0,0));
+        m_fieldSim.setRobotPose(m_poseEstimator.getEstimatedPosition());
+    }
+  
 }

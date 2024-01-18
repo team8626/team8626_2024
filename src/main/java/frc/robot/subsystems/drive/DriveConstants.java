@@ -6,7 +6,10 @@ package frc.robot.subsystems.drive;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -146,4 +149,16 @@ public final class DriveConstants {
     public static final int kButtonBoxPort = 2;    
     public static final double kDriveDeadband = 0.05;
 }
+
+// Photon Vision Constants
+    public final static class PhotonVisionConstants{
+        public static final String camera1Name = "FrontCamera";
+        public static final Transform3d frontCameraRobotToCam =
+            new Transform3d(
+                new Translation3d(0.260528,-0.271471, 0.24860),
+                new Rotation3d(
+                    0, 0,
+                    0)); // Cam mounted facing forward, 0.26768 meter forward of center, 0.24860 meter up
+// from center, 0.26035 to the right from center. 155.448028 from looking forward
+    }    
 }

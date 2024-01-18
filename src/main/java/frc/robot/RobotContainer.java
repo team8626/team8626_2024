@@ -32,7 +32,7 @@ XboxController m_xboxController = new XboxController(0);
                 MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
                 MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
                 MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                false,
+                true,
                 true),
             m_drive));     
   }
