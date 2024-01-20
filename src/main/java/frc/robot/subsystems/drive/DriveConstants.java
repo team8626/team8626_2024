@@ -63,6 +63,31 @@ public final class DriveConstants {
     public static final int kRearRightTurningCanId = 47;
 
     public static final boolean kGyroReversed = false;
+
+    // TODO: UPDATE ROTATION CONSTRAINTS, FIND CONSTRAINT FACTORS THROUGH TESTING, FIND SETPOINT TOLERANCES THROUGH TESTING
+
+    // Constraint Values from swerve drive characterization
+    
+    // Meters per second
+    public static final double kDriveMaxVelocity = 0.51166;
+    // Meters per second squared
+    public static final double kDriveMaxAcceleration = 0.022208;
+    // Degrees per second
+     public static final double kRotationMaxVelocity = 0;
+    // Degrees per second squared
+    public static final double kRotationMaxAcceleration = 0;
+
+    public static final double kDriveConstraintFactor = 0.75;
+    public static final double kRotateConstraintFactor = 0.75;
+
+    public static final double kDriveXPosSetpointTolerance = 0;
+    public static final double kDriveXVelSetpointTolerance = 0;
+    public static final double kDriveYPosSetpointTolerance = 0;
+    public static final double kDriveYVelSetpointTolerance = 0;
+    public static final double kDriveRotPosSetpointTolerance = 0;
+    public static final double kDriveRotVelSetpointTolerance = 0;
+
+
   }
 
   public static final class ModuleConstants {
