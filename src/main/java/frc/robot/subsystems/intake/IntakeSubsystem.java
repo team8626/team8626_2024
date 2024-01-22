@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.intake;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -12,21 +14,23 @@ import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 
 public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard {
-  private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
-  private CANSparkMax m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
-  private DigitalInput m_infrared = new DigitalInput(IntakeConstants.kIRSensor);
+  // private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
+  private VictorSPX m_motor1 = new VictorSPX(IntakeConstants.kCANMotor1);
+  private DigitalInput m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
+  private DigitalInput m_infrared2 = new DigitalInput(IntakeConstants.kIRSensor2);
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    m_motor2.setInverted(true);
   }
 
   public void setMotors(double speed){
-    m_motor1.set(speed);
-    m_motor2.set(speed);
+    m_motor1.set(VictorSPXControlMode.PercentOutput, 1);
   }
-  public  boolean getSensor(){
+  public boolean isEmpty(){
     // 0 means something is there, 1 means nothing is there
-    return m_infrared.get();
+    return m_infrared1.get();
+  }
+  public boolean limitReached(){
+    return !m_infrared2.get();
   }
   @Override
   public void periodic(){}
