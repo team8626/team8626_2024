@@ -28,6 +28,7 @@ public class DriveToPoseCommand extends Command {
 
   public DriveToPoseCommand(DriveSubsystem drive, double xDesiredPos, double yDesiredPos, double rotDesiredPos) {
     m_drive = drive;
+
     m_xDesiredPos = xDesiredPos;
     m_yDesiredPos = yDesiredPos;
     m_rotDesiredPos = rotDesiredPos;
@@ -37,6 +38,10 @@ public class DriveToPoseCommand extends Command {
     SmartDashboard.putNumberArray("Drive Position PID Values", new double[]{0, 0 ,0});
     SmartDashboard.putNumberArray("Drive Rotation PID Values", new double[]{0, 0 ,0});
 
+    SmartDashboard.putNumber("Drive Velocity Constraint", DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond);
+    SmartDashboard.putNumber("Drive Acceleration Constraint", DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+    SmartDashboard.putNumber("Rotation Velocity Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+    SmartDashboard.putNumber("Rotation Acceleration Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
   // Called when the command is initially scheduled.
@@ -45,11 +50,16 @@ public class DriveToPoseCommand extends Command {
     m_pose = m_drive.getPose();
 
     double[] drivePIDValues = SmartDashboard.getNumberArray("Drive Position PID Values", new double[]{0, 0, 0});
-    double[] rotPIDValues = SmartDashboard.getNumberArray("Drive Rotation PID Values", new double[]{0, 0, 0});
+    double[] rotPIDValues = SmartDashboard.getNumberArray("Drive Rotation PID Valuyues", new double[]{0, 0, 0});
 
-    m_xPID.setConstraints(new TrapezoidProfile.Constraints(DriveConstants.Constants.kDriveMaxVelocity * DriveConstants.Constants.kDriveConstraintFactor, DriveConstants.Constants.kDriveMaxAcceleration * DriveConstants.Constants.kDriveConstraintFactor));
-    m_yPID.setConstraints(new TrapezoidProfile.Constraints(DriveConstants.Constants.kDriveMaxVelocity * DriveConstants.Constants.kDriveConstraintFactor, DriveConstants.Constants.kDriveMaxAcceleration * DriveConstants.Constants.kDriveConstraintFactor));
-    m_rotPID.setConstraints(new TrapezoidProfile.Constraints(DriveConstants.Constants.kRotationMaxVelocity * DriveConstants.Constants.kRotateConstraintFactor, DriveConstants.Constants.kRotationMaxVelocity * DriveConstants.Constants.kRotateConstraintFactor));
+    double driveMaxVelocity = SmartDashboard.getNumber("Drive Velocity Constraint", DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond);
+    double driveMaxAcceleration = SmartDashboard.getNumber("Drive Acceleration Constraint", DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+    double rotationMaxVelocity = SmartDashboard.getNumber("Rotation Velocity Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+    double rotationMaxAcceleration = SmartDashboard.getNumber("Rotation Acceleration Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared);
+    
+    m_xPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
+    m_yPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
+    m_rotPID.setConstraints(new TrapezoidProfile.Constraints(rotationMaxVelocity, rotationMaxAcceleration));
 
     m_xPID.setPID(drivePIDValues[0], drivePIDValues[1], drivePIDValues[2]);
     m_yPID.setPID(drivePIDValues[0], drivePIDValues[1], drivePIDValues[2]);
