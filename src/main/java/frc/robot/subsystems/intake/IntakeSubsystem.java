@@ -12,19 +12,19 @@ import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 
 public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard {
-  private static CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
-  private static CANSparkMax m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
-  private static DigitalInput m_infrared = new DigitalInput(IntakeConstants.kIRSensor);
+  private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
+  private CANSparkMax m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
+  private DigitalInput m_infrared = new DigitalInput(IntakeConstants.kIRSensor);
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     m_motor2.setInverted(true);
   }
 
-  public static void setMotors(double speed){
+  public void setMotors(double speed){
     m_motor1.set(speed);
     m_motor2.set(speed);
   }
-  public static boolean getSensor(){
+  public  boolean getSensor(){
     // 0 means something is there, 1 means nothing is there
     return m_infrared.get();
   }
