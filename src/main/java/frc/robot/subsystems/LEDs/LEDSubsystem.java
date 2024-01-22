@@ -7,28 +7,25 @@ package frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
   /** Creates a new LEDSubsystem. */
-  private enum LEDStates{
-  ORANGE, YELLOW, GREEN, PURPLE , PINK, RAINBOW
-  }
-  private LEDStates m_state;
+  private Timer timer = new Timer();
   private static AddressableLED m_AddressableLED = new AddressableLED(LEDConstants.kLEDLength);
+  
   public LEDSubsystem(){
     
   }
-  public void setColor(){
+
+  public void setColor(Color color){
      int kLEDBufferLength = 30;
      AddressableLEDBuffer buffer = new AddressableLEDBuffer(kLEDBufferLength);
     for (int i = 0; i < LEDConstants.kLEDLength; i++) {
-      if(m_AddressableLED == BLUE){
-        buffer.setRGB(i, 0, 0, 255);
-      }
-      if(m_AddressableLED == RED){
-        buffer.setRGB(i, 255, 0, 0);
-      }
+      buffer.setLED(i, color);
     }
     m_AddressableLED.setData(buffer);
 
@@ -42,10 +39,7 @@ public class LEDSubsystem extends SubsystemBase {
   
     public void periodic() {
     // This method will be called once per scheduler run
-    while(AddressableLED.setColor() != LEDConstants.kErrorLight){
-      return allianceColor;
-    }
-    return kErrorLight.getColor();
+
     
   }
 }
