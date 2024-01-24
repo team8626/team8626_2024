@@ -6,7 +6,7 @@ package frc.robot.subsystems.intake;
 
 /** Add your docs here. */
 public class IntakeConstants {
-    public static final int kCANMotor1 = 0;
-    public static final int kIRSensor1 = 0; //DIO
+    public static final int kCANMotor1 = 7;
+    public static final int kIRSensor1 = 9; //DIO
     public static final int kIRSensor2 = 0; //DIO
 }

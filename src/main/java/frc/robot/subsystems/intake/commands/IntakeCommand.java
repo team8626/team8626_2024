@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems.intake.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
@@ -20,24 +22,26 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setMotors(1);
+        m_intake.setMotors(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!m_intake.isEmpty() && m_intake.limitReached()) end(false);
+    //if(m_intake.limitReached()) end(false);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setMotors(0);
+    SmartDashboard.putString("Command finished", "Done");
+    m_intake.setMotors(0);  
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_intake.limitReached();
   }
-}
+} 
