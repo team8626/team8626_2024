@@ -15,11 +15,11 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 
 public class RobotContainer {
 
-DriveSubsystem m_drive = new DriveSubsystem();
+  DriveSubsystem m_drive = new DriveSubsystem();
 
-Dashboard m_dashboard;
+  Dashboard m_dashboard;
 
-XboxController m_xboxController = new XboxController(0);
+  XboxController m_xboxController = new XboxController(0);
 
   public RobotContainer() {
     configureBindings();
@@ -27,21 +27,29 @@ XboxController m_xboxController = new XboxController(0);
 
     m_dashboard = new Dashboard(null);
   }
+
   private void configureBindings() {}
+
   private void configureDefaultCommands() {
-          m_drive.setDefaultCommand(
+    m_drive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
-            () -> m_drive.drive(
-                MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                false,
-                true),
-            m_drive));     
+            () ->
+                m_drive.drive(
+                    MathUtil.applyDeadband(
+                        -m_xboxController.getLeftY(),
+                        DriveConstants.IOControlsConstants.kDriveDeadband),
+                    MathUtil.applyDeadband(
+                        -m_xboxController.getLeftX(),
+                        DriveConstants.IOControlsConstants.kDriveDeadband),
+                    MathUtil.applyDeadband(
+                        -m_xboxController.getRightX(),
+                        DriveConstants.IOControlsConstants.kDriveDeadband),
+                    false,
+                    true),
+            m_drive));
   }
-  
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
