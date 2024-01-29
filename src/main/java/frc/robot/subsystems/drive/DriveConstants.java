@@ -62,6 +62,27 @@ public final class DriveConstants {
     public static final int kFrontRightTurningCanId = 48;
     public static final int kRearRightTurningCanId = 47;
 
+    // public static final int kFrontLeftDrivingCanId = 59;
+    // public static final int kRearLeftDrivingCanId = 60;
+    // public static final int kFrontRightDrivingCanId = 62;
+    // public static final int kRearRightDrivingCanId = 61;
+
+    // public static final int kFrontLeftTurningCanId = 49;
+    // public static final int kRearLeftTurningCanId = 50;
+    // public static final int kFrontRightTurningCanId = 52;
+    // public static final int kRearRightTurningCanId = 51;
+
+    // public static final int kFrontLeftDrivingCanId = 51;
+    // public static final int kRearLeftDrivingCanId = 52;
+    // public static final int kFrontRightDrivingCanId = 54;
+    // public static final int kRearRightDrivingCanId = 53;
+
+    // public static final int kFrontLeftTurningCanId = 41;
+    // public static final int kRearLeftTurningCanId = 42;
+    // public static final int kFrontRightTurningCanId = 44;
+    // public static final int kRearRightTurningCanId = 43;
+
+
     public static final boolean kGyroReversed = false;
 
     // TODO: FIND SETPOINT TOLERANCES THROUGH TESTING
@@ -136,8 +157,8 @@ public final class DriveConstants {
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI/4;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI/4;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;

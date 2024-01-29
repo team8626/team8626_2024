@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drive.commands.DriveToPoseCommand;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -16,6 +21,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
+  
   }
 
   @Override
@@ -34,6 +41,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -42,7 +51,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void autonomousExit() {}

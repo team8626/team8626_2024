@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,6 +29,9 @@ XboxController m_xboxController = new XboxController(0);
     configureDefaultCommands();
 
     m_dashboard = new Dashboard(m_drive);
+
+    // TODO: Get rid, only for testing drive to pose
+    m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
   private void configureBindings() {}
   private void configureDefaultCommands() {
@@ -44,6 +50,6 @@ XboxController m_xboxController = new XboxController(0);
   
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_drive.getDriveToPoseCommand(1, 1, 45);
   }
 }

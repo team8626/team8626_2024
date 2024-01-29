@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,13 +16,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class DriveSubsystem extends SubsystemBase implements ImplementDashboard {
   // Create MAXSwerveModules
@@ -42,8 +52,12 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
       DriveConstants.Constants.kRearRightTurningCanId,
       DriveConstants.Constants.kBackRightChassisAngularOffset);
 
+ private TrajectoryConfig m_trajConfig = new TrajectoryConfig(DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond, 
+  DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+  .setKinematics(DriveConstants.Constants.kDriveKinematics);
+
   // The gyro sensor
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -244,16 +258,63 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
   }
 
 @Override
-public void initDashboard() {}
+public void initDashboard() {
+    SmartDashboard.putNumber("Drive Position P Value", 0.75);
+    SmartDashboard.putNumber("Drive Position I Value", 0);
+    SmartDashboard.putNumber("Drive Position D Value", 0);
+
+    SmartDashboard.putNumber("Drive Rotation P Value", 0);
+    SmartDashboard.putNumber("Drive Rotation I Value", 0);
+    SmartDashboard.putNumber("Drive Rotation D Value", 0);
+}
 
 @Override
-public void updateDashboard() {}
+public void updateDashboard() {
+  SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
+}
 
 @Override
 public DashboardUses getDashboardUses() {
     return DashboardUses.SHORT_INTERVAL;
 }
 
+public SwerveControllerCommand getDriveToPoseCommand(double xDesiredPos, double yDesiredPos, double rotDesiredPos) {
+
+Trajectory traj = TrajectoryGenerator.generateTrajectory(
+  getPose(),
+  List.of(),
+  new Pose2d(xDesiredPos, yDesiredPos, Rotation2d.fromDegrees(rotDesiredPos)),
+  m_trajConfig
+);
+
+  ;
+
+PIDController xPID = new PIDController(0.75, 0, 0);
+PIDController yPID = new PIDController(0.75, 0, 0);
+ProfiledPIDController rotPID = new ProfiledPIDController(0.02, 0, 0, DriveConstants.AutoConstants.kThetaControllerConstraints);
+
+// Notifier m_dashPID = new Notifier(() -> {
+//   SmartDashboard.putNumber("xSetpoint", xPID.getPositionError());
+//   SmartDashboard.putNumber("ySetpoint", yPID.getPositionError());
+//   SmartDashboard.putNumber("ySetpoint", rotPID.getPositionError());
+// });
+
+// m_dashPID.startPeriodic(0.02);
+
+rotPID.enableContinuousInput(-180, 180);
+
+return new SwerveControllerCommand(
+  traj,
+  () -> getPose(), 
+  DriveConstants.Constants.kDriveKinematics, 
+  xPID, 
+  yPID, 
+  rotPID,
+  (SwerveModuleState[] output) -> setModuleStates(output),
+  this);
 
 
+
+
+}
 }
