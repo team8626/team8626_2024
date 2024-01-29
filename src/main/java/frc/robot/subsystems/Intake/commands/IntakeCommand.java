@@ -2,35 +2,35 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.wesbot.commands;
+package frc.robot.subsystems.Intake.commands;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.wesbot.WesBotSubsystem;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
 
-public class WesShootCommand extends Command {
+public class IntakeCommand extends Command {
  
-private WesBotSubsystem m_shooter;
+private IntakeSubsystem m_intake;
 private double m_output;
 
-  public WesShootCommand(WesBotSubsystem shooter, double output) {
-    m_shooter = shooter;
+  public IntakeCommand(IntakeSubsystem intake, double output) {
+    m_intake = intake;
     m_output = output;
 
-    addRequirements(m_shooter);
+    addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotors(m_output);
+    m_intake.setMotors(m_output);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setMotors(0);
+    m_intake.setMotors(0);
   }
 
 }

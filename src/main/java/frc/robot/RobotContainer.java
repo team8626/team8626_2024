@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Intake.IntakeSubsystem;
+import frc.robot.subsystems.Intake.commands.IntakeCommand;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.kitbotshooter.KitBotShooterSubsystem;
@@ -24,33 +26,20 @@ public class RobotContainer {
 DriveSubsystem m_drive = new DriveSubsystem();
 KitBotShooterSubsystem m_kitShooter = new KitBotShooterSubsystem();
 WesBotSubsystem m_wesShooter = new WesBotSubsystem();
+IntakeSubsystem m_intake = new IntakeSubsystem();
 
 Dashboard m_dashboard;
 
 CommandXboxController m_xboxController = new CommandXboxController(0);
 
-private double m_shooterSpeedMultiplier;
-private boolean m_isSlowShooter;
 
   public RobotContainer() {
     configureBindings();
     configureDefaultCommands();
 
-    m_isSlowShooter = false;
-    m_shooterSpeedMultiplier = 1;
-
     m_dashboard = new Dashboard(m_drive);
   }
 
-private void toggleWesShooterSpeed() {
-if(m_isSlowShooter) {
-  m_shooterSpeedMultiplier = 1;
-}
-else {
-  m_shooterSpeedMultiplier = 0.5;
-}
-m_isSlowShooter = !m_isSlowShooter;
-}
 
   private void configureBindings() {
 
@@ -58,12 +47,11 @@ m_isSlowShooter = !m_isSlowShooter;
     m_xboxController.b().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, .4));
     m_xboxController.a().toggleOnTrue(new AcitvateShooterCommand(m_kitShooter, -1, -1));
 
-    m_xboxController.leftBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, () -> -0.25 * m_shooterSpeedMultiplier));
-    m_xboxController.rightBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, () -> m_shooterSpeedMultiplier));
+    m_xboxController.leftBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, 8));
+    m_xboxController.rightBumper().toggleOnTrue(new WesShootCommand(m_wesShooter, -0.8));
 
-    m_xboxController.rightTrigger().onTrue(
-      new InstantCommand(() -> toggleWesShooterSpeed())
-    );
+    m_xboxController.leftTrigger().toggleOnTrue(new IntakeCommand(m_intake, 1));
+    m_xboxController.rightTrigger().toggleOnTrue(new IntakeCommand(m_intake, -1));
   }
   private void configureDefaultCommands() {
           m_drive.setDefaultCommand(
@@ -71,8 +59,8 @@ m_isSlowShooter = !m_isSlowShooter;
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_drive.drive(
-                MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
+                MathUtil.applyDeadband(-m_xboxController.getLeftY() * 0.2, DriveConstants.IOControlsConstants.kDriveDeadband),
+                MathUtil.applyDeadband(-m_xboxController.getLeftX() * 0.2, DriveConstants.IOControlsConstants.kDriveDeadband),
                 MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
                 false,
                 true),
