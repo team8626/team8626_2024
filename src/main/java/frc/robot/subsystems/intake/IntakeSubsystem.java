@@ -11,10 +11,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import frc.robot.subsystems.Dashboard.DashboardUses;
-//import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.Dashboard.DashboardUses;
+import frc.robot.subsystems.Dashboard.ImplementDashboard;
 
-public class IntakeSubsystem extends SubsystemBase{
+public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard{
   // private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
   private VictorSPX m_motor1 = new VictorSPX(IntakeConstants.kCANMotor1);
   private DigitalInput m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
@@ -26,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase{
   public void setMotors(double speed){
     m_motor1.set(VictorSPXControlMode.PercentOutput, speed);
   }
-  public boolean isEmpty(){
+  public boolean isFull(){
     // 0 means something is there, 1 means nothing is there
     return m_infrared1.get();
   }
@@ -37,19 +37,19 @@ public class IntakeSubsystem extends SubsystemBase{
   public void periodic(){
     SmartDashboard.putBoolean("Limit Switch", limitReached());
   }
-/* 
+
   @Override
   public void initDashboard() {
   }
 
   @Override
   public void updateDashboard() {
-  // SmartDashboard.putNumber("Intake State", m_infrared.get());
+    SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
   }
 
   @Override
   public DashboardUses getDashboardUses() {
     return DashboardUses.SHORT_INTERVAL;
   }
-  */
+
 }

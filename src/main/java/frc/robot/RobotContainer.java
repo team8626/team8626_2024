@@ -25,7 +25,7 @@ XboxController m_xboxController = new XboxController(0);
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(null);
+    m_dashboard = new Dashboard(m_drive);
   }
   private void configureBindings() {}
   private void configureDefaultCommands() {
