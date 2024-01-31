@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
+    // m_robotContainer.m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {

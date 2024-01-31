@@ -15,41 +15,88 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
+import java.io.File;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.math.util.Units;
 
 public class RobotContainer {
 
-DriveSubsystem m_drive = new DriveSubsystem();
+  Dashboard m_dashboard;
 
-Dashboard m_dashboard;
+  //DriveSubsystem m_drive = new DriveSubsystem();
+  private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                          "swerve"));
 
-XboxController m_xboxController = new XboxController(0);
+  XboxController m_xboxController = new XboxController(0);
 
   public RobotContainer() {
+
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drive);
+    //m_dashboard = new Dashboard(m_drive);
 
     // TODO: Get rid, only for testing drive to pose
-    m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
+    // m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
   private void configureBindings() {}
   private void configureDefaultCommands() {
-          m_drive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_drive.drive(
-                MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-                false,
-                true),
-            m_drive));     
+
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+        () -> m_xboxController.getRightX(),
+        () -> m_xboxController.getRightY());
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the angular velocity of the robot
+    Command driveFieldOrientedAnglularVelocity = m_drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+        () -> -m_xboxController.getRawAxis(4));
+
+    Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+        () -> -m_xboxController.getRawAxis(4));
+
+    m_drivebase.setDefaultCommand(
+        !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
+      //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+
+
+
+
+
+        //   m_drive.setDefaultCommand(
+        // // The left stick controls translation of the robot.
+        // // Turning is controlled by the X axis of the right stick.
+        // new RunCommand(
+        //     () -> m_drive.drive(
+        //         MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
+        //         MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
+        //         MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
+        //         false,
+        //         true),
+        //     m_drive));     
   }
   
 
   public Command getAutonomousCommand() {
-    return m_drive.getDriveToPoseCommand(1, 1, 45);
+    // return m_drive.getDriveToPoseCommand(1, 1, 150);
+    // return m_drive.getDriveToPoseCommand(0, 0, 45);
+    return null;
   }
 }

@@ -52,9 +52,9 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
       DriveConstants.Constants.kRearRightTurningCanId,
       DriveConstants.Constants.kBackRightChassisAngularOffset);
 
- private TrajectoryConfig m_trajConfig = new TrajectoryConfig(DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond, 
-  DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-  .setKinematics(DriveConstants.Constants.kDriveKinematics);
+  private TrajectoryConfig m_trajConfig = new TrajectoryConfig(DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond, 
+    DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    .setKinematics(DriveConstants.Constants.kDriveKinematics);
 
   // The gyro sensor
   public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
@@ -259,6 +259,10 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
 
 @Override
 public void initDashboard() {
+    SmartDashboard.putNumber("X", this.getPose().getX());
+    SmartDashboard.putNumber("Y", this.getPose().getY());
+    SmartDashboard.putNumber("Angle", this.getPose().getRotation().getDegrees());
+
     SmartDashboard.putNumber("Drive Position P Value", 0.75);
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
@@ -271,6 +275,10 @@ public void initDashboard() {
 @Override
 public void updateDashboard() {
   SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
+
+    SmartDashboard.putNumber("X", this.getPose().getX());
+    SmartDashboard.putNumber("Y", this.getPose().getY());
+    SmartDashboard.putNumber("Angle", this.getPose().getRotation().getDegrees());
 }
 
 @Override
@@ -278,40 +286,40 @@ public DashboardUses getDashboardUses() {
     return DashboardUses.SHORT_INTERVAL;
 }
 
-public SwerveControllerCommand getDriveToPoseCommand(double xDesiredPos, double yDesiredPos, double rotDesiredPos) {
+public SwerveControllerCommand getDriveToPoseCommand(double xDesiredPos, double yDesiredPos, double rotDesiredPosDeg) {
 
-Trajectory traj = TrajectoryGenerator.generateTrajectory(
-  getPose(),
-  List.of(),
-  new Pose2d(xDesiredPos, yDesiredPos, Rotation2d.fromDegrees(rotDesiredPos)),
-  m_trajConfig
-);
+  Trajectory traj = TrajectoryGenerator.generateTrajectory(
+      getPose(),
+      List.of(),
+      new Pose2d(xDesiredPos, yDesiredPos, Rotation2d.fromDegrees(rotDesiredPosDeg)),
+      m_trajConfig
+  );
 
-  ;
+  PIDController xPID = new PIDController(1, 0, 0);
+  PIDController yPID = new PIDController(1.5, 0, 0);
+  ProfiledPIDController rotPID = new ProfiledPIDController(0.75, 0, 0, DriveConstants.AutoConstants.kThetaControllerConstraints);
 
-PIDController xPID = new PIDController(0.75, 0, 0);
-PIDController yPID = new PIDController(0.75, 0, 0);
-ProfiledPIDController rotPID = new ProfiledPIDController(0.02, 0, 0, DriveConstants.AutoConstants.kThetaControllerConstraints);
+  // Notifier m_dashPID = new Notifier(() -> {
+  //   SmartDashboard.putNumber("xSetpoint", xPID.getPositionError());
+  //   SmartDashboard.putNumber("ySetpoint", yPID.getPositionError());
+  //   SmartDashboard.putNumber("ySetpoint", rotPID.getPositionError());
+  // });
 
-// Notifier m_dashPID = new Notifier(() -> {
-//   SmartDashboard.putNumber("xSetpoint", xPID.getPositionError());
-//   SmartDashboard.putNumber("ySetpoint", yPID.getPositionError());
-//   SmartDashboard.putNumber("ySetpoint", rotPID.getPositionError());
-// });
+  // m_dashPID.startPeriodic(0.02);
 
-// m_dashPID.startPeriodic(0.02);
+  //rotPID.enableContinuousInput(-180, 180);
+  // rotPID.enableContinuousInput(0, 360);
 
-rotPID.enableContinuousInput(-180, 180);
-
-return new SwerveControllerCommand(
-  traj,
-  () -> getPose(), 
-  DriveConstants.Constants.kDriveKinematics, 
-  xPID, 
-  yPID, 
-  rotPID,
-  (SwerveModuleState[] output) -> setModuleStates(output),
-  this);
+  return new SwerveControllerCommand(
+    traj,
+    () -> getPose(), 
+    DriveConstants.Constants.kDriveKinematics, 
+    xPID, 
+    yPID, 
+    rotPID,
+    //() ->  new Rotation2d(rotDesiredPosDeg),
+    (SwerveModuleState[] output) -> setModuleStates(output),
+    this);
 
 
 
