@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -45,6 +47,17 @@ public class RobotContainer {
   private void configureBindings() {}
   private void configureDefaultCommands() {
 
+    AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(m_drivebase,
+                                                                   () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(),
+                                                                                                OperatorConstants.LEFT_Y_DEADBAND),
+                                                                   () -> MathUtil.applyDeadband(m_xboxController.getLeftX(),
+                                                                                                OperatorConstants.LEFT_X_DEADBAND),
+                                                                   () -> MathUtil.applyDeadband(-m_xboxController.getRightX(),
+                                                                                                OperatorConstants.RIGHT_X_DEADBAND),
+                                                                   m_xboxController::getBButtonPressed,
+                                                                   m_xboxController::getAButtonPressed,
+                                                                   m_xboxController::getXButtonPressed,
+                                                                   m_xboxController::getBButtonPressed);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
