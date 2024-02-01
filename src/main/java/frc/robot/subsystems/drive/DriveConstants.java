@@ -35,9 +35,9 @@ public final class DriveConstants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(20.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(20.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -62,7 +62,40 @@ public final class DriveConstants {
     public static final int kFrontRightTurningCanId = 48;
     public static final int kRearRightTurningCanId = 47;
 
+    // public static final int kFrontLeftDrivingCanId = 59;
+    // public static final int kRearLeftDrivingCanId = 60;
+    // public static final int kFrontRightDrivingCanId = 62;
+    // public static final int kRearRightDrivingCanId = 61;
+
+    // public static final int kFrontLeftTurningCanId = 49;
+    // public static final int kRearLeftTurningCanId = 50;
+    // public static final int kFrontRightTurningCanId = 52;
+    // public static final int kRearRightTurningCanId = 51;
+
+    // public static final int kFrontLeftDrivingCanId = 51;
+    // public static final int kRearLeftDrivingCanId = 52;
+    // public static final int kFrontRightDrivingCanId = 54;
+    // public static final int kRearRightDrivingCanId = 53;
+
+    // public static final int kFrontLeftTurningCanId = 41;
+    // public static final int kRearLeftTurningCanId = 42;
+    // public static final int kFrontRightTurningCanId = 44;
+    // public static final int kRearRightTurningCanId = 43;
+
+
     public static final boolean kGyroReversed = false;
+
+    // TODO: FIND SETPOINT TOLERANCES THROUGH TESTING
+
+
+    public static final double kDriveXPosSetpointTolerance = 0;
+    public static final double kDriveXVelSetpointTolerance = 0;
+    public static final double kDriveYPosSetpointTolerance = 0;
+    public static final double kDriveYVelSetpointTolerance = 0;
+    public static final double kDriveRotPosSetpointTolerance = 0;
+    public static final double kDriveRotVelSetpointTolerance = 0;
+
+
   }
 
   public static final class ModuleConstants {
@@ -124,8 +157,8 @@ public final class DriveConstants {
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI/4;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI/4;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
@@ -133,7 +166,10 @@ public final class DriveConstants {
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        kMaxAngularSpeedRadiansPerSecond/Math.PI*180, kMaxAngularSpeedRadiansPerSecondSquared*kMaxAngularSpeedRadiansPerSecond/Math.PI*180);
+
+    public static final TrapezoidProfile.Constraints kDriveControllerConstraints = new TrapezoidProfile.Constraints(
+        kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared);
   }
 
   public static final class NeoMotorConstants {
