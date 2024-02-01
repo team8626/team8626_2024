@@ -8,5 +8,6 @@ package frc.robot.subsystems.shooter;
 public class ShooterConstants {
     public static final int kCANMotor1 = 0;
     public static final int kCANMotor2 = 0;
-    public static final int kIRSensor = 0; //DIO
+    public static final int kIRSensor = 0; //DIO, same as IRsensor2 in Intake Subsystem
+
 }
