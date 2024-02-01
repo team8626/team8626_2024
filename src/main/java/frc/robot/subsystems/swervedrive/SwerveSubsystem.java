@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Dashboard.DashboardUses;
+import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -26,7 +28,14 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 
-public class SwerveSubsystem extends SubsystemBase
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 {
 
   /**
@@ -91,34 +100,34 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPathPlanner()
   {
-    // AutoBuilder.configureHolonomic(
-    //     this::getPose, // Robot pose supplier
-    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-    //     this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    //     this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-    //     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-    //                                      new PIDConstants(5.0, 0.0, 0.0),
-    //                                      // Translation PID constants
-    //                                      new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
-    //                                                       swerveDrive.swerveController.config.headingPIDF.i,
-    //                                                       swerveDrive.swerveController.config.headingPIDF.d),
-    //                                      // Rotation PID constants
-    //                                      4.5,
-    //                                      // Max module speed, in m/s
-    //                                      swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
-    //                                      // Drive base radius in meters. Distance from robot center to furthest module.
-    //                                      new ReplanningConfig()
-    //                                      // Default path replanning config. See the API for the options here
-    //     ),
-    //     () -> {
-    //       // Boolean supplier that controls when the path will be mirrored for the red alliance
-    //       // This will flip the path being followed to the red side of the field.
-    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-    //       var alliance = DriverStation.getAlliance();
-    //       return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-    //     },
-    //     this // Reference to this subsystem to set requirements
-    //                               );
+    AutoBuilder.configureHolonomic(
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         // Translation PID constants
+                                         new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
+                                                          swerveDrive.swerveController.config.headingPIDF.i,
+                                                          swerveDrive.swerveController.config.headingPIDF.d),
+                                         // Rotation PID constants
+                                         4.5,
+                                         // Max module speed, in m/s
+                                         swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
+                                         // Drive base radius in meters. Distance from robot center to furthest module.
+                                         new ReplanningConfig()
+                                         // Default path replanning config. See the API for the options here
+        ),
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          var alliance = DriverStation.getAlliance();
+          return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+        },
+        this // Reference to this subsystem to set requirements
+                                  );
   }
 
   /**
@@ -130,17 +139,16 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command getAutonomousCommand(String pathName, boolean setOdomToStart)
   {
-    // // Load the path you want to follow using its name in the GUI
-    // PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+    // Load the path you want to follow using its name in the GUI
+    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
 
-    // if (setOdomToStart)
-    // {
-    //   resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    // }
+    if (setOdomToStart)
+    {
+      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
+    }
 
-    // // Create a path following command using AutoBuilder. This will also trigger event markers.
-    // return AutoBuilder.followPath(path);
-    return null;
+    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    return AutoBuilder.followPath(path);
   }
 
   /**
@@ -149,21 +157,21 @@ public class SwerveSubsystem extends SubsystemBase
    * @param pose Target {@link Pose2d} to go to.
    * @return PathFinding command
    */
-  // public Command driveToPose(Pose2d pose)
-  // {
-// // Create the constraints to use while pathfinding
-//     PathConstraints constraints = new PathConstraints(
-//         swerveDrive.getMaximumVelocity(), 4.0,
-//         swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
+  public Command driveToPose(Pose2d pose)
+  {
+// Create the constraints to use while pathfinding
+    PathConstraints constraints = new PathConstraints(
+        swerveDrive.getMaximumVelocity(), 4.0,
+        swerveDrive.getMaximumAngularVelocity(), Units.degreesToRadians(720));
 
-// // Since AutoBuilder is configured, we can use it to build pathfinding commands
-//     return AutoBuilder.pathfindToPose(
-//         pose,
-//         constraints,
-//         0.0, // Goal end velocity in meters/sec
-//         0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-//                                      );
-  // }
+// Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        0.0, // Goal end velocity in meters/sec
+        0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+                                     );
+  }
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
@@ -470,5 +478,16 @@ public class SwerveSubsystem extends SubsystemBase
   public void addFakeVisionReading()
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+  @Override
+  public void initDashboard() {}
+
+  @Override
+  public void updateDashboard() {}
+
+  @Override
+  public DashboardUses getDashboardUses() {
+    return DashboardUses.SHORT_INTERVAL;
   }
 }

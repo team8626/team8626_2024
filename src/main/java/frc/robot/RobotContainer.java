@@ -12,12 +12,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
+import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.swervedrive.drivebase.DriveToPoseCommand;
 
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -28,8 +29,8 @@ public class RobotContainer {
 
   Dashboard m_dashboard;
 
-  //DriveSubsystem m_drive = new DriveSubsystem();
-  private final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  // DriveSubsystem m_drive = new DriveSubsystem();
+  public final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                           "swerve"));
 
   XboxController m_xboxController = new XboxController(0);
@@ -39,10 +40,8 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    //m_dashboard = new Dashboard(m_drive);
+    m_dashboard = new Dashboard(m_drivebase);
 
-    // TODO: Get rid, only for testing drive to pose
-    // m_drive.resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
   private void configureBindings() {}
   private void configureDefaultCommands() {
@@ -88,28 +87,10 @@ public class RobotContainer {
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
       //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
-
-
-
-
-        //   m_drive.setDefaultCommand(
-        // // The left stick controls translation of the robot.
-        // // Turning is controlled by the X axis of the right stick.
-        // new RunCommand(
-        //     () -> m_drive.drive(
-        //         MathUtil.applyDeadband(-m_xboxController.getLeftY(), DriveConstants.IOControlsConstants.kDriveDeadband),
-        //         MathUtil.applyDeadband(-m_xboxController.getLeftX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-        //         MathUtil.applyDeadband(-m_xboxController.getRightX(), DriveConstants.IOControlsConstants.kDriveDeadband),
-        //         false,
-        //         true),
-        //     m_drive));     
   }
-  
 
   public Command getAutonomousCommand() {
-    // return m_drive.getDriveToPoseCommand(1, 1, 150);
-    // return m_drive.getDriveToPoseCommand(0, 0, 45);
-    return null;
+    // return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
+    return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
   }
 }
