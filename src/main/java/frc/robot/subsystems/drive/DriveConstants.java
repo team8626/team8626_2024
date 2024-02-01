@@ -78,11 +78,9 @@ public final class DriveConstants {
     // public static final int kFrontRightTurningCanId = 44;
     // public static final int kRearRightTurningCanId = 43;
 
-
     public static final boolean kGyroReversed = false;
 
     // TODO: FIND SETPOINT TOLERANCES THROUGH TESTING
-
 
     public static final double kDriveXPosSetpointTolerance = 0;
     public static final double kDriveXVelSetpointTolerance = 0;
@@ -90,8 +88,6 @@ public final class DriveConstants {
     public static final double kDriveYVelSetpointTolerance = 0;
     public static final double kDriveRotPosSetpointTolerance = 0;
     public static final double kDriveRotVelSetpointTolerance = 0;
-
-
   }
 
   public static final class ModuleConstants {
@@ -157,19 +153,25 @@ public final class DriveConstants {
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI/4;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI/4;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI / 4;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI / 4;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond/Math.PI*180, kMaxAngularSpeedRadiansPerSecondSquared*kMaxAngularSpeedRadiansPerSecond/Math.PI*180);
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond / Math.PI * 180,
+            kMaxAngularSpeedRadiansPerSecondSquared
+                * kMaxAngularSpeedRadiansPerSecond
+                / Math.PI
+                * 180);
 
-    public static final TrapezoidProfile.Constraints kDriveControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared);
+    public static final TrapezoidProfile.Constraints kDriveControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared);
   }
 
   public static final class NeoMotorConstants {

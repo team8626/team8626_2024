@@ -7,31 +7,23 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
-import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
-import frc.robot.subsystems.swervedrive.drivebase.DriveToPoseCommand;
-
-import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
+import java.io.File;
 
 public class RobotContainer {
 
   Dashboard m_dashboard;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
-  public final SwerveSubsystem m_drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                          "swerve"));
+  public final SwerveSubsystem m_drivebase =
+      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   XboxController m_xboxController = new XboxController(0);
 
@@ -41,54 +33,64 @@ public class RobotContainer {
     configureDefaultCommands();
 
     m_dashboard = new Dashboard(m_drivebase);
-
   }
 
   private void configureBindings() {}
 
   private void configureDefaultCommands() {
 
-    AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(m_drivebase,
-                                                                   () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(),
-                                                                                                OperatorConstants.LEFT_Y_DEADBAND),
-                                                                   () -> MathUtil.applyDeadband(m_xboxController.getLeftX(),
-                                                                                                OperatorConstants.LEFT_X_DEADBAND),
-                                                                   () -> MathUtil.applyDeadband(-m_xboxController.getRightX(),
-                                                                                                OperatorConstants.RIGHT_X_DEADBAND),
-                                                                   m_xboxController::getBButtonPressed,
-                                                                   m_xboxController::getAButtonPressed,
-                                                                   m_xboxController::getXButtonPressed,
-                                                                   m_xboxController::getBButtonPressed);
+    AbsoluteDriveAdv closedAbsoluteDriveAdv =
+        new AbsoluteDriveAdv(
+            m_drivebase,
+            () ->
+                MathUtil.applyDeadband(
+                    -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+            () ->
+                MathUtil.applyDeadband(
+                    m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+            () ->
+                MathUtil.applyDeadband(
+                    -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
+            m_xboxController::getBButtonPressed,
+            m_xboxController::getAButtonPressed,
+            m_xboxController::getXButtonPressed,
+            m_xboxController::getBButtonPressed);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = m_drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-        () -> m_xboxController.getRightX(),
-        () -> m_xboxController.getRightY());
+    Command driveFieldOrientedDirectAngle =
+        m_drivebase.driveCommand(
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> m_xboxController.getRightX(),
+            () -> m_xboxController.getRightY());
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity = m_drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-        () -> -m_xboxController.getRawAxis(4));
+    Command driveFieldOrientedAnglularVelocity =
+        m_drivebase.driveCommand(
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> -m_xboxController.getRawAxis(4));
 
-    Command driveFieldOrientedDirectAngleSim = m_drivebase.simDriveCommand(
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-        () -> -m_xboxController.getRawAxis(4));
+    Command driveFieldOrientedDirectAngleSim =
+        m_drivebase.simDriveCommand(
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> -m_xboxController.getRawAxis(4));
 
     m_drivebase.setDefaultCommand(
-        !RobotBase.isSimulation() ? driveFieldOrientedAnglularVelocity : driveFieldOrientedDirectAngleSim);
-      //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+        !RobotBase.isSimulation()
+            ? driveFieldOrientedAnglularVelocity
+            : driveFieldOrientedDirectAngleSim);
+    //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
+    // driveFieldOrientedDirectAngleSim);
   }
 
   public Command getAutonomousCommand() {
