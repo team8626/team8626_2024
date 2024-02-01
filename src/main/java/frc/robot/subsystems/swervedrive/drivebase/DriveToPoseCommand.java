@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import swervelib.SwerveDrive;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -16,8 +15,8 @@ import swervelib.SwerveDrive;
 public class DriveToPoseCommand extends ParallelCommandGroup {
   SwerveSubsystem m_drive;
 
- 
   Command m_driveToPoseCommand;
+
   public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose) {
     m_drive = drive;
 
