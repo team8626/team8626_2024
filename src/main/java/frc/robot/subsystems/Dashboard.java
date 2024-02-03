@@ -51,7 +51,8 @@ public class Dashboard extends SubsystemBase {
       // Organize subsystems to their respective updateDashboard use types
       if (s.getDashboardUses() == DashboardUses.SHORT_INTERVAL) dashboardShortUpdates.add(s);
       if (s.getDashboardUses() == DashboardUses.LONG_INTERVAL) dashboardLongUpdates.add(s);
-      // Run dashboard initialize functions at construction (which is at RobotContainer construction therefore robotInit)
+      // Run dashboard initialize functions at construction (which is at RobotContainer construction
+      // therefore robotInit)
       s.initDashboard();
     }
     m_autoChooser.setDefaultOption("Default", null);

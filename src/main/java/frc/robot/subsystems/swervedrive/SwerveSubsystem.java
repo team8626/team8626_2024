@@ -17,6 +17,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +42,10 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   private final SwerveDrive swerveDrive;
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
+
+  /** Publisher for robot pose (AdvantageScxope) */
+  StructPublisher<Pose2d> m_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -464,10 +470,16 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   @Override
-  public void initDashboard() {}
+  public void initDashboard() {
+    // Publish Pose2D for AdvantageScope
+    m_publisher.set(getPose());
+  }
 
   @Override
-  public void updateDashboard() {}
+  public void updateDashboard() {
+    // Publish Pose2D for AdvantageScope
+    m_publisher.set(getPose());
+  }
 
   @Override
   public DashboardUses getDashboardUses() {
