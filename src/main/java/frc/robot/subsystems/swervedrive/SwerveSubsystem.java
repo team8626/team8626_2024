@@ -11,6 +11,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +39,12 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 {
+
+  /**
+   * Publisher for robot pose
+   */
+  StructPublisher<Pose2d> m_publisher = NetworkTableInstance.getDefault()
+      .getStructTopic("MyPose", Pose2d.struct).publish();
 
   /**
    * Swerve drive object.
@@ -481,10 +489,16 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   @Override
-  public void initDashboard() {}
+  public void initDashboard() {
+    // Publish Pose2D for AdvantageScope
+    m_publisher.set(getPose());
+  }
 
   @Override
-  public void updateDashboard() {}
+  public void updateDashboard() {
+    // Publish Pose2D for AdvantageScope
+    m_publisher.set(getPose());
+  }
 
   @Override
   public DashboardUses getDashboardUses() {
