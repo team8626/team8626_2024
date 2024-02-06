@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -303,20 +302,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   @Override
-  public void periodic() {
-
-    // Correct pose estimate with vision measurements
-    var visionEst = m_vision.getEstimatedGlobalPose();
-    visionEst.ifPresent(
-        est -> {
-          var estPose = est.estimatedPose.toPose2d();
-          // Change our trust in the measurement based on the tags we can see
-          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
-
-          swerveDrive.addVisionMeasurement(
-              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-        });
-  }
+  public void periodic() {}
 
   @Override
   public void simulationPeriodic() {}
