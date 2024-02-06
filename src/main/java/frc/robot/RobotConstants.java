@@ -1,15 +1,6 @@
 package frc.robot;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -38,22 +29,5 @@ public class RobotConstants {
   public static double kArmRotationPitchOffsetDeg = -90;
   public static double kArmRotationYawOffsetDeg = 0;
   public static double kArmExtensionOffMeters = Units.inchesToMeters(-3);
-  
-  public static class Vision {
-    public static final String kCameraName = "Arducam_AT002";
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    public static final Transform3d kRobotToCam =
-        new Transform3d(
-            new Translation3d(-0.222275, -0.275290, 0.249531),
-            new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(167.04746)));
-
-    // The layout of the AprilTags on the field
-    public static final AprilTagFieldLayout kTagLayout =
-        AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-
-    // The standard deviations of our vision estimated poses, which affect correction rate
-    // (Fake values. Experiment and determine estimation noise on an actual robot.)
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-  }
+  ;
 }

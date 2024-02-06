@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.ArrayList;
 
@@ -34,9 +33,7 @@ public class Dashboard extends SubsystemBase {
   }
 
   public enum AutoOptions {
-    PRINT,
-    DO_NOTHING,
-    EXIT
+    PRINT
   };
 
   public static interface ImplementDashboard {
@@ -58,10 +55,8 @@ public class Dashboard extends SubsystemBase {
       // therefore robotInit)
       s.initDashboard();
     }
-    m_autoChooser.setDefaultOption("PRINT", AutoOptions.PRINT);
-    m_autoChooser.addOption("DO NOTHING", AutoOptions.DO_NOTHING);
-    m_autoChooser.addOption("EXIT STARTING ZONE", AutoOptions.EXIT);
-    SmartDashboard.putData("Autonomous Selection", m_autoChooser);
+    m_autoChooser.setDefaultOption("Default", null);
+    m_autoChooser.addOption("Print", AutoOptions.PRINT);
   }
 
   public AutoOptions getSelectedAuto() {
