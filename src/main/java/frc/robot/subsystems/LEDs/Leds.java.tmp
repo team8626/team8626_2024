@@ -1,0 +1,86 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems.LEDs;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.subsystems.robotstate.RobotState;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Leds extends SubsystemBase {
+  /** Creates a new LEDSubsystem. */
+
+  private static AddressableLED m_LEDs;
+  private AddressableLEDBuffer m_buffer;
+  private RobotState m_state = RobotState.getInstance();
+  
+  public enum LedMode {
+    ESTOPPED,
+    AUTO_FINISHED,
+    AUTONOMOUS,
+    HANGING,
+    SHOOTING,
+    CONTAINING,
+    INTAKING,
+    BLUE_ALLIANCE,
+    RED_ALLIANCE,
+    LOW_BATTERY_ALERT,
+    DISABLED,
+    OFF,
+  }
+
+  public Leds() {
+
+    m_LEDs = new AddressableLED(LEDConstants.kLEDPort);
+    m_buffer = new AddressableLEDBuffer(LEDConstants.kLEDLength);
+    m_LEDs.setLength(LEDConstants.kLEDLength);
+    m_LEDs.setData(m_buffer);
+    m_LEDs.start();
+    this.setColor(Color.kRed);
+  }
+
+  public void setColor(Color color) {
+    int kLEDBufferLength = 30;
+    // AddressableLEDBuffer buffer = new AddressableLEDBuffer(kLEDBufferLength);
+    for (int i = 0; i < LEDConstants.kLEDLength; i++) {
+      m_buffer.setLED(i, color);
+    }
+    m_LEDs.setData(m_buffer);
+  }
+
+  private void updateState(){
+    case AUTONOMOUS:
+    wave(Section.FULL, Color.kGold, Color.kDarkBlue, waveFastCycleLength, waveFastDuration);
+    break;
+  }
+  private void wave(Section section, Color c1, Color c2, double cycleLength, double duration) {
+    double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
+    double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
+    for (int i = 0; i < section.end(); i++) {
+      x += xDiffPerLed;
+      if (i >= section.start()) {
+        double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
+        if (Double.isNaN(ratio)) {
+          ratio = (-Math.pow(Math.sin(x + Math.PI), waveExponent) + 1.0) / 2.0;
+        }
+        if (Double.isNaN(ratio)) {
+          ratio = 0.5;
+        }
+        double red = (c1.red * (1 - ratio)) + (c2.red * ratio);
+        double green = (c1.green * (1 - ratio)) + (c2.green * ratio);
+        double blue = (c1.blue * (1 - ratio)) + (c2.blue * ratio);
+        m_buffer.setLED(i, new Color(red, green, blue));
+      }
+    }
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+
+  }
+}
