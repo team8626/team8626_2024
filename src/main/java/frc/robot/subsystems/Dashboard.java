@@ -19,8 +19,6 @@ public class Dashboard extends SubsystemBase {
 
   private SendableChooser<AutoOptions> m_autoChooser = new SendableChooser<AutoOptions>();
 
-  private SendableChooser<AutoOptions> m_autoChooser = new SendableChooser<AutoOptions>();
-
   private static final boolean kEnableDashBoard = true;
 
   private static final double kShortInterval = .02;
