@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "SPARK MAX [18]": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [45]": {
         "header": {
           "open": true
@@ -21,10 +26,11 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Autonomous Selection": "String Chooser",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/Field": {
+      "/SmartDashboard/Autonomous Selection": {
         "window": {
           "visible": true
         }
@@ -45,8 +51,5 @@
   },
   "NetworkTables Info": {
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
