@@ -97,18 +97,17 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     switch (m_dashboard.getSelectedAuto()) {
       default:
+        return Commands.print("Print Auto Command");
+
+      case EXIT:
         // return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
-        // return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
-        return m_drivebase.driveToPose(
-            new Pose2d(
-                FieldConstants.StagingLocations.centerlineTranslations[4].getX()
-                    - RobotConstants.intakeOffset.getX(),
-                FieldConstants.StagingLocations.centerlineTranslations[4].getY()
-                    - RobotConstants.intakeOffset.getY(),
-                Rotation2d.fromDegrees(45)));
+        return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
 
       case PRINT:
         return Commands.print("Print Auto Command");
+
+      case DO_NOTHING:
+        return Commands.none();
     }
   }
 }
