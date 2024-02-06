@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -44,9 +45,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
 
-  /** Publisher for robot pose (AdvantageScxope) */
-  StructPublisher<Pose3d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose3d.struct).publish();
+  /** Vision object */
+  private Vision m_vision = new Vision();
+  /** Publisher for robot pose (AdvantageScope) */
+  StructPublisher<Pose2d> m_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -301,7 +304,20 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+
+    // Correct pose estimate with vision measurements
+    var visionEst = m_vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          var estPose = est.estimatedPose.toPose2d();
+          // Change our trust in the measurement based on the tags we can see
+          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+
+          swerveDrive.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
+  }
 
   @Override
   public void simulationPeriodic() {}
