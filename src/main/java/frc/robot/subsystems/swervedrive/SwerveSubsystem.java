@@ -45,9 +45,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
 
-  /** Publisher for robot pose (AdvantageScxope) */
+  /** Vision object */
+  private Vision m_vision = new Vision();
+  /** Publisher for robot pose (AdvantageScope) */
   StructPublisher<Pose3d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose3d.struct).publish();
+      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
