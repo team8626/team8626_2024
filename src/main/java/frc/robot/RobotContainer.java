@@ -9,25 +9,29 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
 
 DriveSubsystem m_drive = new DriveSubsystem();
-
+ShooterSubsystem m_shooter = new ShooterSubsystem();
 Dashboard m_dashboard;
 
-XboxController m_xboxController = new XboxController(0);
+CommandXboxController m_xboxController = new CommandXboxController(0);
 
   public RobotContainer() {
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(null);
+    m_dashboard = new Dashboard(m_shooter);
   }
-  private void configureBindings() {}
+  private void configureBindings() {
+
+  }
   private void configureDefaultCommands() {
           m_drive.setDefaultCommand(
         // The left stick controls translation of the robot.
