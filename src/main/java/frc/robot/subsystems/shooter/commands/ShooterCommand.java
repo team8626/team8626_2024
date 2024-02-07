@@ -10,16 +10,18 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   private ShooterSubsystem m_shooter;
-  public ShooterCommand(ShooterSubsystem shooter) {
+  private int m_speed;
+  public ShooterCommand(ShooterSubsystem shooter, int speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
     m_shooter = shooter;
+    m_speed = speed;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotors(2000);
+    m_shooter.setMotors(m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

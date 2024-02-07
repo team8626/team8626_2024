@@ -21,8 +21,6 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private DigitalInput m_infrared = new DigitalInput(ShooterConstants.kIRSensor);
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
-    m_motor2.setInverted(true);
-
     double kP = 6e-5; 
     double kI = 0;
     double kD = 0; 
