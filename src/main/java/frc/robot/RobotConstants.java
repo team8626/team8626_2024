@@ -38,7 +38,7 @@ public class RobotConstants {
   public static double kArmRotationPitchOffsetDeg = -90;
   public static double kArmRotationYawOffsetDeg = 0;
   public static double kArmExtensionOffMeters = Units.inchesToMeters(-3);
-  
+
   public static class Vision {
     public static final String kCameraName = "Arducam_AT002";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
@@ -56,6 +56,7 @@ public class RobotConstants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
+
   public static double kFrameWidth = Units.inchesToMeters(24);
   public static double kFrameLength = Units.inchesToMeters(24);
 
@@ -66,7 +67,7 @@ public class RobotConstants {
   public static double kArmRotationPitchOffsetDeg = -90;
   public static double kArmRotationYawOffsetDeg = 0;
   public static double kArmExtensionOffMeters = Units.inchesToMeters(-3);
-  
+
   public static class Vision {
     public static final String kCameraName = "Arducam_AT002";
     // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
