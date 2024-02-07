@@ -1,7 +1,7 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [18]": {
+      "SPARK MAX [32]": {
         "header": {
           "open": true
         }
@@ -45,14 +45,21 @@
         },
         ".recording": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

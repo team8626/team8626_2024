@@ -12,10 +12,14 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.utils.CommandButtonController;
 import java.io.File;
 
 public class RobotContainer {
@@ -26,17 +30,29 @@ public class RobotContainer {
   public final SwerveSubsystem m_drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
-  XboxController m_xboxController = new XboxController(0);
+  public final ArmSubsystem m_arm = new ArmSubsystem();
+
+  private final XboxController m_xboxController =
+      new XboxController(IOControlsConstants.kXboxControllerPort);
+  private final CommandButtonController m_buttonBox =
+      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
 
   public RobotContainer() {
 
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drivebase);
+    m_dashboard = new Dashboard(m_drivebase, m_arm);
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+
+    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
+
+    m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLength(0)));
+    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLength(10)));
+  }
 
   private void configureDefaultCommands() {
 

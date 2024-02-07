@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -43,11 +44,12 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   private final SwerveDrive swerveDrive;
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
+
   /** Vision object */
   private Vision m_vision = new Vision();
   /** Publisher for robot pose (AdvantageScope) */
-  StructPublisher<Pose2d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+  StructPublisher<Pose3d> m_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -486,14 +488,14 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 
   @Override
   public void initDashboard() {
-    // Publish Pose2D for AdvantageScope
-    m_publisher.set(getPose());
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
   }
 
   @Override
   public void updateDashboard() {
-    // Publish Pose2D for AdvantageScope
-    m_publisher.set(getPose());
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
   }
 
   @Override
