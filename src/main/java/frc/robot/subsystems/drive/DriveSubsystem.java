@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-  }
+}
 
   @Override
   public void periodic() {
