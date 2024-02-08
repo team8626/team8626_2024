@@ -496,6 +496,10 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     m_publisher.set(getPose());
   }
 
+  public void setHeading() {
+    // getSwerveController().
+  }
+
   @Override
   public DashboardUses getDashboardUses() {
     return DashboardUses.SHORT_INTERVAL;

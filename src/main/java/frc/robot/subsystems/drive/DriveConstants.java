@@ -88,6 +88,7 @@ public final class DriveConstants {
     public static final double kDriveYVelSetpointTolerance = 0;
     public static final double kDriveRotPosSetpointTolerance = 0;
     public static final double kDriveRotVelSetpointTolerance = 0;
+    public static final String AutoConstants = null;
   }
 
   public static final class ModuleConstants {
