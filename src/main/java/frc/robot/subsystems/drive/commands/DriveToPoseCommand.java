@@ -35,11 +35,11 @@ public class DriveToPoseCommand extends Command {
 
     addRequirements(m_drive);
 
-    SmartDashboard.putNumber("Drive Position P Value", 0.0020645);
+    SmartDashboard.putNumber("Drive Position P Value", 1);
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
 
-    SmartDashboard.putNumber("Drive Rotation P Value", 0.01);
+    SmartDashboard.putNumber("Drive Rotation P Value", 0.005);
     SmartDashboard.putNumber("Drive Rotation I Value", 0);
     SmartDashboard.putNumber("Drive Rotation D Value", 0);
     
@@ -55,11 +55,12 @@ public class DriveToPoseCommand extends Command {
   public void initialize() {
     m_pose = m_drive.getPose();
 
-    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0.0020645);
+    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 1);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
-    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.01);
+    // 0.015
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
@@ -71,7 +72,7 @@ public class DriveToPoseCommand extends Command {
     
     m_xPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
     m_yPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
-    m_rotPID.setConstraints(new TrapezoidProfile.Constraints(rotationMaxVelocity, rotationMaxAcceleration));
+    m_rotPID.setConstraints(new TrapezoidProfile.Constraints(Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
 
     m_xPID.setPID(drivePValue, driveIValue, driveDValue);
     m_yPID.setPID(drivePValue, driveIValue, driveDValue);
@@ -83,7 +84,8 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    m_rotPID.reset(m_pose.getRotation().getDegrees());
+    // m_rotPID.reset(m_pose.getRotation().getDegrees());
+    m_rotPID.reset(0);
 
     m_rotPID.enableContinuousInput(-180, 180);
   }
@@ -94,13 +96,15 @@ public class DriveToPoseCommand extends Command {
   m_pose = m_drive.getPose();
 
   m_drive.drive(
-  m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
-  m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
-  m_rotPID.calculate(m_pose.getRotation().unaryMinus().getDegrees(), m_rotDesiredPos),
+  /* m_xPID.calculate(m_pose.getX(), m_xDesiredPos) */0,
+  /* m_yPID.calculate(m_pose.getY(), m_yDesiredPos) */0,
+  m_rotPID.calculate(m_drive.getHeading(), m_rotDesiredPos),
   false,
   false
   );
+ SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() + m_drive.getHeading());
   }
+
 
   // Called once the command ends or is interrupted.
   @Override

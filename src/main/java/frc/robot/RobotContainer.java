@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.commands.DriveToPoseCommand;
 
 public class RobotContainer {
 
@@ -50,6 +53,9 @@ XboxController m_xboxController = new XboxController(0);
   
 
   public Command getAutonomousCommand() {
-    return m_drive.getDriveToPoseCommand(1, 1, 45);
+    // return m_drive.getDriveToPoseCommand(1, 1, 45);
+    return new SequentialCommandGroup(
+      new WaitCommand(0.5),
+      new DriveToPoseCommand(m_drive, 0, 0, -90));
   }
 }

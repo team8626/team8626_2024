@@ -263,14 +263,14 @@ public void initDashboard() {
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
 
-    SmartDashboard.putNumber("Drive Rotation P Value", 0);
+    SmartDashboard.putNumber("Drive Rotation P Value", 0.1);
     SmartDashboard.putNumber("Drive Rotation I Value", 0);
     SmartDashboard.putNumber("Drive Rotation D Value", 0);
 }
 
 @Override
 public void updateDashboard() {
-  SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
+  SmartDashboard.putNumber("Heading", getHeading());
 }
 
 @Override
