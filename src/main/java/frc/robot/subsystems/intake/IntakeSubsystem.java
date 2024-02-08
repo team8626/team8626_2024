@@ -17,6 +17,7 @@ import frc.robot.subsystems.Dashboard.ImplementDashboard;
 public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard{
   // private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
   private VictorSPX m_motor1 = new VictorSPX(IntakeConstants.kCANMotor1);
+  private VictorSPX m_motor2 = new VictorSPX(IntakeConstants.kCANMotor2);
   private DigitalInput m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
   private DigitalInput m_infrared2 = new DigitalInput(IntakeConstants.kIRSensor2);
   /** Creates a new IntakeSubsystem. */
@@ -25,6 +26,7 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
   public void setMotors(double speed){
     m_motor1.set(VictorSPXControlMode.PercentOutput, speed);
+    m_motor2.set(VictorSPXControlMode.PercentOutput, speed);
   }
   public boolean isFull(){
     // 0 means something is there, 1 means nothing is there
