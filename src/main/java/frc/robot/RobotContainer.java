@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
@@ -34,6 +35,10 @@ public class RobotContainer {
 
   private final XboxController m_xboxController =
       new XboxController(IOControlsConstants.kXboxControllerPort);
+
+  private final CommandXboxController m_testController =
+      new CommandXboxController(IOControlsConstants.kTestControllerPort);
+
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(IOControlsConstants.kButtonBoxPort);
 
@@ -47,11 +52,17 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    /** Button Box Bindings */
     m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
     m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
 
-    m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLength(0)));
-    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLength(10)));
+    m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLengthInches(0)));
+    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
+
+    /** Test Controller Buttons * */
+    m_testController
+        .a()
+        .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
   private void configureDefaultCommands() {
@@ -108,6 +119,16 @@ public class RobotContainer {
             : driveFieldOrientedDirectAngleSim);
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
     // driveFieldOrientedDirectAngleSim);
+
+    // Manual Arm Control on test controller
+    // X-> Rotation
+    // Y-> Extention
+    Command controlArm =
+        m_arm.controlCommand(
+            () -> MathUtil.applyDeadband(m_testController.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
+
+    m_arm.setDefaultCommand(controlArm);
   }
 
   public Command getAutonomousCommand() {
