@@ -5,30 +5,27 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import java.io.File;
 
 public class RobotContainer {
 
-DriveSubsystem m_drive = new DriveSubsystem();
-ShooterSubsystem m_shooter = new ShooterSubsystem();
-Dashboard m_dashboard;
+  DriveSubsystem m_drive = new DriveSubsystem();
+  ShooterSubsystem m_shooter = new ShooterSubsystem();
+  Dashboard m_dashboard;
 
- // DriveSubsystem m_drive = new DriveSubsystem();
+  // DriveSubsystem m_drive = new DriveSubsystem();
   public final SwerveSubsystem m_drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
@@ -106,8 +103,7 @@ Dashboard m_dashboard;
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        // return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
-        return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
+        return new DriveToPoseCommand(m_drivebase, 0, 0, 90, false);
 
       case PRINT:
         return Commands.print("Print Auto Command");

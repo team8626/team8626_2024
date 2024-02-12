@@ -12,12 +12,12 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveToPoseCommand extends ParallelCommandGroup {
+public class DriveToPosePP extends ParallelCommandGroup {
   SwerveSubsystem m_drive;
 
   Command m_driveToPoseCommand;
 
-  public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose) {
+  public DriveToPosePP(SwerveSubsystem drive, Pose2d desiredPose) {
     m_drive = drive;
 
     setName("Drive To Pose Command");
