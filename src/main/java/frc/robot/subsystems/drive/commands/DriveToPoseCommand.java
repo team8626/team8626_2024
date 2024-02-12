@@ -26,19 +26,30 @@ public class DriveToPoseCommand extends Command {
   private double m_yDesiredPos;
   private double m_rotDesiredPos;
 
-  public DriveToPoseCommand(DriveSubsystem drive, double xDesiredPos, double yDesiredPos, double rotDesiredPos) {
+  private static double positionSetpointTolerance = 0.2;
+  private static double positionVelSetpointTolerance = 0.1;
+  private static double angleSetpointTolerance = 5;
+  private static double angleVelSetpointTolerance = 3;
+
+  // Will only work when atSetpoint() set
+  private boolean m_finish;
+
+  public DriveToPoseCommand(DriveSubsystem drive, double xDesiredPos, double yDesiredPos, double rotDesiredPos, boolean finish) {
     m_drive = drive;
 
     m_xDesiredPos = xDesiredPos;
     m_yDesiredPos = yDesiredPos;
     m_rotDesiredPos = rotDesiredPos;
 
+    m_finish = finish;
+
     addRequirements(m_drive);
 
-    SmartDashboard.putNumber("Drive Position P Value", 1);
+    SmartDashboard.putNumber("Drive Position P Value", 0);
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
 
+    // 0.005
     SmartDashboard.putNumber("Drive Rotation P Value", 0.005);
     SmartDashboard.putNumber("Drive Rotation I Value", 0);
     SmartDashboard.putNumber("Drive Rotation D Value", 0);
@@ -55,12 +66,12 @@ public class DriveToPoseCommand extends Command {
   public void initialize() {
     m_pose = m_drive.getPose();
 
-    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 1);
+    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
     // 0.015
-    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.005);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
@@ -70,6 +81,10 @@ public class DriveToPoseCommand extends Command {
     double rotationMaxVelocity = SmartDashboard.getNumber("Rotation Velocity Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
     double rotationMaxAcceleration = SmartDashboard.getNumber("Rotation Acceleration Constraint", DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared);
     
+    m_xPID.setTolerance(positionSetpointTolerance, positionVelSetpointTolerance);
+    m_yPID.setTolerance(positionSetpointTolerance, positionVelSetpointTolerance);
+    m_rotPID.setTolerance(angleSetpointTolerance, angleVelSetpointTolerance);
+
     m_xPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
     m_yPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
     m_rotPID.setConstraints(new TrapezoidProfile.Constraints(Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
@@ -96,14 +111,15 @@ public class DriveToPoseCommand extends Command {
   m_pose = m_drive.getPose();
 
   m_drive.drive(
-  /* m_xPID.calculate(m_pose.getX(), m_xDesiredPos) */0,
-  /* m_yPID.calculate(m_pose.getY(), m_yDesiredPos) */0,
+  m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
+  m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
   m_rotPID.calculate(m_drive.getHeading(), m_rotDesiredPos),
   false,
   false
   );
- SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() + m_drive.getHeading());
-  }
+
+//  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() + m_drive.getHeading());
+}
 
 
   // Called once the command ends or is interrupted.
@@ -113,6 +129,6 @@ public class DriveToPoseCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_xPID.atSetpoint() && m_yPID.atSetpoint() && m_rotPID.atSetpoint();
+    return m_finish && m_xPID.atSetpoint() && m_yPID.atSetpoint() && m_rotPID.atSetpoint();
   }
 }

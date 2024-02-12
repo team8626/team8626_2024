@@ -56,6 +56,6 @@ XboxController m_xboxController = new XboxController(0);
     // return m_drive.getDriveToPoseCommand(1, 1, 45);
     return new SequentialCommandGroup(
       new WaitCommand(0.5),
-      new DriveToPoseCommand(m_drive, 0, 0, -90));
+      new DriveToPoseCommand(m_drive, 0, 0, -90, false));
   }
 }
