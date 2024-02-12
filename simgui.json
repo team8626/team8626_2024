@@ -1,7 +1,7 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [18]": {
+      "SPARK MAX [32]": {
         "header": {
           "open": true
         }
@@ -27,7 +27,8 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Autonomous Selection": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Autonomous Selection": {
@@ -45,14 +46,30 @@
         },
         ".recording": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Arm": {
+          "Extension": {
+            "open": true
+          },
+          "Rotation": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
