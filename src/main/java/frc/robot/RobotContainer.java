@@ -5,8 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -24,6 +22,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
@@ -163,8 +162,7 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        // return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
-        return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
+        return new DriveToPoseCommand(m_drivebase, 0, 0, 90, false);
 
       case PRINT:
         return Commands.print("Print Auto Command");
