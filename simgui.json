@@ -65,11 +65,30 @@
         },
         ".recording": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Arm": {
+          "Extension": {
+            "open": true
+          },
+          "Rotation": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }
