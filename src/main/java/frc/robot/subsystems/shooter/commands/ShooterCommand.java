@@ -12,11 +12,17 @@ public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   private ShooterSubsystem m_shooter;
 
+<<<<<<< HEAD
   private IntakeSubsystem m_intake;
 
   private int m_speed;
 
   public ShooterCommand(IntakeSubsystem intake, ShooterSubsystem shooter, int speed) {
+=======
+  private int m_speed;
+
+  public ShooterCommand(ShooterSubsystem shooter, int speed) {
+>>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter, intake);
     m_shooter = shooter;

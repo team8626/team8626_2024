@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.shooter;
 
+<<<<<<< HEAD
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -11,6 +12,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+=======
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+>>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
@@ -41,6 +48,7 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
+<<<<<<< HEAD
     m_motor1 = new CANSparkMax(ShooterConstants.kCANMotor1, MotorType.kBrushless);
     m_motor1.restoreFactoryDefaults();
     m_motor1.setIdleMode(IdleMode.kCoast);
@@ -56,6 +64,15 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
     m_encoder1 = m_motor1.getEncoder();
     m_encoder2 = m_motor2.getEncoder();
+=======
+    double kP = 6e-5;
+    double kI = 0;
+    double kD = 0;
+    double kIz = 0;
+    double kFF = 0.000015;
+    double kMaxOutput = 1;
+    double kMinOutput = -1;
+>>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
 
     // set PID coefficients
     m_pidController1.setP(m_kP);
@@ -80,6 +97,7 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     // m_motor2.set(speed);
   }
 
+<<<<<<< HEAD
   public void setRPM(double speed_Bottom, double speed_Top) {
     m_desiredRPM_Bottom = speed_Bottom;
     m_desiredRPM_Top = speed_Top;
@@ -210,6 +228,21 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     SmartDashboard.putNumber("Shooter/D Gain", m_kD);
     SmartDashboard.putNumber("Shooter/Feed Forward", m_kFF);
   }
+=======
+  public boolean isEmpty() {
+    // 0 means something is there, 1 means nothing is there
+    return m_infrared.get();
+  }
+
+  @Override
+  public void periodic() {}
+
+  @Override
+  public void initDashboard() {}
+
+  @Override
+  public void updateDashboard() {}
+>>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
 
   @Override
   public DashboardUses getDashboardUses() {
