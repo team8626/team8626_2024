@@ -18,7 +18,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,7 +60,23 @@ public class DriveSubsystem extends SubsystemBase implements ImplementDashboard 
           .setKinematics(DriveConstants.Constants.kDriveKinematics);
 
   // The gyro sensor
-  public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  // public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  // TODO: Real Solution Please
+  FakeGyro m_gyro = new FakeGyro();
+
+  private class FakeGyro {
+    private double angle = 0;
+
+    private double getAngle(IMUAxis a) {
+      return 0;
+    }
+
+    public void reset() {}
+
+    public double getRate(IMUAxis a) {
+      return 0;
+    }
+  }
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
