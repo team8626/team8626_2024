@@ -12,7 +12,10 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+<<<<<<< HEAD
 import edu.wpi.first.math.geometry.Pose3d;
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -47,7 +50,10 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
   /** Vision object */
   private Vision m_vision = new Vision();
   /** Publisher for robot pose (AdvantageScope) */
@@ -538,12 +544,16 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public void initDashboard() {
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
+<<<<<<< HEAD
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
   }
 
   @Override
   public void updateDashboard() {
+<<<<<<< HEAD
 <<<<<<< HEAD
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
@@ -554,6 +564,10 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 >>>>>>> a20f000 (Command Templates)
     SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
 =======
+=======
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
     SmartDashboard.putNumber("New Heading", getOdometryHeading().getDegrees());
 >>>>>>> e065eea (Untested heading changes)
   }

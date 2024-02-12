@@ -1,34 +1,47 @@
 {
+  "Keyboard 2 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
         {
           "decKey": 65,
-          "incKey": 68
-        },
-        {
-          "decKey": 87,
           "incKey": 83
         },
         {
-          "decKey": 69,
+          "decKey": 87,
+          "incKey": 90
+        },
+        {
           "decayRate": 0.0,
-          "incKey": 82,
+          "incKey": 73,
           "keyRate": 0.009999999776482582
         },
         {
+<<<<<<< HEAD
           "decKey": 71,
           "incKey": 84
         },
         {
           "decKey": 70,
           "incKey": 72
+=======
+          "decKey": 76,
+          "incKey": 75
+        },
+        {
+          "decKey": 91,
+          "incKey": 93
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
         }
       ],
       "axisCount": 5,
       "buttonCount": 4,
       "buttonKeys": [
-        90,
+        -1,
         88,
         67,
         86
@@ -50,21 +63,30 @@
     {
       "axisConfig": [
         {
+<<<<<<< HEAD
           "decKey": 264,
           "incKey": 265
         },
         {
           "decKey": 263,
           "incKey": 262
+=======
+          "decKey": 74
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
         }
       ],
-      "axisCount": 2,
-      "buttonCount": 4,
+      "axisCount": 0,
+      "buttonCount": 9,
       "buttonKeys": [
-        77,
-        44,
-        46,
-        47
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57
       ],
       "povCount": 0
     },
@@ -72,6 +94,7 @@
       "axisCount": 0,
       "buttonCount": 9,
       "buttonKeys": [
+<<<<<<< HEAD
         49,
         50,
         51,
@@ -98,6 +121,14 @@
         56,
         57,
         -1
+=======
+        47,
+        46,
+        44,
+        77,
+        78,
+        66
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
       ],
       "povCount": 0
     },
@@ -112,10 +143,18 @@
       "guid": "Keyboard0"
     },
     {
+<<<<<<< HEAD
       "guid": "Keyboard1"
     },
     {
       "guid": "Keyboard2"
+=======
+      "guid": "Keyboard2"
+    },
+    {
+      "guid": "Keyboard1",
+      "name": "Botton Box"
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
     }
   ]
 }

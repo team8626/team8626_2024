@@ -54,9 +54,12 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
+<<<<<<< HEAD
   private static double atAngleTolerance = 0;
   private static double atInchesTolerance = 0;
 
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
   /** Poses publisher for AdvantageScope * */
   StructArrayPublisher<Pose3d> poseArrayPublisher =
       NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
@@ -116,7 +119,11 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         ArmConstants.Rotation.kRotationEncoderPositionFactorDeg);
     m_rotationEncoder.setVelocityConversionFactor(
         ArmConstants.Rotation.kRotationEncoderVelocityFactorDeg);
+<<<<<<< HEAD
     m_rotationMotor_L.setInverted(true);
+=======
+    m_rotationMotor_L.setInverted(false);
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 
     // Set the PID gains for the motor.
     m_extensionPIDController.setP(ArmConstants.Extension.kExtP);
@@ -142,9 +149,12 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationMotor_L.setIdleMode(IdleMode.kBrake);
     m_rotationMotor_L.setSmartCurrentLimit(ArmConstants.Rotation.kCurrentLimit);
 
+<<<<<<< HEAD
     setAngleTolerance(3);
     setExtensionTolerance(1);
 
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
     /** Initialize the Subsystem * */
     if (RobotBase.isReal()) {
       m_desiredAngleDeg = m_rotationEncoder.getPosition();
@@ -224,6 +234,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_armIsResetting = true;
   }
 
+<<<<<<< HEAD
   public void setAngleTolerance(double positionTolerance) {
     atAngleTolerance = positionTolerance;
   }
@@ -239,6 +250,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   public boolean atAngleSetpoint() {
     return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, atAngleTolerance);
   }
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
   /*
    * Convert Reel Rotations from Extension Length
    */
@@ -308,6 +321,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armZeroed = true;
           m_armIsResetting = false;
         }
+<<<<<<< HEAD
       }
       /** Running simulation, Reset "done" * */
       if (Robot.isSimulation()) {
@@ -315,6 +329,16 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         m_desiredExtensionInches = 0;
         m_armZeroed = true;
         m_armIsResetting = false;
+=======
+
+        /** Running simulation, Reset "done" * */
+        if (Robot.isSimulation()) {
+          m_currentExtInches = 0;
+          m_desiredExtensionInches = 0;
+          m_armZeroed = true;
+          m_armIsResetting = false;
+        }
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
       }
     }
   }

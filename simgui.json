@@ -10,7 +10,11 @@
       }
     },
     "Other Devices": {
+<<<<<<< HEAD
       "SPARK MAX [15]": {
+=======
+      "SPARK MAX [32]": {
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
         "header": {
           "open": true
         }
@@ -67,12 +71,31 @@
         },
         ".recording": {
           "open": true
-        }
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "Arm": {
+          "Extension": {
+            "open": true
+          },
+          "Rotation": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
       }
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   }
 }

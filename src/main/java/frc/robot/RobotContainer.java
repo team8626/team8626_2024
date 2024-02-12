@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -35,6 +36,14 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants;
+=======
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
@@ -48,7 +57,10 @@ import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
 >>>>>>> 58b1481 (DTP Trajectory PID Command Working)
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
+<<<<<<< HEAD
 import frc.utils.CommandButtonController;
+=======
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 import java.io.File;
 
 public class RobotContainer {
@@ -71,6 +83,7 @@ public class RobotContainer {
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
+<<<<<<< HEAD
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
@@ -83,18 +96,33 @@ public class RobotContainer {
 
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+=======
+  private final XboxController m_xboxController =
+      new XboxController(IOControlsConstants.kXboxControllerPort);
+
+  private final CommandXboxController m_testController =
+      new CommandXboxController(IOControlsConstants.kTestControllerPort);
+
+  private final CommandButtonController m_buttonBox =
+      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 
   public RobotContainer() {
 
     configureBindings();
     configureDefaultCommands();
 
+<<<<<<< HEAD
     m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
+=======
+    m_dashboard = new Dashboard(m_drivebase, m_arm);
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
   }
 
   private void configureBindings() {
 
     /** Button Box Bindings */
+<<<<<<< HEAD
     // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
 
@@ -120,6 +148,17 @@ public class RobotContainer {
     /** Test Controller Buttons * */
     m_buttonBox
         .button_9()
+=======
+    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
+
+    m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLengthInches(0)));
+    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
+
+    /** Test Controller Buttons * */
+    m_testController
+        .a()
+>>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
