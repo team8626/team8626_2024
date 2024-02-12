@@ -5,13 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -24,13 +23,20 @@ import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+=======
+import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.drive.DriveSubsystem;
+>>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
+<<<<<<< HEAD
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
+=======
+>>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import frc.utils.CommandButtonController;
@@ -38,7 +44,12 @@ import java.io.File;
 
 public class RobotContainer {
 
+<<<<<<< HEAD
   // DriveSubsystem m_drive = new DriveSubsystem();
+=======
+  DriveSubsystem m_drive = new DriveSubsystem();
+  ShooterSubsystem m_shooter = new ShooterSubsystem();
+>>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
   Dashboard m_dashboard;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
@@ -171,8 +182,12 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
+<<<<<<< HEAD
         return new DriveToPoseCommand(
             m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+=======
+        return new DriveToPoseCommand(m_drivebase, 0, 0, 90, false);
+>>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
 
       case PRINT:
         return Commands.print("Print Auto Command");
