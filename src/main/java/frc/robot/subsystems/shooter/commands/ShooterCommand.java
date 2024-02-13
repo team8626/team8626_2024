@@ -10,7 +10,9 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   private ShooterSubsystem m_shooter;
+
   private int m_speed;
+
   public ShooterCommand(ShooterSubsystem shooter, int speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
