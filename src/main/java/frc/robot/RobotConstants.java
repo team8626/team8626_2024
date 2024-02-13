@@ -58,6 +58,7 @@ public class RobotConstants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
+<<<<<<< HEAD
 
   public static double kFrameWidth = Units.inchesToMeters(24);
   public static double kFrameLength = Units.inchesToMeters(24);
@@ -88,4 +89,6 @@ public class RobotConstants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
+=======
+>>>>>>> 13d8b35 (Update Vendor Libraries to latest version)
 }

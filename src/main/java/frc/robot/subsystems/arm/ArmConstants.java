@@ -6,10 +6,14 @@ public class ArmConstants {
 
   public static final class Extension {
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static final int extensionCANID_L = 20;
 =======
     public static final int extensionCANID_L = 30;
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    public static final int extensionCANID_L = 20;
+>>>>>>> 13d8b35 (Update Vendor Libraries to latest version)
 
     // Using Through Bore Encoder
     public static final SparkMaxAlternateEncoder.Type kAltEncType =
