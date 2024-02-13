@@ -5,7 +5,7 @@ import com.revrobotics.SparkMaxAlternateEncoder;
 public class ArmConstants {
 
   public static final class Extension {
-    public static final int extensionCANID_L = 30;
+    public static final int extensionCANID_L = 20;
 
     // Using Through Bore Encoder
     public static final SparkMaxAlternateEncoder.Type kAltEncType =
