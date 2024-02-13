@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
@@ -21,6 +22,7 @@ import java.io.File;
 public class RobotContainer {
 
   Dashboard m_dashboard;
+  LEDSubsystem m_leds = new LEDSubsystem();
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   public final SwerveSubsystem m_drivebase =

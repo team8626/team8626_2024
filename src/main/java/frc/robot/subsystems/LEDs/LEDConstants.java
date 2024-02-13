@@ -2,8 +2,8 @@ package frc.robot.subsystems.LEDs;
 
 public class LEDConstants {
   public static final int kLEDLength = 30;
-  public static final int kLEDPort = 0;
-  public static final int[] kErrorLightIndex = {0, 1, 2, 3, 4, 25, 26, 27, 28, 29};
+  public static final int kLEDPort = 3;
+  public static final int[][] kErrorLightIndex = {{0}, {10}, {20}, {29}};
 
   public static final int minLoopCycleCount = 10;
   public static final int length = 10;
