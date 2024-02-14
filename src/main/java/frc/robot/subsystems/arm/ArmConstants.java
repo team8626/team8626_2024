@@ -74,7 +74,7 @@ public class ArmConstants {
       m_ext = newExtInches;
     }
 
-    public double getRotegrees() {
+    public double getRotDegrees() {
       return m_rot;
     }
 
@@ -92,6 +92,9 @@ public class ArmConstants {
     public static final Preset kShootSpeaker_3ft = new Preset(15, 4);
     public static final Preset kShootSpeaker_5ft = new Preset(15, 4);
     public static final Preset kStartClimb = new Preset(100, 0);
+    public static final Preset kShootAmplifier_0ft = new Preset(15, 4);
+    public static final Preset kShootAmplifier_3ft = new Preset(15, 4);
+    public static final Preset kShootAmplifier_5ft = new Preset(15, 4);
   }
   ;
 }

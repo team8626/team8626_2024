@@ -10,4 +10,6 @@ public class ShooterConstants {
   public static final int kCANMotor2 = 99;
   public static final int kIRSensor = 0; // DIO, same as IRsensor2 in Intake Subsystem
   public static final int kMaxRPM = 5700;
+  public static final int kSpeakerShootSpeed = 0;
+  public static final int kAmplifierShootSpeed = 0;
 }
