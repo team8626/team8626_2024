@@ -340,6 +340,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armIsResetting = false;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 70353eb (Dashboard pre work)
       }
       /** Running simulation, Reset "done" * */
       if (Robot.isSimulation()) {
@@ -347,6 +350,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         m_desiredExtensionInches = 0;
         m_armZeroed = true;
         m_armIsResetting = false;
+<<<<<<< HEAD
 =======
 
         /** Running simulation, Reset "done" * */
@@ -357,6 +361,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armIsResetting = false;
         }
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+>>>>>>> 70353eb (Dashboard pre work)
       }
     }
   }

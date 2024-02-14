@@ -8,10 +8,14 @@ package frc.robot.subsystems.intake;
 public class IntakeConstants {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 70353eb (Dashboard pre work)
   public static final int kCANMotor1 = 26;
   public static final int kCANMotor2 = 27;
   public static final int kIRSensor1 = 0; // DIO
   public static final int kIRSensor2 = 1; // DIO
+<<<<<<< HEAD
 
   public static final double kSpeed_Intake = 0.9;
   public static final double kSpeed_Coast = 0.4;
@@ -29,4 +33,6 @@ public class IntakeConstants {
   public static final int kIRSensor1 = 5; // DIO
   public static final int kIRSensor2 = 6; // DIO
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+>>>>>>> 70353eb (Dashboard pre work)
 }

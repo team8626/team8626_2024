@@ -110,6 +110,10 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
     SmartDashboard.putBoolean("Intake/BottomSensor", !m_infrared1.get());
     SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared1.get());
+<<<<<<< HEAD
+=======
+
+>>>>>>> 70353eb (Dashboard pre work)
   }
 
   @Override

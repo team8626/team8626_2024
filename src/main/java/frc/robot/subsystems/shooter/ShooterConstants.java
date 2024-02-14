@@ -8,6 +8,7 @@ package frc.robot.subsystems.shooter;
 public class ShooterConstants {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
@@ -32,4 +33,14 @@ public class ShooterConstants {
   public static final int kSpeakerShootSpeed = 0;
   public static final int kAmplifierShootSpeed = 0;
 >>>>>>> 0dbf64e (Autonomous Command Frames and Cleanup)
+=======
+  public static final int kCANMotor1 = 24;
+  public static final int kCANMotor2 = 25;
+  public static final int kMaxRPM = 5700;
+
+  public static final int kShootFromSpeakerRPM = 4000;
+  public static final int kShootFrom3ftRPM = 4500;
+  public static final int kShootFrom5ftRPM = 5000;
+  public static final int kShootToAmp = 2000;
+>>>>>>> 70353eb (Dashboard pre work)
 }

@@ -108,10 +108,14 @@ public class ArmConstants {
 
   public static final class Presets {
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static final Preset kStart = new Preset(45, 0);
 =======
     public static final Preset kStxart = new Preset(45, 0);
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    public static final Preset kStart = new Preset(45, 0);
+>>>>>>> 70353eb (Dashboard pre work)
     public static final Preset kStow = new Preset(10, 0);
     public static final Preset kFloorPickup = new Preset(20, 5);
     public static final Preset kAmp = new Preset(-110, 10);
