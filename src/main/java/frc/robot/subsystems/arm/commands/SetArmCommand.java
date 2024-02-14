@@ -6,11 +6,15 @@ package frc.robot.subsystems.arm.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.ArmConstants.Preset;
 
 public class SetArmCommand extends Command {
  ArmSubsystem m_arm;
  double m_desiredExtensionInches, m_desiredAngleDegrees;
 
+  /* 
+   * Set arm from specific values
+  */
   public SetArmCommand(ArmSubsystem arm, double desiredExtensionInches, double desiredAngleDegrees) {
     m_arm = arm;
     m_desiredExtensionInches = desiredExtensionInches;
@@ -18,7 +22,17 @@ public class SetArmCommand extends Command {
 
     addRequirements(arm);
     setName("Set Arm Command");
-    
+  }
+  /*
+  * Set arm from a preset
+  */
+  public SetArmCommand(ArmSubsystem arm, Preset desiredState) {
+    m_arm = arm;
+    m_desiredExtensionInches = desiredState.getExtInches();
+    m_desiredAngleDegrees = desiredState.getRotegrees();
+
+    addRequirements(arm);
+    setName("Set Arm Command");
   }
 
   // Called when the command is initially scheduled.
