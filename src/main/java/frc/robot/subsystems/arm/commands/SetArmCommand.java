@@ -20,11 +20,15 @@ public class SetArmCommand extends Command {
       ArmSubsystem arm, double desiredExtensionInches, double desiredAngleDegrees) {
 =======
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.ArmConstants.Preset;
 
 public class SetArmCommand extends Command {
  ArmSubsystem m_arm;
  double m_desiredExtensionInches, m_desiredAngleDegrees;
 
+  /* 
+   * Set arm from specific values
+  */
   public SetArmCommand(ArmSubsystem arm, double desiredExtensionInches, double desiredAngleDegrees) {
 >>>>>>> a2e5544 (Set Arm Command)
     m_arm = arm;
@@ -33,6 +37,7 @@ public class SetArmCommand extends Command {
 
     addRequirements(arm);
     setName("Set Arm Command");
+<<<<<<< HEAD
 <<<<<<< HEAD
   }
 
@@ -49,6 +54,19 @@ public class SetArmCommand extends Command {
 =======
     
 >>>>>>> a2e5544 (Set Arm Command)
+=======
+  }
+  /*
+  * Set arm from a preset
+  */
+  public SetArmCommand(ArmSubsystem arm, Preset desiredState) {
+    m_arm = arm;
+    m_desiredExtensionInches = desiredState.getExtInches();
+    m_desiredAngleDegrees = desiredState.getRotegrees();
+
+    addRequirements(arm);
+    setName("Set Arm Command");
+>>>>>>> 13c2f89 (Set Arm Command Preset Functionality)
   }
 
   // Called when the command is initially scheduled.
