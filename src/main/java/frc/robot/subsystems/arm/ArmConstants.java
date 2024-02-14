@@ -84,7 +84,7 @@ public class ArmConstants {
   }
 
   public static final class Presets {
-    public static final Preset kStxart = new Preset(45, 0);
+    public static final Preset kStart = new Preset(45, 0);
     public static final Preset kStow = new Preset(10, 0);
     public static final Preset kFloorPickup = new Preset(20, 5);
     public static final Preset kAmp = new Preset(-110, 10);
