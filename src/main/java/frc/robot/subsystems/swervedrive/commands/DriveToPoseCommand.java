@@ -123,7 +123,7 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    // m_rotPID.reset(m_pose.getRotation().getDegrees());
+    //  TODO: Re-add this but gyro reading - m_rotPID.reset(m_pose.getRotation().getDegrees());
     m_rotPID.reset(0);
 
     m_rotPID.enableContinuousInput(-180, 180);
