@@ -287,14 +287,13 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armZeroed = true;
           m_armIsResetting = false;
         }
-
-        /** Running simulation, Reset "done" * */
-        if (Robot.isSimulation()) {
-          m_currentExtInches = 0;
-          m_desiredExtensionInches = 0;
-          m_armZeroed = true;
-          m_armIsResetting = false;
-        }
+      }
+      /** Running simulation, Reset "done" * */
+      if (Robot.isSimulation()) {
+        m_currentExtInches = 0;
+        m_desiredExtensionInches = 0;
+        m_armZeroed = true;
+        m_armIsResetting = false;
       }
     }
   }
