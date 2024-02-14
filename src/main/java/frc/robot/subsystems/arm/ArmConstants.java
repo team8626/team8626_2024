@@ -90,10 +90,14 @@ public class ArmConstants {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public double getRotDegrees() {
 =======
     public double getRotegrees() {
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    public double getRotDegrees() {
+>>>>>>> 0dbf64e (Autonomous Command Frames and Cleanup)
       return m_rot;
     }
 
@@ -116,11 +120,17 @@ public class ArmConstants {
     public static final Preset kShootSpeaker_5ft = new Preset(15, 4);
     public static final Preset kStartClimb = new Preset(100, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static final Preset kShootAmplifier_0ft = new Preset(15, 4);
     public static final Preset kShootAmplifier_3ft = new Preset(15, 4);
     public static final Preset kShootAmplifier_5ft = new Preset(15, 4);
 =======
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    public static final Preset kShootAmplifier_0ft = new Preset(15, 4);
+    public static final Preset kShootAmplifier_3ft = new Preset(15, 4);
+    public static final Preset kShootAmplifier_5ft = new Preset(15, 4);
+>>>>>>> 0dbf64e (Autonomous Command Frames and Cleanup)
   }
   ;
 }

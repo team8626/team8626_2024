@@ -26,5 +26,10 @@ public class ShooterConstants {
   public static final int kIRSensor = 7; // DIO, same as IRsensor2 in Intake Subsystem
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
   public static final int kMaxRPM = 5700;
+<<<<<<< HEAD
 >>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
+=======
+  public static final int kSpeakerShootSpeed = 0;
+  public static final int kAmplifierShootSpeed = 0;
+>>>>>>> 0dbf64e (Autonomous Command Frames and Cleanup)
 }

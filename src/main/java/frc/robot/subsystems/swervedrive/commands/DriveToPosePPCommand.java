@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 >>>>>>> a20f000 (Command Templates)
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import java.util.function.Supplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -90,5 +91,15 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
 
     addCommands(drive.driveToPose(desiredPose));
 >>>>>>> a20f000 (Command Templates)
+  }
+  // TODO: Once new PID DriveToPose is visible to this branch current pose supplier will work, add
+  // positive 1 meter current pose X
+  public DriveToPoseCommand(SwerveSubsystem drive, Supplier<Pose2d> currentPoseRunnable) {
+    m_drive = drive;
+
+    setName("Drive To Pose Command");
+    addRequirements(m_drive);
+    m_driveToPoseCommand = m_drive.driveToPose(currentPoseRunnable.get());
+    addCommands(m_driveToPoseCommand);
   }
 }
