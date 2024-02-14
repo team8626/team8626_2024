@@ -54,6 +54,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
+  private static double atAngleTolerance = 0;
+  private static double atInchesTolerance = 0;
+
   /** Poses publisher for AdvantageScope * */
   StructArrayPublisher<Pose3d> poseArrayPublisher =
       NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
@@ -139,6 +142,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationMotor_L.setIdleMode(IdleMode.kBrake);
     m_rotationMotor_L.setSmartCurrentLimit(ArmConstants.Rotation.kCurrentLimit);
 
+    setAngleTolerance(3);
+    setExtensionTolerance(1);
+
     /** Initialize the Subsystem * */
     if (RobotBase.isReal()) {
       m_desiredAngleDeg = m_rotationEncoder.getPosition();
@@ -218,6 +224,21 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_armIsResetting = true;
   }
 
+  public void setAngleTolerance(double positionTolerance) {
+    atAngleTolerance = positionTolerance;
+  }
+
+  public void setExtensionTolerance(double positionTolerance) {
+    atInchesTolerance = positionTolerance;
+  }
+
+  public boolean atExtensionSetpoint() {
+    return MathUtil.isNear(m_desiredExtensionInches, m_currentExtInches, atInchesTolerance);
+  }
+
+  public boolean atAngleSetpoint() {
+    return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, atAngleTolerance);
+  }
   /*
    * Convert Reel Rotations from Extension Length
    */
