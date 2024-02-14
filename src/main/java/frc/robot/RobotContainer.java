@@ -21,9 +21,10 @@ import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import java.io.File;
+import java.util.HashMap;
 
 public class RobotContainer {
-
+public HashMap<String, Command> eventMap = new HashMap<>();
 DriveSubsystem m_drive = new DriveSubsystem();
 ShooterSubsystem m_shooter = new ShooterSubsystem();
 Dashboard m_dashboard;
@@ -35,7 +36,7 @@ Dashboard m_dashboard;
   XboxController m_xboxController = new XboxController(0);
 
   public RobotContainer() {
-
+    configureEventsMap();
     configureBindings();
     configureDefaultCommands();
 
@@ -98,6 +99,15 @@ Dashboard m_dashboard;
             : driveFieldOrientedDirectAngleSim);
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
     // driveFieldOrientedDirectAngleSim);
+  }
+
+  private void configureEventsMap(){
+    //to be filled in
+    eventMap.put("SetupForIntake", null);
+    eventMap.put("AutoIntake", null);
+    eventMap.put("Default", null); //returns to normal state
+    eventMap.put("SetupForShooter", null);
+    eventMap.put("AutoShooter", null);
   }
 
   public Command getAutonomousCommand() {
