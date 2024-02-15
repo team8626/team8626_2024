@@ -24,7 +24,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setMotors(1);
+    // TODO: m_intake.setMotors(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +32,7 @@ public class IntakeCommand extends Command {
   public void execute() {
     boolean yes = true;
     if (yes && m_intake.isFull()) {
-      m_intake.setMotors(0.4);
+      // TODO: m_intake.setMotors(0.4);
       yes = false;
     }
   }
@@ -40,7 +40,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setMotors(0);
+    // TODO: m_intake.setMotors(0);
   }
 
   // Returns true when the command should end.

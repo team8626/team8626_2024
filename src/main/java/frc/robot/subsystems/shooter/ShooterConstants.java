@@ -6,7 +6,7 @@ package frc.robot.subsystems.shooter;
 
 /** Add your docs here. */
 public class ShooterConstants {
-  public static final int kCANMotor1 = 24;
+  public static final int kCANMotor1 = 26; // 24;
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
 
