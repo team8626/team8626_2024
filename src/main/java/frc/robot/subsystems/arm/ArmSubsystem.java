@@ -116,7 +116,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         ArmConstants.Rotation.kRotationEncoderPositionFactorDeg);
     m_rotationEncoder.setVelocityConversionFactor(
         ArmConstants.Rotation.kRotationEncoderVelocityFactorDeg);
-    m_rotationMotor_L.setInverted(false);
+    m_rotationMotor_L.setInverted(true);
 
     // Set the PID gains for the motor.
     m_extensionPIDController.setP(ArmConstants.Extension.kExtP);
@@ -308,14 +308,13 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armZeroed = true;
           m_armIsResetting = false;
         }
-
-        /** Running simulation, Reset "done" * */
-        if (Robot.isSimulation()) {
-          m_currentExtInches = 0;
-          m_desiredExtensionInches = 0;
-          m_armZeroed = true;
-          m_armIsResetting = false;
-        }
+      }
+      /** Running simulation, Reset "done" * */
+      if (Robot.isSimulation()) {
+        m_currentExtInches = 0;
+        m_desiredExtensionInches = 0;
+        m_armZeroed = true;
+        m_armIsResetting = false;
       }
     }
   }

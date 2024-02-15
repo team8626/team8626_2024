@@ -1,38 +1,34 @@
 {
-  "Keyboard 2 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
         {
           "decKey": 65,
-          "incKey": 83
+          "incKey": 68
         },
         {
           "decKey": 87,
-          "incKey": 90
+          "incKey": 83
         },
         {
+          "decKey": 69,
           "decayRate": 0.0,
-          "incKey": 73,
+          "incKey": 82,
           "keyRate": 0.009999999776482582
         },
         {
-          "decKey": 76,
-          "incKey": 75
+          "decKey": 71,
+          "incKey": 84
         },
         {
-          "decKey": 91,
-          "incKey": 93
+          "decKey": 70,
+          "incKey": 72
         }
       ],
       "axisCount": 5,
       "buttonCount": 4,
       "buttonKeys": [
-        -1,
+        90,
         88,
         67,
         86
@@ -54,9 +50,25 @@
     {
       "axisConfig": [
         {
-          "decKey": 74
+          "decKey": 264,
+          "incKey": 265
+        },
+        {
+          "decKey": 263,
+          "incKey": 262
         }
       ],
+      "axisCount": 2,
+      "buttonCount": 4,
+      "buttonKeys": [
+        77,
+        44,
+        46,
+        47
+      ],
+      "povCount": 0
+    },
+    {
       "axisCount": 0,
       "buttonCount": 9,
       "buttonKeys": [
@@ -68,30 +80,8 @@
         54,
         55,
         56,
-        57
-      ],
-      "povCount": 0
-    },
-    {
-      "axisConfig": [
-        {
-          "decKey": 263,
-          "incKey": 262
-        },
-        {
-          "decKey": 265,
-          "incKey": 264
-        }
-      ],
-      "axisCount": 2,
-      "buttonCount": 6,
-      "buttonKeys": [
-        47,
-        46,
-        44,
-        77,
-        78,
-        66
+        57,
+        -1
       ],
       "povCount": 0
     },
@@ -106,11 +96,10 @@
       "guid": "Keyboard0"
     },
     {
-      "guid": "Keyboard2"
+      "guid": "Keyboard1"
     },
     {
-      "guid": "Keyboard1",
-      "name": "Botton Box"
+      "guid": "Keyboard2"
     }
   ]
 }

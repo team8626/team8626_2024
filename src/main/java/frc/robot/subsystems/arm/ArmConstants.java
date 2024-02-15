@@ -21,10 +21,10 @@ public class ArmConstants {
         (float) ((kMaxExtInches - kMinExtInches) / (Math.PI * kExtPulleyDiameter)) * 360; // Degres
 
     public static final int kCurrentLimit = 30;
-    public static final int kZeroingCurrent = 5; // TODO: Define the appropriate value!
+    public static final int kZeroingCurrent = 25;
 
-    public static final double kExtensionEncoderVelocityFactorDeg = 360; // degres
-    public static final double kExtensionEncoderPositionFactorDeg = 360 / 60; // degres per second
+    public static final double kExtensionEncoderPositionFactorDeg = 360; // degres
+    public static final double kExtensionEncoderVelocityFactorDeg = 360 / 60; // degres per second
 
     public static final double kExtensionEncoderPositionPIDMinInput = 0; // degrees
     public static final double kExtensionEncoderPositionPIDMaxInput =
@@ -84,7 +84,7 @@ public class ArmConstants {
   }
 
   public static final class Presets {
-    public static final Preset kStxart = new Preset(45, 0);
+    public static final Preset kStart = new Preset(45, 0);
     public static final Preset kStow = new Preset(10, 0);
     public static final Preset kFloorPickup = new Preset(20, 5);
     public static final Preset kAmp = new Preset(-110, 10);

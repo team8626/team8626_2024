@@ -13,11 +13,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
-import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -27,8 +30,7 @@ import java.io.File;
 
 public class RobotContainer {
 
-  DriveSubsystem m_drive = new DriveSubsystem();
-  ShooterSubsystem m_shooter = new ShooterSubsystem();
+  // DriveSubsystem m_drive = new DriveSubsystem();
   Dashboard m_dashboard;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
@@ -36,6 +38,10 @@ public class RobotContainer {
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
+
+  public final IntakeSubsystem m_intake = new IntakeSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final LEDSubsystem m_leds = new LEDSubsystem();
 
   private final XboxController m_xboxController =
       new XboxController(IOControlsConstants.kXboxControllerPort);
@@ -51,21 +57,37 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drivebase, m_arm);
+    m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
   }
 
   private void configureBindings() {
 
     /** Button Box Bindings */
-    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
+    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
+    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
 
-    m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLengthInches(0)));
-    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
+    // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
+    // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
+
+    m_buttonBox
+        .button_1()
+        .onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> m_intake.start()),
+                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
+    m_buttonBox
+        .button_2()
+        .onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> m_intake.stop()),
+                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
+
+    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_shooter.start()));
+    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
 
     /** Test Controller Buttons * */
-    m_testController
-        .a()
+    m_buttonBox
+        .button_9()
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
