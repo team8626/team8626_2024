@@ -42,7 +42,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.m_drivebase.resetOdometry(
+<<<<<<< HEAD
         new Pose2d(new Translation2d(2, 2), new Rotation2d(0)));
+=======
+        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
     m_robotContainer.m_drivebase.zeroGyro();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

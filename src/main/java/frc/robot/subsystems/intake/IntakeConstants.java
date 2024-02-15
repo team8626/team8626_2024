@@ -7,6 +7,7 @@ package frc.robot.subsystems.intake;
 /** Add your docs here. */
 public class IntakeConstants {
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final int kCANMotor1 = 26;
   public static final int kCANMotor2 = 27;
   public static final int kIRSensor1 = 0; // DIO
@@ -22,4 +23,10 @@ public class IntakeConstants {
   public static final int kIRSensor1 = 0; // DIO
   public static final int kIRSensor2 = 0; // DIO
 >>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
+=======
+  public static final int kCANMotor1 = 89;
+  public static final int kCANMotor2 = 88;
+  public static final int kIRSensor1 = 5; // DIO
+  public static final int kIRSensor2 = 6; // DIO
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
 }

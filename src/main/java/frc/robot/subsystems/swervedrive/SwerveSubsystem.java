@@ -21,8 +21,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,8 +54,6 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   StructPublisher<Pose3d> m_publisher =
       NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
 
-  // The gyro sensor
-  public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -401,6 +397,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
+<<<<<<< HEAD
     // Just switched this to try original return Friday 10:00 AM
     return swerveDrive.getPose().getRotation();
     // return swerveDrive.getYaw();
@@ -417,12 +414,24 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     } else {
       return 360 - angle;
     }
+=======
+    return swerveDrive.getPose().getRotation();
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
   }
 
-  public double getGyroHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)).getDegrees();
+  public double getYaw() {
+    return swerveDrive.getOdometryHeading().getDegrees();
   }
-
+  // Converts the angle from a range of -180:180 to 0:360
+  public static double convertAngle(double angle) {
+    if(angle<0 && angle>=-180) {
+      return -angle;
+    }
+    else {
+      return 360-angle;
+    }
+    }
+  
   /**
    * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which
    * direction. The other for the angle of the robot.

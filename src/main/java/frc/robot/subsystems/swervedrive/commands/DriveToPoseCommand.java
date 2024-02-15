@@ -63,10 +63,15 @@ public class DriveToPoseCommand extends Command {
     addRequirements(m_drive);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     setName("Drive To Pose PID Command");
 
 =======
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+    setName("Drive To Pose PID Command");
+
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
     SmartDashboard.putNumber("Drive Position P Value", 0);
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
@@ -216,10 +221,14 @@ public class DriveToPoseCommand extends Command {
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
 <<<<<<< HEAD
+<<<<<<< HEAD
             m_rotPID.calculate(m_drive.getOdometryHeading().getDegrees(), m_rotDesiredPos)));
 =======
             m_rotPID.calculate(m_drive.getGyroHeading(), m_rotDesiredPos)));
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+            m_rotPID.calculate(m_drive.getYaw(), m_rotDesiredPos)));
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
     //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 

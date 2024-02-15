@@ -7,6 +7,7 @@ package frc.robot.subsystems.shooter;
 /** Add your docs here. */
 public class ShooterConstants {
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
@@ -19,6 +20,11 @@ public class ShooterConstants {
   public static final int kCANMotor1 = 98;
   public static final int kCANMotor2 = 99;
   public static final int kIRSensor = 0; // DIO, same as IRsensor2 in Intake Subsystem
+=======
+  public static final int kCANMotor1 = 30;
+  public static final int kCANMotor2 = 31;
+  public static final int kIRSensor = 7; // DIO, same as IRsensor2 in Intake Subsystem
+>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
   public static final int kMaxRPM = 5700;
 >>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
 }
