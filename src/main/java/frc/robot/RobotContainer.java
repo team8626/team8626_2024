@@ -106,7 +106,8 @@ Dashboard m_dashboard;
     eventMap.put("SetupForIntake", null);
     eventMap.put("AutoIntake", null);
     eventMap.put("Default", null); //returns to normal state
-    eventMap.put("SetupForShooter", null);
+    eventMap.put("SetupForAmp", null);
+    eventMap.put("SetupForSpeaker", null);
     eventMap.put("AutoShooter", null);
   }
 
