@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -162,7 +164,7 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(m_drivebase, 0, 0, 90, false);
+        return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, new Rotation2d(90)), false);
 
       case PRINT:
         return Commands.print("Print Auto Command");
