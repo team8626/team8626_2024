@@ -9,7 +9,11 @@ public class ShooterConstants {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final int kCANMotor1 = 24;
+=======
+  public static final int kCANMotor1 = 26; // 24;
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
 

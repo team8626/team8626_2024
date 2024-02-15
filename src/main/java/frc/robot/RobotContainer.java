@@ -38,12 +38,14 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants;
 =======
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 <<<<<<< HEAD
 
@@ -91,6 +93,7 @@ public class RobotContainer {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
@@ -106,7 +109,11 @@ public class RobotContainer {
 =======
 =======
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+=======
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final LEDSubsystem m_leds = new LEDSubsystem();
 
 >>>>>>> 70353eb (Dashboard pre work)
   private final XboxController m_xboxController =
@@ -146,6 +153,7 @@ public class RobotContainer {
     // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
     // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
 
+<<<<<<< HEAD
     m_buttonBox
         .button_1()
         .onTrue(
@@ -179,15 +187,23 @@ public class RobotContainer {
     m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_intake.setMotors(.9)));
     m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_intake.setMotors(0)));
 
+=======
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
     m_buttonBox
-        .button_4()
+        .button_1()
         .onTrue(
-            new InstantCommand(
-                () ->
-                    m_shooter.setRPM(
-                        ShooterConstants.kShootFromSpeakerRPM,
-                        ShooterConstants.kShootFromSpeakerRPM)));
-    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.setRPM(0, 0)));
+            new ParallelCommandGroup(
+                new InstantCommand(() -> m_intake.start()),
+                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
+    m_buttonBox
+        .button_2()
+        .onTrue(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> m_intake.stop()),
+                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
+
+    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_shooter.start()));
+    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
 
     /** Test Controller Buttons * */
 <<<<<<< HEAD

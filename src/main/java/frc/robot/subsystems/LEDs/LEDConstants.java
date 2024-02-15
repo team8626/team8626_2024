@@ -3,16 +3,24 @@ package frc.robot.subsystems.LEDs;
 public class LEDConstants {
   public static final int kLEDLength = 75;
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final int kLEDPort = 9;
 
 =======
   public static final int kLEDPort = 0;
 >>>>>>> cd3c245 (Pre Debugging)
+=======
+  public static final int kLEDPort = 9;
+
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public static final int[][] kErrorLightIndex = {
     {0, 1, 2, 3, 4, 5}, {20, 21, 22, 23, 24}, {45, 46, 47, 48, 49}, {70, 71, 72, 73, 74}
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public static enum LedMode {
     NOT_CONNECTED,
     DISABLED,
@@ -60,17 +68,24 @@ public class LEDConstants {
     }
   }
 
+<<<<<<< HEAD
 =======
 >>>>>>> cd3c245 (Pre Debugging)
+=======
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public static final int minLoopCycleCount = 10;
   public static final int length = 10;
   public static final double strobeFastDuration = 0.1;
   public static final double strobeSlowDuration = 0.2;
 <<<<<<< HEAD
+<<<<<<< HEAD
   public static final double breathDuration = 2.0;
 =======
   public static final double breathDuration = 1.0;
 >>>>>>> cd3c245 (Pre Debugging)
+=======
+  public static final double breathDuration = 2.0;
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
   public static final double rainbowCycleLength = 25.0;
   public static final double rainbowDuration = 0.25;
   public static final double waveExponent = 0.4;

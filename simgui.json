@@ -11,10 +11,14 @@
     },
     "Other Devices": {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "SPARK MAX [15]": {
 =======
       "SPARK MAX [32]": {
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+      "SPARK MAX [15]": {
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
         "header": {
           "open": true
         }
@@ -53,6 +57,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     },
     "windows": {
@@ -87,15 +92,11 @@
         "open": true
       }
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
     }
   },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
-    "Server": {
-      "open": true
-    },
     "visible": true
   }
 }

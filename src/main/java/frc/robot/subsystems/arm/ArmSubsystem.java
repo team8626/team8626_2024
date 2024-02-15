@@ -126,10 +126,14 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationEncoder.setVelocityConversionFactor(
         ArmConstants.Rotation.kRotationEncoderVelocityFactorDeg);
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_rotationMotor_L.setInverted(true);
 =======
     m_rotationMotor_L.setInverted(false);
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    m_rotationMotor_L.setInverted(true);
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
 
     // Set the PID gains for the motor.
     m_extensionPIDController.setP(ArmConstants.Extension.kExtP);

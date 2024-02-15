@@ -30,6 +30,7 @@ public class ArmConstants {
 
     public static final int kCurrentLimit = 30;
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static final int kZeroingCurrent = 25;
 
     public static final double kExtensionEncoderPositionFactorDeg = 360; // degres
@@ -40,6 +41,12 @@ public class ArmConstants {
     public static final double kExtensionEncoderVelocityFactorDeg = 360; // degres
     public static final double kExtensionEncoderPositionFactorDeg = 360 / 60; // degres per second
 >>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
+=======
+    public static final int kZeroingCurrent = 25;
+
+    public static final double kExtensionEncoderPositionFactorDeg = 360; // degres
+    public static final double kExtensionEncoderVelocityFactorDeg = 360 / 60; // degres per second
+>>>>>>> 5ff9b85 (Pre Debugging (other files))
 
     public static final double kExtensionEncoderPositionPIDMinInput = 0; // degrees
     public static final double kExtensionEncoderPositionPIDMaxInput =
