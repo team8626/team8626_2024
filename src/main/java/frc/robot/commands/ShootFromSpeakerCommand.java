@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.commands.SetArmCommand;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.commands.ShooterCommand;
@@ -17,9 +18,10 @@ import frc.robot.subsystems.shooter.commands.ShooterCommand;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootFromSpeakerCommand extends SequentialCommandGroup {
 
-  public ShootFromSpeakerCommand(ShooterSubsystem shooter, ArmSubsystem arm) {
+  public ShootFromSpeakerCommand(
+      IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
     addCommands(
         new SetArmCommand(arm, ArmConstants.Presets.kShootSpeaker_0ft),
-        new ShooterCommand(shooter, ShooterConstants.kSpeakerShootSpeed));
+        new ShooterCommand(intake, shooter, ShooterConstants.kShootFromSpeakerRPM));
   }
 }
