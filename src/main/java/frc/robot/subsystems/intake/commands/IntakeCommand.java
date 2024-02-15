@@ -7,6 +7,7 @@ package frc.robot.subsystems.intake.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
@@ -24,7 +25,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-        m_intake.setMotors(1);
+        m_intake.setMotors(IntakeConstants.kIntakeSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +33,7 @@ public class IntakeCommand extends Command {
   public void execute() {
     boolean yes = true;
     if(yes && m_intake.isFull()) {
-      m_intake.setMotors(0.4);
+      m_intake.setMotors(IntakeConstants.kMoveSpeed);
       yes = false;
     }
   }
