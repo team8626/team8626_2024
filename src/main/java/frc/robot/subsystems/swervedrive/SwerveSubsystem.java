@@ -398,6 +398,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    */
   public Rotation2d getHeading() {
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Just switched this to try original return Friday 10:00 AM
     return swerveDrive.getPose().getRotation();
     // return swerveDrive.getYaw();
@@ -417,6 +418,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 =======
     return swerveDrive.getPose().getRotation();
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+    // return swerveDrive.getPose().getRotation();
+    return swerveDrive.getYaw()
+    /*.unaryMinus() */ ;
+>>>>>>> a20f000 (Command Templates)
   }
 
   public double getYaw() {
@@ -424,14 +430,13 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
   // Converts the angle from a range of -180:180 to 0:360
   public static double convertAngle(double angle) {
-    if(angle<0 && angle>=-180) {
+    if (angle < 0 && angle >= -180) {
       return -angle;
+    } else {
+      return 360 - angle;
     }
-    else {
-      return 360-angle;
-    }
-    }
-  
+  }
+
   /**
    * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which
    * direction. The other for the angle of the robot.
@@ -532,8 +537,13 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 
   @Override
   public void updateDashboard() {
+<<<<<<< HEAD
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
+=======
+    // Publish Pose2D for AdvantageScope
+    m_publisher.set(getPose());
+>>>>>>> a20f000 (Command Templates)
     SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
   }
 

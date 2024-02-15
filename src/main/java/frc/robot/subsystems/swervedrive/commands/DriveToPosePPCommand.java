@@ -6,6 +6,7 @@ package frc.robot.subsystems.swervedrive.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<<< HEAD:src/main/java/frc/robot/subsystems/swervedrive/drivebase/DriveToPosePP.java
 ========
@@ -14,6 +15,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 >>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template):src/main/java/frc/robot/subsystems/swervedrive/commands/DriveToPosePPCommand.java
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+>>>>>>> a20f000 (Command Templates)
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -26,6 +29,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
 <<<<<<<< HEAD:src/main/java/frc/robot/subsystems/swervedrive/commands/DriveToPosePPCommand.java
 public class DriveToPosePPCommand extends ParallelCommandGroup {
+<<<<<<< HEAD
 ========
 public class DriveToPosePP extends ParallelCommandGroup {
 <<<<<<< HEAD
@@ -59,11 +63,16 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
 >>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template):src/main/java/frc/robot/subsystems/swervedrive/commands/DriveToPosePPCommand.java
     m_drive = drive;
 >>>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation):src/main/java/frc/robot/subsystems/swervedrive/drivebase/DriveToPosePP.java
+=======
+
+  public DriveToPosePPCommand(SwerveSubsystem drive, Pose2d desiredPose) {
+>>>>>>> a20f000 (Command Templates)
 
 <<<<<<<< HEAD:src/main/java/frc/robot/subsystems/swervedrive/drivebase/DriveToPosePP.java
     addCommands(drive.driveToPose(desiredPose));
 ========
     setName("Drive To Pose Path Planner Command");
+<<<<<<< HEAD
     addRequirements(m_drive);
     m_driveToPoseCommand =
         m_drive.driveToPose(
@@ -73,5 +82,10 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
     addCommands(m_driveToPoseCommand);
 >>>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template):src/main/java/frc/robot/subsystems/swervedrive/commands/DriveToPosePPCommand.java
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+    addRequirements(drive);
+
+    addCommands(drive.driveToPose(desiredPose));
+>>>>>>> a20f000 (Command Templates)
   }
 }

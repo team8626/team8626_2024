@@ -38,6 +38,7 @@ public class DriveToPoseCommand extends Command {
   private boolean m_finish;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean finish) {
     m_drive = drive;
 
@@ -57,6 +58,14 @@ public class DriveToPoseCommand extends Command {
     m_yDesiredPos = yDesiredPos;
     m_rotDesiredPos = rotDesiredPos;
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+  public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean finish) {
+    m_drive = drive;
+
+    m_xDesiredPos = desiredPose.getX();
+    m_yDesiredPos = desiredPose.getY();
+    m_rotDesiredPos = desiredPose.getRotation().getDegrees();
+>>>>>>> a20f000 (Command Templates)
 
     m_finish = finish;
 
@@ -204,11 +213,14 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    //  TODO: Re-add this but gyro reading - m_rotPID.reset(m_pose.getRotation().getDegrees());
-    m_rotPID.reset(0);
+    m_rotPID.reset(m_drive.getHeading().getDegrees());
 
+<<<<<<< HEAD
     m_rotPID.enableContinuousInput(-180, 180);
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+    m_rotPID.enableContinuousInput(0, 360);
+>>>>>>> a20f000 (Command Templates)
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -222,6 +234,7 @@ public class DriveToPoseCommand extends Command {
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             m_rotPID.calculate(m_drive.getOdometryHeading().getDegrees(), m_rotDesiredPos)));
 =======
             m_rotPID.calculate(m_drive.getGyroHeading(), m_rotDesiredPos)));
@@ -229,6 +242,9 @@ public class DriveToPoseCommand extends Command {
 =======
             m_rotPID.calculate(m_drive.getYaw(), m_rotDesiredPos)));
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+            m_rotPID.calculate(m_drive.getHeading().getDegrees(), m_rotDesiredPos)));
+>>>>>>> a20f000 (Command Templates)
     //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 
