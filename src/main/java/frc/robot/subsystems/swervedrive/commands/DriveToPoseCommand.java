@@ -33,17 +33,12 @@ public class DriveToPoseCommand extends Command {
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
-  public DriveToPoseCommand(
-      SwerveSubsystem drive,
-      double xDesiredPos,
-      double yDesiredPos,
-      double rotDesiredPos,
-      boolean finish) {
+  public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean finish) {
     m_drive = drive;
 
-    m_xDesiredPos = xDesiredPos;
-    m_yDesiredPos = yDesiredPos;
-    m_rotDesiredPos = rotDesiredPos;
+    m_xDesiredPos = desiredPose.getX();
+    m_yDesiredPos = desiredPose.getY();
+    m_rotDesiredPos = desiredPose.getRotation().getDegrees();
 
     m_finish = finish;
 
@@ -125,10 +120,9 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    //  TODO: Re-add this but gyro reading - m_rotPID.reset(m_pose.getRotation().getDegrees());
-    m_rotPID.reset(0);
+    m_rotPID.reset(m_drive.getHeading().getDegrees());
 
-    m_rotPID.enableContinuousInput(-180, 180);
+    m_rotPID.enableContinuousInput(0, 360);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -140,7 +134,7 @@ public class DriveToPoseCommand extends Command {
         new ChassisSpeeds(
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
-            m_rotPID.calculate(m_drive.getYaw(), m_rotDesiredPos)));
+            m_rotPID.calculate(m_drive.getHeading().getDegrees(), m_rotDesiredPos)));
     //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 

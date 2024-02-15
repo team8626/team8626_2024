@@ -21,6 +21,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
@@ -86,6 +87,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
 
+    swerveDrive.getGyro().setInverted(true);
     setupPathPlanner();
   }
 
@@ -391,7 +393,9 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
-    return swerveDrive.getPose().getRotation();
+    // return swerveDrive.getPose().getRotation();
+    return swerveDrive.getYaw()
+    /*.unaryMinus() */ ;
   }
 
   public double getYaw() {
@@ -399,14 +403,13 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
   // Converts the angle from a range of -180:180 to 0:360
   public static double convertAngle(double angle) {
-    if(angle<0 && angle>=-180) {
+    if (angle < 0 && angle >= -180) {
       return -angle;
+    } else {
+      return 360 - angle;
     }
-    else {
-      return 360-angle;
-    }
-    }
-  
+  }
+
   /**
    * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which
    * direction. The other for the angle of the robot.
@@ -507,6 +510,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public void updateDashboard() {
     // Publish Pose2D for AdvantageScope
     m_publisher.set(getPose());
+    SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
   }
 
   @Override
