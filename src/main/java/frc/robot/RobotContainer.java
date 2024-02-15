@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -21,7 +20,7 @@ import java.io.File;
 
 public class RobotContainer {
 
-  DriveSubsystem m_drive = new DriveSubsystem();
+  // DriveSubsystem m_drive = new DriveSubsystem();
   ShooterSubsystem m_shooter = new ShooterSubsystem();
   Dashboard m_dashboard;
 
