@@ -49,6 +49,8 @@ public class DriveToPoseCommand extends Command {
 
     addRequirements(m_drive);
 
+    setName("Drive To Pose PID Command");
+
     SmartDashboard.putNumber("Drive Position P Value", 0);
     SmartDashboard.putNumber("Drive Position I Value", 0);
     SmartDashboard.putNumber("Drive Position D Value", 0);
@@ -138,7 +140,7 @@ public class DriveToPoseCommand extends Command {
         new ChassisSpeeds(
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
-            m_rotPID.calculate(m_drive.getGyroHeading(), m_rotDesiredPos)));
+            m_rotPID.calculate(m_drive.getYaw(), m_rotDesiredPos)));
     //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 
