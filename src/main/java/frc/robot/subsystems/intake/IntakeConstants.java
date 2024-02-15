@@ -10,6 +10,7 @@ public class IntakeConstants {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 70353eb (Dashboard pre work)
   public static final int kCANMotor1 = 26;
@@ -19,6 +20,9 @@ public class IntakeConstants {
 <<<<<<< HEAD
 =======
   public static final int kCANMotor1 = 24; // 26;
+=======
+  public static final int kCANMotor1 = 26;
+>>>>>>> a993a09 (swap INtsake/Shooter IDs)
   public static final int kCANMotor2 = 27;
   public static final int kIRSensor1 = 0; // DIO
   public static final int kIRSensor2 = 1; // DIO
