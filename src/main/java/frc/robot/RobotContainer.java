@@ -9,16 +9,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
@@ -26,7 +27,7 @@ import frc.utils.CommandButtonController;
 import java.io.File;
 
 public class RobotContainer {
-
+  // 0.2
   DriveSubsystem m_drive = new DriveSubsystem();
   ShooterSubsystem m_shooter = new ShooterSubsystem();
   Dashboard m_dashboard;
@@ -37,14 +38,46 @@ public class RobotContainer {
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
-  private final XboxController m_xboxController =
-      new XboxController(IOControlsConstants.kXboxControllerPort);
+  private final CommandXboxController m_xboxController =
+      new CommandXboxController(IOControlsConstants.kXboxControllerPort);
 
   private final CommandXboxController m_testController =
       new CommandXboxController(IOControlsConstants.kTestControllerPort);
 
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(IOControlsConstants.kButtonBoxPort);
+
+  Command driveFieldOrientedAnglularVelocity;
+
+  // Initialized here because speed factors are created in constants
+  private final Command slowDriveCommand =
+      m_drivebase.driveCommand(
+          () ->
+              MathUtil.applyDeadband(
+                  -m_xboxController.getLeftY() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
+                  0.1),
+          () ->
+              MathUtil.applyDeadband(
+                  -m_xboxController.getLeftX() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
+                  0.1),
+          () ->
+              -m_xboxController.getRawAxis(4)
+                  * Constants.OperatorConstants.kSlowRotationSpeedFactor);
+
+  private class RotateSlowCommand extends RunCommand {
+    public RotateSlowCommand(boolean clockwise) {
+      super(
+          () ->
+              m_drivebase.driveCommand(
+                  () -> 0,
+                  () -> 0,
+                  () ->
+                      clockwise
+                          ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                          : Constants.OperatorConstants.kIncrementalRotationSpeed),
+          m_drivebase);
+    }
+  }
 
   public RobotContainer() {
 
@@ -55,7 +88,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     /** Button Box Bindings */
     m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
     m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
@@ -67,6 +99,13 @@ public class RobotContainer {
     m_testController
         .a()
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
+
+    m_testController.rightStick().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
+    // hardware
+    m_xboxController.x().whileTrue(new RotateSlowCommand(false));
+    m_xboxController.b().whileTrue(new RotateSlowCommand(true));
   }
 
   private void configureDefaultCommands() {
@@ -83,10 +122,10 @@ public class RobotContainer {
             () ->
                 MathUtil.applyDeadband(
                     -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
-            m_xboxController::getBButtonPressed,
-            m_xboxController::getAButtonPressed,
-            m_xboxController::getXButtonPressed,
-            m_xboxController::getBButtonPressed);
+            () -> m_xboxController.b().getAsBoolean(),
+            () -> m_xboxController.x().getAsBoolean(),
+            () -> m_xboxController.y().getAsBoolean(),
+            () -> m_xboxController.a().getAsBoolean());
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -105,11 +144,14 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity =
+    driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
             () -> -m_xboxController.getRawAxis(4));
+
+    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
+    slowDriveCommand.setName("Slow Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -133,6 +175,18 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
     m_arm.setDefaultCommand(controlArm);
+  }
+
+  public void toggleSlowDrive() {
+    switch (m_drivebase.getDefaultCommand().getName()) {
+      case "Drive Field Oriented Anglular Velocity Command":
+        m_drivebase.setDefaultCommand(slowDriveCommand);
+        break;
+
+      case "Slow Drive Field Oriented Anglular Velocity Command":
+        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        break;
+    }
   }
 
   public Command getAutonomousCommand() {
