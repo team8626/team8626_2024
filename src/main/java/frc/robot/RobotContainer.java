@@ -104,7 +104,8 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, new Rotation2d(90)), false);
+        return new DriveToPoseCommand(
+            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
 
       case PRINT:
         return Commands.print("Print Auto Command");
