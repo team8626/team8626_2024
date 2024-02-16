@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -82,6 +83,38 @@ public class RobotContainer {
                       ? -Constants.OperatorConstants.kIncrementalRotationSpeed
                       : Constants.OperatorConstants.kIncrementalRotationSpeed,
                   true));
+    }
+  }
+
+  Command driveFieldOrientedAnglularVelocity;
+
+  // Initialized here because speed factors are created in constants
+  private final Command slowDriveCommand =
+      m_drivebase.driveCommand(
+          () ->
+              MathUtil.applyDeadband(
+                  -m_xboxController.getLeftY() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
+                  0.1),
+          () ->
+              MathUtil.applyDeadband(
+                  -m_xboxController.getLeftX() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
+                  0.1),
+          () ->
+              -m_xboxController.getRawAxis(4)
+                  * Constants.OperatorConstants.kSlowRotationSpeedFactor);
+
+  private class RotateSlowCommand extends RunCommand {
+    public RotateSlowCommand(boolean clockwise) {
+      super(
+          () ->
+              m_drivebase.driveCommand(
+                  () -> 0,
+                  () -> 0,
+                  () ->
+                      clockwise
+                          ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                          : Constants.OperatorConstants.kIncrementalRotationSpeed),
+          m_drivebase);
     }
   }
 
@@ -176,6 +209,13 @@ public class RobotContainer {
     // hardware
     // m_xboxController.x().whileTrue(new RotateSlowCommand(false));
     // m_xboxController.b().whileTrue(new RotateSlowCommand(true));
+
+    m_testController.rightStick().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
+    // hardware
+    m_xboxController.x().whileTrue(new RotateSlowCommand(false));
+    m_xboxController.b().whileTrue(new RotateSlowCommand(true));
   }
 
   private void configureDefaultCommands() {
@@ -222,6 +262,9 @@ public class RobotContainer {
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
+    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
+    slowDriveCommand.setName("Slow Drive Field Oriented Anglular Velocity Command");
+
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
@@ -244,6 +287,18 @@ public class RobotContainer {
     //         () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
     // m_arm.setDefaultCommand(controlArm);
+  }
+
+  public void toggleSlowDrive() {
+    switch (m_drivebase.getDefaultCommand().getName()) {
+      case "Drive Field Oriented Anglular Velocity Command":
+        m_drivebase.setDefaultCommand(slowDriveCommand);
+        break;
+
+      case "Slow Drive Field Oriented Anglular Velocity Command":
+        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        break;
+    }
   }
 
   public Command getAutonomousCommand() {
