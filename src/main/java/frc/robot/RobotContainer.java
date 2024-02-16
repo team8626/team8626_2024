@@ -193,6 +193,7 @@ public class RobotContainer {
       case EXIT:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return new DriveToPoseCommand(
             m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
 =======
@@ -201,6 +202,10 @@ public class RobotContainer {
 =======
         return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, new Rotation2d(90)), false);
 >>>>>>> a20f000 (Command Templates)
+=======
+        return new DriveToPoseCommand(
+            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+>>>>>>> a14a4a7 (Don't use radians as setpoint idiot (Works now))
 
       case PRINT:
         return Commands.print("Print Auto Command");

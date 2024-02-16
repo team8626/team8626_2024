@@ -158,10 +158,14 @@ public class DriveToPoseCommand extends Command {
 
     // 0.015
 <<<<<<< HEAD
+<<<<<<< HEAD
     double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
 =======
     double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.005);
 >>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
+=======
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
+>>>>>>> a14a4a7 (Don't use radians as setpoint idiot (Works now))
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
