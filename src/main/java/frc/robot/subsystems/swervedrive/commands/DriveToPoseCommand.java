@@ -51,9 +51,19 @@ public class DriveToPoseCommand extends Command {
     SmartDashboard.putNumber("Drive Position D Value", 0);
 
     // 0.005
-    SmartDashboard.putNumber("Drive Rotation P Value", 0.005);
+    SmartDashboard.putNumber(
+        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 0));
     SmartDashboard.putNumber("Drive Rotation I Value", 0);
     SmartDashboard.putNumber("Drive Rotation D Value", 0);
+
+    //     SmartDashboard.getNumber("Drive Position P Value", 0);
+    //     SmartDashboard.getNumber("Drive Position I Value", 0);
+    //     SmartDashboard.getNumber("Drive Position D Value", 0);
+
+    //     // 0.015
+    //     SmartDashboard.getNumber("Drive Rotation P Value", 0.01);
+    //     SmartDashboard.getNumber("Drive Rotation I Value", 0);
+    //    SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
     SmartDashboard.putNumber(
         "Drive Velocity Constraint", DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond);
@@ -120,7 +130,7 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    m_rotPID.reset(m_drive.getHeading().getDegrees());
+    m_rotPID.reset(m_drive.getOdometryHeading().getDegrees());
 
     m_rotPID.enableContinuousInput(0, 360);
   }
@@ -134,7 +144,7 @@ public class DriveToPoseCommand extends Command {
         new ChassisSpeeds(
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
-            m_rotPID.calculate(m_drive.getHeading().getDegrees(), m_rotDesiredPos)));
+            m_rotPID.calculate(m_drive.getOdometryHeading().getDegrees(), m_rotDesiredPos)));
     //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 

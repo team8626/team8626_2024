@@ -395,13 +395,14 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
-    // return swerveDrive.getPose().getRotation();
-    return swerveDrive.getYaw()
-    /*.unaryMinus() */ ;
+    // Just switched this to try original return Friday 10:00 AM
+    return swerveDrive.getPose().getRotation();
+    // return swerveDrive.getYaw();
   }
 
-  public double getYaw() {
-    return swerveDrive.getOdometryHeading().getDegrees();
+  public Rotation2d getOdometryHeading() {
+    // TRY THIS ASWELL
+    return swerveDrive.getOdometryHeading();
   }
   // Converts the angle from a range of -180:180 to 0:360
   public static double convertAngle(double angle) {
