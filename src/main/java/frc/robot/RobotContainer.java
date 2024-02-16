@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
@@ -27,8 +26,6 @@ import frc.utils.CommandButtonController;
 import java.io.File;
 
 public class RobotContainer {
-  // 0.2
-  DriveSubsystem m_drive = new DriveSubsystem();
   ShooterSubsystem m_shooter = new ShooterSubsystem();
   Dashboard m_dashboard;
 
@@ -38,14 +35,11 @@ public class RobotContainer {
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
-  private final CommandXboxController m_xboxController =
-      new CommandXboxController(IOControlsConstants.kXboxControllerPort);
+  private final CommandXboxController m_xboxController = new CommandXboxController(0);
 
-  private final CommandXboxController m_testController =
-      new CommandXboxController(IOControlsConstants.kTestControllerPort);
+  private final CommandXboxController m_testController = new CommandXboxController(1);
 
-  private final CommandButtonController m_buttonBox =
-      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
+  private final CommandButtonController m_buttonBox = new CommandButtonController(2);
 
   Command driveFieldOrientedAnglularVelocity;
 
@@ -68,14 +62,12 @@ public class RobotContainer {
     public RotateSlowCommand(boolean clockwise) {
       super(
           () ->
-              m_drivebase.driveCommand(
-                  () -> 0,
-                  () -> 0,
-                  () ->
-                      clockwise
-                          ? -Constants.OperatorConstants.kIncrementalRotationSpeed
-                          : Constants.OperatorConstants.kIncrementalRotationSpeed),
-          m_drivebase);
+              m_drivebase.drive(
+                  new Translation2d(),
+                  clockwise
+                      ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                      : Constants.OperatorConstants.kIncrementalRotationSpeed,
+                  true));
     }
   }
 
