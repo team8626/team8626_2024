@@ -19,10 +19,10 @@ import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
@@ -47,13 +47,13 @@ public class RobotContainer {
   public final LEDSubsystem m_leds = new LEDSubsystem();
 
   private final XboxController m_xboxController =
-      new XboxController(IOControlsConstants.kXboxControllerPort);
+      new XboxController(Constants.OperatorConstants.kXboxControllerPort);
 
   private final CommandXboxController m_testController =
-      new CommandXboxController(IOControlsConstants.kTestControllerPort);
+      new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
 
   private final CommandButtonController m_buttonBox =
-      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
+      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
 
   public RobotContainer() {
 
