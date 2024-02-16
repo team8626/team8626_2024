@@ -52,7 +52,7 @@ public class DriveToPoseCommand extends Command {
 
     // 0.005
     SmartDashboard.putNumber(
-        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 0));
+        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 0.015));
     SmartDashboard.putNumber("Drive Rotation I Value", 0);
     SmartDashboard.putNumber("Drive Rotation D Value", 0);
 
@@ -85,7 +85,7 @@ public class DriveToPoseCommand extends Command {
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
     // 0.015
-    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.005);
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
