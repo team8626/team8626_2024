@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class DriveToPoseCommand extends Command {
@@ -65,17 +65,14 @@ public class DriveToPoseCommand extends Command {
     //     SmartDashboard.getNumber("Drive Rotation I Value", 0);
     //    SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
+    SmartDashboard.putNumber("Drive Velocity Constraint", Constants.Auton.kMaxSpeedMetersPerSecond);
     SmartDashboard.putNumber(
-        "Drive Velocity Constraint", DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond);
+        "Drive Acceleration Constraint", Constants.Auton.kMaxAccelerationMetersPerSecondSquared);
     SmartDashboard.putNumber(
-        "Drive Acceleration Constraint",
-        DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-    SmartDashboard.putNumber(
-        "Rotation Velocity Constraint",
-        DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+        "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
     SmartDashboard.putNumber(
         "Rotation Acceleration Constraint",
-        DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared);
+        Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
   // Called when the command is initially scheduled.
@@ -94,19 +91,18 @@ public class DriveToPoseCommand extends Command {
 
     double driveMaxVelocity =
         SmartDashboard.getNumber(
-            "Drive Velocity Constraint", DriveConstants.AutoConstants.kMaxSpeedMetersPerSecond);
+            "Drive Velocity Constraint", Constants.Auton.kMaxSpeedMetersPerSecond);
     double driveMaxAcceleration =
         SmartDashboard.getNumber(
             "Drive Acceleration Constraint",
-            DriveConstants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+            Constants.Auton.kMaxAccelerationMetersPerSecondSquared);
     double rotationMaxVelocity =
         SmartDashboard.getNumber(
-            "Rotation Velocity Constraint",
-            DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+            "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
     double rotationMaxAcceleration =
         SmartDashboard.getNumber(
             "Rotation Acceleration Constraint",
-            DriveConstants.AutoConstants.kMaxAngularSpeedRadiansPerSecondSquared);
+            Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
 
     m_xPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
     m_yPID.setConstraints(new TrapezoidProfile.Constraints(driveMaxVelocity, driveMaxAcceleration));
@@ -119,14 +115,12 @@ public class DriveToPoseCommand extends Command {
     m_rotPID.setPID(rotPValue, rotIValue, rotDValue);
 
     m_xPID.setTolerance(
-        DriveConstants.Constants.kDriveXPosSetpointTolerance,
-        DriveConstants.Constants.kDriveXVelSetpointTolerance);
+        Constants.Auton.kDriveXPosSetpointTolerance, Constants.Auton.kDriveXVelSetpointTolerance);
     m_yPID.setTolerance(
-        DriveConstants.Constants.kDriveYPosSetpointTolerance,
-        DriveConstants.Constants.kDriveYVelSetpointTolerance);
+        Constants.Auton.kDriveYPosSetpointTolerance, Constants.Auton.kDriveYVelSetpointTolerance);
     m_rotPID.setTolerance(
-        DriveConstants.Constants.kDriveRotPosSetpointTolerance,
-        DriveConstants.Constants.kDriveRotVelSetpointTolerance);
+        Constants.Auton.kDriveRotPosSetpointTolerance,
+        Constants.Auton.kDriveRotVelSetpointTolerance);
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
