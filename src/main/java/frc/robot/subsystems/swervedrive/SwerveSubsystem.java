@@ -399,6 +399,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public Rotation2d getHeading() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Just switched this to try original return Friday 10:00 AM
     return swerveDrive.getPose().getRotation();
     // return swerveDrive.getYaw();
@@ -423,10 +424,16 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     return swerveDrive.getYaw()
     /*.unaryMinus() */ ;
 >>>>>>> a20f000 (Command Templates)
+=======
+    // Just switched this to try original return Friday 10:00 AM
+    return swerveDrive.getPose().getRotation();
+    // return swerveDrive.getYaw();
+>>>>>>> e065eea (Untested heading changes)
   }
 
-  public double getYaw() {
-    return swerveDrive.getOdometryHeading().getDegrees();
+  public Rotation2d getOdometryHeading() {
+    // TRY THIS ASWELL
+    return swerveDrive.getOdometryHeading();
   }
   // Converts the angle from a range of -180:180 to 0:360
   public static double convertAngle(double angle) {
@@ -543,8 +550,12 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 =======
     // Publish Pose2D for AdvantageScope
     m_publisher.set(getPose());
+<<<<<<< HEAD
 >>>>>>> a20f000 (Command Templates)
     SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
+=======
+    SmartDashboard.putNumber("New Heading", getOdometryHeading().getDegrees());
+>>>>>>> e065eea (Untested heading changes)
   }
 
   @Override
