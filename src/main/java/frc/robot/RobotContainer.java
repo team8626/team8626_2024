@@ -25,6 +25,7 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
+import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
@@ -172,6 +173,10 @@ public class RobotContainer {
 
       case DO_NOTHING:
         return Commands.none();
+
+      case TRAJECTORY_DTP:
+        return new DriveToPoseTrajPIDCommand(
+            m_drivebase, new Pose2d(6, 6, Rotation2d.fromDegrees(180)), false);
     }
   }
 }
