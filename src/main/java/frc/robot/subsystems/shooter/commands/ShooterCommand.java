@@ -5,6 +5,9 @@
 package frc.robot.subsystems.shooter.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.SubsystemsConstants.Preset;
+import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -14,20 +17,24 @@ public class ShooterCommand extends Command {
 
   private IntakeSubsystem m_intake;
 
-  private int m_speed;
+  private double m_speedTop;
+  private double m_speedBottom;
 
-  public ShooterCommand(IntakeSubsystem intake, ShooterSubsystem shooter, int speed) {
+  public ShooterCommand(IntakeSubsystem intake, ShooterSubsystem shooter, Preset preset) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter, intake);
     m_shooter = shooter;
     m_intake = intake;
-    m_speed = speed;
+    m_speedTop = preset.getTopRPM();
+    m_speedBottom = preset.getBottomRPM();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setMotors(m_speed);
+    m_shooter.setRPM(m_speedBottom, m_speedTop);
+    m_shooter.start();
+    LEDSubsystem.setMode(LedMode.SHOOTING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,6 +45,7 @@ public class ShooterCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_shooter.setMotors(0);
+    LEDSubsystem.setMode(LedMode.DEFAULT);
   }
 
   // Returns true when the command should end.
