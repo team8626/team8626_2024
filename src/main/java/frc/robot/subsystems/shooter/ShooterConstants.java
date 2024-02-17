@@ -9,9 +9,4 @@ public class ShooterConstants {
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
-
-  public static final int kShootFromSpeakerRPM = 4000;
-  public static final int kShootFrom3ftRPM = 4500;
-  public static final int kShootFrom5ftRPM = 5000;
-  public static final int kShootToAmp = 2000;
 }
