@@ -33,14 +33,18 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   public void setSpeed(double speed) {
-    m_motor1.set(speed);
-    m_motor2.set(speed);
+    m_speed = speed;
   }
 
   public void start() {
     m_motor1.set(m_speed);
     m_motor2.set(m_speed);
     m_enabled = true;
+  }
+
+  public void start(double speed) {
+    setSpeed(speed);
+    start();
   }
 
   public void stop() {
@@ -63,9 +67,8 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     SmartDashboard.putBoolean("Intake/ENABLED", m_enabled);
     SmartDashboard.putNumber("Intake/SetSpeed", m_speed);
 
-    SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
     SmartDashboard.putBoolean("Intake/BottomSensor", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared1.get());
+    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared2.get());
   }
 
   @Override
@@ -76,9 +79,8 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     SmartDashboard.putBoolean("Intake/ENABLED", m_enabled);
     SmartDashboard.putNumber("Intake/SetSpeed", m_speed);
 
-    SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
     SmartDashboard.putBoolean("Intake/BottomSensor", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared1.get());
+    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared2.get());
   }
 
   @Override
