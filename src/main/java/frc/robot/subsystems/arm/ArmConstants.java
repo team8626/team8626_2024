@@ -36,6 +36,9 @@ public class ArmConstants {
     public static final double kExtFF = 0;
     public static final double kExtMinOutput = -0.1;
     public static final double kExtMaxOutput = +0.1;
+
+    public static final double kAtInchesTolerance = 0.2;
+  
   }
 
   public static final class Rotation {
@@ -61,7 +64,9 @@ public class ArmConstants {
     public static final double kRotMinOutput = -1;
     public static final double kRotMaxOutput = +1;
 
-    public static final double kReelDiameterInches = 2;
-    public static final double kMaxAngleForSafeRetraction = 10;
+    public static final double kMaxAngleForSafeRetraction = 180;
+
+    public static final double kAtAngleTolerance = 3;
+
   }
 }

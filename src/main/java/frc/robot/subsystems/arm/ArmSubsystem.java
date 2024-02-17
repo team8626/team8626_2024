@@ -56,9 +56,6 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
-  private static double atAngleTolerance = 0;
-  private static double atInchesTolerance = 0;
-
   /** Poses publisher for AdvantageScope * */
   StructArrayPublisher<Pose3d> poseArrayPublisher =
       NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
@@ -94,8 +91,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_extensionPIDController.setFeedbackDevice(m_extensionEncoder);
 
     // Extension Soft Limits
-    m_extensionMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_extensionMotor_L.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_extensionMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    m_extensionMotor_L.enableSoftLimit(SoftLimitDirection.kForward, false);
     m_extensionMotor_L.setSoftLimit(SoftLimitDirection.kReverse, Extension.kExtMinExtRotDeg);
     m_extensionMotor_L.setSoftLimit(SoftLimitDirection.kForward, Extension.kExtMaxExtRotDeg);
 
@@ -136,8 +133,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationPIDController.setFeedbackDevice(m_rotationEncoder);
 
     // Rotation Soft Limits
-    m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, true);
-    m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kForward, true);
+    m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, false);
+    m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kForward, false);
     m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kReverse, Rotation.kMinRotDeg);
     m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kForward, Rotation.kMaxRotDeg);
 
@@ -165,11 +162,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     // FORCE DASHBOARD UPDATE (Get values)
     updateDashboard();
 
-    // SUBSYSTEM INIT
-    setAngleTolerance(3);
-    setExtensionTolerance(1);
-
     if (RobotBase.isReal()) {
+      // TODO: Hold Starting position
       // m_desiredAngleDeg = m_rotationEncoder.getPosition();
       // m_rotationPIDController.setReference(m_desiredAngleDeg, ControlType.kPosition);
 
@@ -227,10 +221,14 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
 
   public void rotate(double newSpeed) {
     if (Robot.isReal()) {
-      // if ((m_currentAngleDeg < Rotation.kMaxRotDeg) && (m_currentAngleDeg > Rotation.kMinRotDeg))
-      // {
-      m_rotationPIDController.setReference(-newSpeed * 0.50, ControlType.kDutyCycle);
-      // }
+      // Soft Limit...
+      // Allow control only if rotation is in range or coming back to range
+      if ((m_currentAngleDeg < (Rotation.kMinRotDeg) && (newSpeed > 0))
+          || (m_currentAngleDeg > (Rotation.kMaxRotDeg) && (newSpeed < 0))
+          || ((m_currentAngleDeg >= (Rotation.kMinRotDeg) && (m_currentAngleDeg <= (Rotation.kMaxRotDeg)))))
+      {
+        m_rotationPIDController.setReference(-newSpeed * 0.50, ControlType.kDutyCycle);
+      }
     } else { // Simulation
       if (newSpeed > 0) {
         m_desiredAngleDeg += 1;
@@ -249,35 +247,27 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_armIsResetting = true;
   }
 
-  public void setAngleTolerance(double positionTolerance) {
-    atAngleTolerance = positionTolerance;
-  }
-
-  public void setExtensionTolerance(double positionTolerance) {
-    atInchesTolerance = positionTolerance;
-  }
-
   public boolean atExtensionSetpoint() {
-    return MathUtil.isNear(m_desiredExtensionInches, m_currentExtInches, atInchesTolerance);
+    return MathUtil.isNear(m_desiredExtensionInches, m_currentExtInches, Extension.kAtInchesTolerance);
   }
 
   public boolean atAngleSetpoint() {
-    return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, atAngleTolerance);
+    return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, Rotation.kAtAngleTolerance);
   }
   /*
    * Convert Reel Rotations from Extension Length
    */
   private double getDegreesFromExtensionInches(double newExtensionInches) {
 
-    return Math.toDegrees(newExtensionInches / (Math.PI * Rotation.kReelDiameterInches));
+    return Math.toDegrees(newExtensionInches / (Math.PI * Extension.kExtPulleyDiameter));
   }
 
   /*
-   * Convert Extension Lemngth from Reel Rotations
+   * Convert Extension Length from Reel Rotations
    */
   private double getExtensionInchesFromDeg(double newExtensionRotationDegrees) {
 
-    return Math.toRadians(newExtensionRotationDegrees) * Rotation.kReelDiameterInches;
+    return Math.toRadians(newExtensionRotationDegrees) * Extension.kExtPulleyDiameter;
   }
 
   @Override
