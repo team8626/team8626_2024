@@ -43,10 +43,14 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_robotContainer.m_drivebase.resetOdometry(
 <<<<<<< HEAD
+<<<<<<< HEAD
         new Pose2d(new Translation2d(2, 2), new Rotation2d(0)));
 =======
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
+=======
+        new Pose2d(new Translation2d(2, 2), new Rotation2d(0)));
+>>>>>>> 58b1481 (DTP Trajectory PID Command Working)
     m_robotContainer.m_drivebase.zeroGyro();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

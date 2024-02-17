@@ -49,6 +49,7 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
 <<<<<<<< HEAD:src/main/java/frc/robot/subsystems/swervedrive/commands/DriveToPosePPCommand.java
     setName("Drive To Pose Path Planner Command");
+<<<<<<< HEAD
 ========
   public DriveToPosePP(SwerveSubsystem drive, Pose2d desiredPose) {
 <<<<<<< HEAD
@@ -84,6 +85,8 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
 >>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
 =======
     addRequirements(drive);
+=======
+>>>>>>> 58b1481 (DTP Trajectory PID Command Working)
 
     addCommands(drive.driveToPose(desiredPose));
 >>>>>>> a20f000 (Command Templates)
