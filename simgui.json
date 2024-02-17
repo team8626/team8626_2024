@@ -50,6 +50,16 @@
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     }
   },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Shooter": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  },
   "NetworkTables Info": {
     "visible": true
   }
