@@ -102,11 +102,10 @@ Dashboard m_dashboard;
   }
 
   private void configureEventsMap(){
-    //to be filled in
-    eventMap.put("SetupForIntake", null);
-    eventMap.put("AutoIntake", null);
+    // to be filled in later
+    eventMap.put("AutoIntake", null); //activates intake and gets into position
     eventMap.put("Default", null); //returns to normal state
-    eventMap.put("SetupForAmp", null);
+    eventMap.put("SetupForAmp", null); 
     eventMap.put("SetupForSpeaker", null);
     eventMap.put("AutoShooter", null);
   }

@@ -193,7 +193,7 @@
             {
               "type": "named",
               "data": {
-                "name": "SetupForIntake"
+                "name": "AutoIntake"
               }
             }
           ]
