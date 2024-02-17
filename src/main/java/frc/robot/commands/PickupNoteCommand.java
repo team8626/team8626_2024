@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.SubsystemsConstants.Preset;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.commands.SetArmCommand;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -21,7 +21,7 @@ public class PickupNoteCommand extends SequentialCommandGroup {
   public PickupNoteCommand(SwerveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake) {
     /* TODO: Once new PID DriveToPose is visible to this branch current pose supplier will work, will just permanently pass starting pose currently */
     addCommands(
-        new SetArmCommand(arm, ArmConstants.Presets.kFloorPickup),
+        new SetArmCommand(arm, Preset.kFloorPickup),
         new IntakeCommand(intake)
             .deadlineWith(new DriveToPoseCommand(drive, () -> drive.getPose())));
   }

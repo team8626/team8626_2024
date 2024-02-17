@@ -5,11 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.SubsystemsConstants.Preset;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.commands.SetArmCommand;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.commands.ShooterCommand;
 
@@ -21,7 +20,7 @@ public class ShootFromSpeakerCommand extends SequentialCommandGroup {
   public ShootFromSpeakerCommand(
       IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
     addCommands(
-        new SetArmCommand(arm, ArmConstants.Presets.kShootSpeaker_0ft),
-        new ShooterCommand(intake, shooter, ShooterConstants.kShootFromSpeakerRPM));
+        new SetArmCommand(arm, Preset.kShootSpeaker_0m),
+        new ShooterCommand(intake, shooter, Preset.kShootSpeaker_0m));
   }
 }
