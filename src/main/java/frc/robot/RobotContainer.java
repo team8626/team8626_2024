@@ -86,34 +86,9 @@ public class RobotContainer {
     //             new InstantCommand(() -> m_intake.stop()),
     //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
 
-    m_buttonBox
-        .button_4()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
 
-    m_buttonBox
-        .button_5()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
-
-    m_buttonBox
-        .button_6()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
-
-    m_buttonBox
-        .button_7()
-        .toggleOnTrue(
-            new IntakeCommand(m_intake)
-                .andThen(
-                    new IntakeAdjustmentCommand(m_intake)
-                        .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())));
-
-    // .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())););
-
+    
+    /** Test Controller Buttons * */
     m_buttonBox
         .button_1()
         .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_0m, m_shooter));
@@ -124,13 +99,42 @@ public class RobotContainer {
         .button_3()
         .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_3m, m_shooter));
 
+    m_buttonBox
+        .button_4()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
+    m_buttonBox
+        .button_5()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
+    m_buttonBox
+        .button_6()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
+
+    // Set to Angle Testing
+    m_buttonBox.button_7().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(180)));
+    m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(195)));
+    m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(90)));
+
+    // FOR FUTURE USE... 
+    // m_buttonBox
+    //     .button_7()
+    //     .toggleOnTrue(
+    //         new IntakeCommand(m_intake)
+    //             .andThen(
+    //                 new IntakeAdjustmentCommand(m_intake)
+    //                     .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())));
+
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_shooter.stop()));
     // m_buttonBox.button_5().toggleOnTrue(new ShooterCommand(Shoom_intake, m_shooter, m_leds)
 
-    /** Test Controller Buttons * */
-    m_buttonBox
-        .button_9()
-        .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
+    // m_buttonBox
+    //     .button_9()
+    //     .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
   private void configureDefaultCommands() {
