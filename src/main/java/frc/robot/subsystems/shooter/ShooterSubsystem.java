@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.SubsystemsConstants.Preset;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 
@@ -25,8 +26,8 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private RelativeEncoder m_encoder1;
   private RelativeEncoder m_encoder2;
 
-  private double m_desiredRPM_Bottom = ShooterConstants.kShootFromSpeakerRPM;
-  private double m_desiredRPM_Top = ShooterConstants.kShootFromSpeakerRPM;
+  private double m_desiredRPM_Bottom = Preset.kShootSpeaker_0m.getBottomRPM();
+  private double m_desiredRPM_Top = Preset.kShootSpeaker_0m.getTopRPM();
   private double m_currentRPM_Bottom = 0;
   private double m_currentRPM_Top = 0;
   private boolean m_enabled = false;
@@ -48,7 +49,7 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
     m_motor2 = new CANSparkMax(ShooterConstants.kCANMotor2, MotorType.kBrushless);
     m_motor2.restoreFactoryDefaults();
-    m_motor1.setIdleMode(IdleMode.kCoast);
+    m_motor2.setIdleMode(IdleMode.kCoast);
     m_motor2.setInverted(true);
 
     m_pidController1 = m_motor1.getPIDController();
@@ -83,6 +84,14 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   public void setRPM(double speed_Bottom, double speed_Top) {
     m_desiredRPM_Bottom = speed_Bottom;
     m_desiredRPM_Top = speed_Top;
+
+    // Force Dashboard Update
+    initDashboard();
+  }
+
+  public void setRPM(double speed) {
+    m_desiredRPM_Bottom = speed;
+    m_desiredRPM_Top = speed;
 
     // Force Dashboard Update
     initDashboard();
@@ -189,15 +198,16 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     }
     if ((d != m_kD)) {
       m_pidController1.setD(d);
-      m_pidController2.setP(d);
+      m_pidController2.setD(d);
       m_kD = d;
     }
     if ((ff != m_kFF)) {
       m_pidController1.setFF(ff);
-      m_pidController2.setP(ff);
+      m_pidController2.setFF(ff);
       m_kFF = ff;
     }
 
+    m_enabled = SmartDashboard.getBoolean("Shooter/ENABLED", m_enabled);
     SmartDashboard.putBoolean("Shooter/ENABLED", m_enabled);
 
     SmartDashboard.putNumber("Shooter/DesiredRPM_Bottom", m_desiredRPM_Bottom);
