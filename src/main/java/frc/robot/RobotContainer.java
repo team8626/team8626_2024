@@ -13,15 +13,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.SubsystemsConstants.Preset;
 import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.commands.IntakeAdjustmentCommand;
+import frc.robot.subsystems.intake.commands.IntakeCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.commands.SimpleShooterCommand;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
@@ -69,21 +73,59 @@ public class RobotContainer {
     // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
     // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
 
+    // m_buttonBox
+    //     .button_1()
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(() -> m_intake.start()),
+    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
+    // m_buttonBox
+    //     .button_2()
+    //     .onTrue(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(() -> m_intake.stop()),
+    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
+
+    m_buttonBox
+        .button_4()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
+
+    m_buttonBox
+        .button_5()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
+
+    m_buttonBox
+        .button_6()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
+
+    m_buttonBox
+        .button_7()
+        .toggleOnTrue(
+            new IntakeCommand(m_intake)
+                .andThen(
+                    new IntakeAdjustmentCommand(m_intake)
+                        .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())));
+
+    // .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())););
+
     m_buttonBox
         .button_1()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.start()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
+        .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_0m, m_shooter));
     m_buttonBox
         .button_2()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.stop()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
+        .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_2m, m_shooter));
+    m_buttonBox
+        .button_3()
+        .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_3m, m_shooter));
 
-    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_shooter.start()));
-    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
+    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_shooter.stop()));
+    // m_buttonBox.button_5().toggleOnTrue(new ShooterCommand(Shoom_intake, m_shooter, m_leds)
 
     /** Test Controller Buttons * */
     m_buttonBox
