@@ -16,7 +16,6 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
   public DriveToPosePPCommand(SwerveSubsystem drive, Pose2d desiredPose) {
 
     setName("Drive To Pose Path Planner Command");
-    addRequirements(drive);
 
     addCommands(drive.driveToPose(desiredPose));
   }
