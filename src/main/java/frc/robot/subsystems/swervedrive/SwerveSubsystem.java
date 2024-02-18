@@ -12,7 +12,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,7 +45,6 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   private final SwerveDrive swerveDrive;
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
-
 
   /** Vision object */
   private Vision m_vision = new Vision();
