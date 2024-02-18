@@ -17,30 +17,12 @@
           "keyRate": 0.009999999776482582
         },
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
           "decKey": 71,
           "incKey": 84
         },
         {
           "decKey": 70,
           "incKey": 72
-=======
-          "decKey": 76,
-          "incKey": 75
-        },
-        {
-          "decKey": 91,
-          "incKey": 93
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-          "decKey": 71,
-          "incKey": 84
-        },
-        {
-          "decKey": 70,
-          "incKey": 72
->>>>>>> 5ff9b85 (Pre Debugging (other files))
         }
       ],
       "axisCount": 5,
@@ -68,22 +50,12 @@
     {
       "axisConfig": [
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 5ff9b85 (Pre Debugging (other files))
           "decKey": 264,
           "incKey": 265
         },
         {
           "decKey": 263,
           "incKey": 262
-<<<<<<< HEAD
-=======
-          "decKey": 74
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
->>>>>>> 5ff9b85 (Pre Debugging (other files))
         }
       ],
       "axisCount": 2,
@@ -108,24 +80,6 @@
         54,
         55,
         56,
-<<<<<<< HEAD
-        57
-      ],
-      "povCount": 0
-    },
-    {
-      "axisCount": 0,
-      "buttonCount": 9,
-      "buttonKeys": [
-<<<<<<< HEAD
-        49,
-        50,
-        51,
-        52,
-        53,
-        54,
-        55,
-        56,
         57
       ],
       "povCount": 0
@@ -144,18 +98,6 @@
         56,
         57,
         -1
-=======
-        47,
-        46,
-        44,
-        77,
-        78,
-        66
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-        57,
-        -1
->>>>>>> 5ff9b85 (Pre Debugging (other files))
       ],
       "povCount": 0
     },
@@ -170,25 +112,10 @@
       "guid": "Keyboard0"
     },
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
       "guid": "Keyboard1"
     },
     {
       "guid": "Keyboard2"
-=======
-      "guid": "Keyboard2"
-    },
-    {
-      "guid": "Keyboard1",
-      "name": "Botton Box"
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-      "guid": "Keyboard1"
-    },
-    {
-      "guid": "Keyboard2"
->>>>>>> 5ff9b85 (Pre Debugging (other files))
     }
   ]
 }

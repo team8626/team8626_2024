@@ -24,15 +24,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-<<<<<<< HEAD
-<<<<<<< HEAD
     // TODO: m_intake.setMotors(1);
-=======
-    m_intake.setMotors(1);
->>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
-=======
-    // TODO: m_intake.setMotors(1);
->>>>>>> 5ff9b85 (Pre Debugging (other files))
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,15 +32,7 @@ public class IntakeCommand extends Command {
   public void execute() {
     boolean yes = true;
     if (yes && m_intake.isFull()) {
-<<<<<<< HEAD
-<<<<<<< HEAD
       // TODO: m_intake.setMotors(0.4);
-=======
-      m_intake.setMotors(0.4);
->>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
-=======
-      // TODO: m_intake.setMotors(0.4);
->>>>>>> 5ff9b85 (Pre Debugging (other files))
       yes = false;
     }
   }
@@ -56,15 +40,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-<<<<<<< HEAD
-<<<<<<< HEAD
     // TODO: m_intake.setMotors(0);
-=======
-    m_intake.setMotors(0);
->>>>>>> 27410ae (Prevent Double Swerve Library Gyro causing crash)
-=======
-    // TODO: m_intake.setMotors(0);
->>>>>>> 5ff9b85 (Pre Debugging (other files))
   }
 
   // Returns true when the command should end.

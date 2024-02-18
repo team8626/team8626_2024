@@ -4,16 +4,8 @@
 
 package frc.robot.subsystems.swervedrive.commands;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-=======
->>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
-=======
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
->>>>>>> a20f000 (Command Templates)
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -22,30 +14,12 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   public DriveToPoseTrajPIDCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean lockPose) {
 
     addCommands(
         new DriveToPosePPCommand(drive, desiredPose),
         new DriveToPoseCommand(drive, desiredPose, true),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
-=======
-  public DriveToPoseTrajPIDCommand(
-      SwerveSubsystem drive, double desiredXPos, double desiredYPos, double desiredRot) {
-
-    addCommands(
-        new DriveToPosePPCommand(drive, desiredXPos, desiredYPos, desiredRot),
-        new DriveToPoseCommand(drive, desiredXPos, desiredYPos, desiredRot, true));
->>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
-=======
-  public DriveToPoseTrajPIDCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean lockPose) {
-
-    addCommands(
-        new DriveToPosePPCommand(drive, desiredPose),
-        new DriveToPoseCommand(drive, desiredPose, true),
-        new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
->>>>>>> a20f000 (Command Templates)
 
     setName("Drive To Pose Trajectory and PID Command");
   }

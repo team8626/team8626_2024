@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -26,70 +24,21 @@ import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-=======
-import frc.robot.subsystems.Dashboard;
-<<<<<<< HEAD
-import frc.robot.subsystems.drive.DriveSubsystem;
->>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
-=======
->>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
-import frc.robot.subsystems.swervedrive.Constants;
-=======
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
-import frc.robot.subsystems.LEDs.LEDSubsystem;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
->>>>>>> 13d8b35 (Update Vendor Libraries to latest version)
-import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
-=======
->>>>>>> 616d28e (Import)
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
-<<<<<<< HEAD
-<<<<<<< HEAD
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
-=======
->>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
-=======
-import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
->>>>>>> 58b1481 (DTP Trajectory PID Command Working)
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
-<<<<<<< HEAD
 import frc.utils.CommandButtonController;
-=======
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
 import java.io.File;
 
 public class RobotContainer {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   // DriveSubsystem m_drive = new DriveSubsystem();
-<<<<<<< HEAD
-=======
-  DriveSubsystem m_drive = new DriveSubsystem();
-=======
-  // DriveSubsystem m_drive = new DriveSubsystem();
->>>>>>> c62b5f9 (Drive To Pose Trajectory and PID Command Template)
-  ShooterSubsystem m_shooter = new ShooterSubsystem();
->>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
-=======
->>>>>>> 665dc1f (Pose Displacement Command + Cleanup Changes)
   Dashboard m_dashboard;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
@@ -98,76 +47,36 @@ public class RobotContainer {
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
 
   private final XboxController m_xboxController =
       new XboxController(Constants.OperatorConstants.kXboxControllerPort);
-<<<<<<< HEAD
 
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
 
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
-=======
-=======
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
-=======
->>>>>>> 5ff9b85 (Pre Debugging (other files))
-  public final IntakeSubsystem m_intake = new IntakeSubsystem();
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  public final LEDSubsystem m_leds = new LEDSubsystem();
-
->>>>>>> 70353eb (Dashboard pre work)
-  private final XboxController m_xboxController =
-      new XboxController(IOControlsConstants.kXboxControllerPort);
-=======
->>>>>>> 12f9ff4 (Remove Old Drive Library)
-
-  private final CommandXboxController m_testController =
-      new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
-
-  private final CommandButtonController m_buttonBox =
-<<<<<<< HEAD
-      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
->>>>>>> 12f9ff4 (Remove Old Drive Library)
 
   public RobotContainer() {
 
     configureBindings();
     configureDefaultCommands();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
-=======
-    m_dashboard = new Dashboard(m_drivebase, m_arm);
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-    m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
->>>>>>> 70353eb (Dashboard pre work)
   }
 
   private void configureBindings() {
 
     /** Button Box Bindings */
-<<<<<<< HEAD
-<<<<<<< HEAD
     // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
 
     // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
     // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
 
-<<<<<<< HEAD
     m_buttonBox
         .button_1()
         .onTrue(
@@ -187,47 +96,6 @@ public class RobotContainer {
     /** Test Controller Buttons * */
     m_buttonBox
         .button_9()
-=======
-    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
-=======
-    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
->>>>>>> 70353eb (Dashboard pre work)
-
-    // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
-    // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
-
-    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_intake.setMotors(.9)));
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_intake.setMotors(0)));
-
-=======
->>>>>>> 5ff9b85 (Pre Debugging (other files))
-    m_buttonBox
-        .button_1()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.start()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
-    m_buttonBox
-        .button_2()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.stop()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
-
-    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_shooter.start()));
-    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
-
-    /** Test Controller Buttons * */
-<<<<<<< HEAD
-    m_testController
-        .a()
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-    m_buttonBox
-        .button_9()
->>>>>>> 70353eb (Dashboard pre work)
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
@@ -303,21 +171,8 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         return new DriveToPoseCommand(
             m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
-=======
-        return new DriveToPoseCommand(m_drivebase, 0, 0, 90, false);
->>>>>>> 80c6ebd (Untested YAGSL Drive To Pose Implementation)
-=======
-        return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, new Rotation2d(90)), false);
->>>>>>> a20f000 (Command Templates)
-=======
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
->>>>>>> a14a4a7 (Don't use radians as setpoint idiot (Works now))
 
       case PRINT:
         return Commands.print("Print Auto Command");

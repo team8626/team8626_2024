@@ -54,18 +54,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   private static double atAngleTolerance = 0;
   private static double atInchesTolerance = 0;
 
-=======
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-  private static double atAngleTolerance = 0;
-  private static double atInchesTolerance = 0;
-
->>>>>>> a2e5544 (Set Arm Command)
   /** Poses publisher for AdvantageScope * */
   StructArrayPublisher<Pose3d> poseArrayPublisher =
       NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
@@ -125,15 +116,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         ArmConstants.Rotation.kRotationEncoderPositionFactorDeg);
     m_rotationEncoder.setVelocityConversionFactor(
         ArmConstants.Rotation.kRotationEncoderVelocityFactorDeg);
-<<<<<<< HEAD
-<<<<<<< HEAD
     m_rotationMotor_L.setInverted(true);
-=======
-    m_rotationMotor_L.setInverted(false);
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-    m_rotationMotor_L.setInverted(true);
->>>>>>> 5ff9b85 (Pre Debugging (other files))
 
     // Set the PID gains for the motor.
     m_extensionPIDController.setP(ArmConstants.Extension.kExtP);
@@ -159,18 +142,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationMotor_L.setIdleMode(IdleMode.kBrake);
     m_rotationMotor_L.setSmartCurrentLimit(ArmConstants.Rotation.kCurrentLimit);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     setAngleTolerance(3);
     setExtensionTolerance(1);
 
-=======
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
-    setAngleTolerance(3);
-    setExtensionTolerance(1);
-
->>>>>>> a2e5544 (Set Arm Command)
     /** Initialize the Subsystem * */
     if (RobotBase.isReal()) {
       m_desiredAngleDeg = m_rotationEncoder.getPosition();
@@ -250,10 +224,6 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_armIsResetting = true;
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> a2e5544 (Set Arm Command)
   public void setAngleTolerance(double positionTolerance) {
     atAngleTolerance = positionTolerance;
   }
@@ -269,11 +239,6 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   public boolean atAngleSetpoint() {
     return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, atAngleTolerance);
   }
-<<<<<<< HEAD
-=======
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
->>>>>>> a2e5544 (Set Arm Command)
   /*
    * Convert Reel Rotations from Extension Length
    */
@@ -343,10 +308,6 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
           m_armZeroed = true;
           m_armIsResetting = false;
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 70353eb (Dashboard pre work)
       }
       /** Running simulation, Reset "done" * */
       if (Robot.isSimulation()) {
@@ -354,19 +315,6 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
         m_desiredExtensionInches = 0;
         m_armZeroed = true;
         m_armIsResetting = false;
-<<<<<<< HEAD
-=======
-
-        /** Running simulation, Reset "done" * */
-        if (Robot.isSimulation()) {
-          m_currentExtInches = 0;
-          m_desiredExtensionInches = 0;
-          m_armZeroed = true;
-          m_armIsResetting = false;
-        }
->>>>>>> 7220e06 (Merging Arm Control subsystem to main (#20))
-=======
->>>>>>> 70353eb (Dashboard pre work)
       }
     }
   }
