@@ -52,7 +52,7 @@ public class PoseDisplacementCommand extends Command {
     Pose2d transformedPose = m_pose.transformBy(m_displacement);
     m_xDesiredPos = transformedPose.getX();
     m_yDesiredPos = transformedPose.getY();
-    m_rotDesiredPos = transformedPose.getRotation().getDegrees();
+    m_rotDesiredPos = transformedPose.getRotation().getDegrees(); 
 
     double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);
@@ -100,7 +100,7 @@ public class PoseDisplacementCommand extends Command {
     m_yPID.reset(m_pose.getY());
     m_rotPID.reset(m_drive.getOdometryHeading().getDegrees());
 
-    m_rotPID.enableContinuousInput(0, 360);
+    m_rotPID.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -126,7 +126,7 @@ public class DriveToPoseCommand extends Command {
     m_yPID.reset(m_pose.getY());
     m_rotPID.reset(m_drive.getOdometryHeading().getDegrees());
 
-    m_rotPID.enableContinuousInput(0, 360);
+    m_rotPID.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
