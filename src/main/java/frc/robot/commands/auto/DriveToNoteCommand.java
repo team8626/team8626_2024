@@ -4,10 +4,9 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
@@ -15,13 +14,11 @@ import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import org.photonvision.PhotonCamera;
 
-public class TrackNoteCommand extends Command {
+public class DriveToNoteCommand extends Command {
 
   private final SwerveSubsystem m_drive;
 
-  private XboxController m_XboxController;
-
-  private double m_rotPValue = 0.055;
+  private double m_rotPValue = 0.0555;
   private double m_rotIValue = 0;
   private double m_rotDValue = 0;
 
@@ -30,9 +27,8 @@ public class TrackNoteCommand extends Command {
 
   private PhotonCamera m_ODCamera = new PhotonCamera("Arducam_OD003");
 
-  public TrackNoteCommand(SwerveSubsystem drive, XboxController controller) {
+  public DriveToNoteCommand(SwerveSubsystem drive) {
     m_drive = drive;
-    m_XboxController = controller;
 
     addRequirements(m_drive);
 
@@ -75,12 +71,9 @@ public class TrackNoteCommand extends Command {
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
     if (m_ODCamera.getLatestResult().hasTargets()) {
-      double currentYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
-      m_drive.driveCommand(
-          () -> MathUtil.applyDeadband(m_XboxController.getLeftX(), 0.1),
-          () -> MathUtil.applyDeadband(m_XboxController.getLeftY(), 0.1),
-          () -> m_rotPID.calculate(currentYaw, 0));
-      // m_drive.drive(new ChassisSpeeds(m_ySpeed, m_xSpeed, m_rotPID.calculate(currentYaw, 0)));
+    double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
+    double currentRobotYaw = m_drive.getPose().getRotation().getDegrees();
+    m_drive.drive(new ChassisSpeeds(Math.cos(360- currentRobotYaw), Math.sin(360- currentRobotYaw), m_rotPID.calculate(currentNoteYaw, 0)));
     }
   }
 

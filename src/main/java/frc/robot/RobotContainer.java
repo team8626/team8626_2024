@@ -86,8 +86,12 @@ public class RobotContainer {
     m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
 
     /** Test Controller Buttons * */
-    m_testController.leftBumper().toggleOnTrue(new RotateToNoteCommand(m_drivebase)); // turn to Note
-    m_testController.rightBumper().toggleOnTrue(new TrackNoteCommand(m_drivebase, m_xboxController)); // follow note
+    m_testController
+        .leftBumper()
+        .toggleOnTrue(new RotateToNoteCommand(m_drivebase)); // turn to Note
+    m_testController
+        .rightBumper()
+        .toggleOnTrue(new TrackNoteCommand(m_drivebase, m_xboxController)); // follow note
   }
 
   private void configureDefaultCommands() {
