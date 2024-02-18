@@ -33,7 +33,6 @@ import java.io.File;
 public class RobotContainer {
 
   // DriveSubsystem m_drive = new DriveSubsystem();
-  ShooterSubsystem m_shooter = new ShooterSubsystem();
   Dashboard m_dashboard;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
