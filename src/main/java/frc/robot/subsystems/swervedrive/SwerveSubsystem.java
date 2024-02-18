@@ -53,8 +53,6 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Publisher for robot pose (AdvantageScope) */
   StructPublisher<Pose3d> m_publisher =
       NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
-  StructPublisher<Pose3d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
