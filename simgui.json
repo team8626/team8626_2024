@@ -53,14 +53,17 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Arm": {
+          "Rotation": {
+            "open": true
+          },
+          "open": true
+        },
         "Shooter": {
           "open": true
         },
         "open": true
       }
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
   }
 }
