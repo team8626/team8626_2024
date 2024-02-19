@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Presets.Preset;
 import frc.robot.Robot;
 import frc.robot.RobotConstants;
 import frc.robot.subsystems.Dashboard.DashboardUses;
@@ -165,12 +166,17 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     if (RobotBase.isReal()) {
       // TODO: Hold Starting position
       // m_desiredAngleDeg = m_rotationEncoder.getPosition();
-      // m_rotationPIDController.setReference(m_desiredAngleDeg, ControlType.kPosition);
 
       m_desiredExtensionInches = getExtensionInchesFromDeg(m_extensionEncoder.getPosition());
 
       // TODO: Launch zeroing of the arm
       // this.reset();
+    } else if (RobotBase.isSimulation()) {
+      m_desiredAngleDeg = Preset.kStart.getRotDegrees();
+      m_desiredExtensionInches = Preset.kStart.getExtInches();
+
+      m_currentAngleDeg = m_desiredAngleDeg;
+      m_currentExtInches = m_desiredExtensionInches;
     }
   }
 
@@ -245,6 +251,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     }
     m_armZeroed = false;
     m_armIsResetting = true;
+    System.out.println("[ARM] Resetting Innitiated");
   }
 
   public boolean atExtensionSetpoint() {
