@@ -15,6 +15,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShooterCommand extends Command {
   /** Creates a new ShooterCommand. */
   private ShooterSubsystem m_shooter;
+
   private IntakeSubsystem m_intake;
 
   private double m_speedTop;

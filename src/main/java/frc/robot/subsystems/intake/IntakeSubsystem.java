@@ -69,7 +69,6 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     return m_bottomSensor;
   }
 
-
   /**
    * Checks if a NOTE is present in the Intake
    *

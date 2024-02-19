@@ -37,7 +37,7 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
     if (m_intake.isFull()) {
-      
+
       m_intake.setSpeed(IntakeConstants.kSpeed_Coast);
       m_intake.setStatus(IntakeStatus.COASTING);
     }
