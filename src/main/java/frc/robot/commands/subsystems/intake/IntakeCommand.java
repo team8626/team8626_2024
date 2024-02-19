@@ -2,63 +2,59 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.shooter.commands;
+package frc.robot.commands.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Presets.Preset;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeStates.IntakeStatus;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class ShooterCommand extends Command {
-  /** Creates a new ShooterCommand. */
-  private ShooterSubsystem m_shooter;
-
+public class IntakeCommand extends Command {
   private IntakeSubsystem m_intake;
 
-  private double m_speedTop;
-  private double m_speedBottom;
-
-  public ShooterCommand(IntakeSubsystem intake, ShooterSubsystem shooter, Preset preset) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter, intake);
-    m_shooter = shooter;
+  /** Creates a new IntakeCommand. */
+  public IntakeCommand(IntakeSubsystem intake) {
+    addRequirements(intake);
     m_intake = intake;
 
-    m_speedTop = preset.getTopRPM();
-    m_speedBottom = preset.getBottomRPM();
+    // andThen(new IntakeAdjustmentCommand(intake));
+    // .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached()));
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setRPM(m_speedBottom, m_speedTop);
-    m_shooter.start();
-    LEDSubsystem.setMode(LedMode.SHOOTING);
+    m_intake.start(IntakeConstants.kSpeed_Intake);
+
+    m_intake.setStatus(IntakeStatus.INTAKING);
+    LEDSubsystem.setMode(LedMode.INTAKING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_shooter.isAtSpeed()) {
-      m_intake.setSpeed(IntakeConstants.kSpeed_Shoot);
-      m_intake.start();
+    if (m_intake.isFull()) {
+
+      m_intake.setSpeed(IntakeConstants.kSpeed_Coast);
+      m_intake.setStatus(IntakeStatus.COASTING);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stop();
     m_intake.stop();
+
+    m_intake.setStatus(IntakeStatus.IDLE);
     LEDSubsystem.setMode(LedMode.DEFAULT);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.isEmpty();
+    return m_intake.limitReached();
   }
 }
