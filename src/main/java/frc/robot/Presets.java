@@ -1,6 +1,6 @@
 package frc.robot;
 
-public class SubsystemsConstants {
+public class Presets {
   public static enum Preset {
     kStart(110, 0, 0, 0),
     kStow(195, 0, 0, 0),
@@ -9,6 +9,8 @@ public class SubsystemsConstants {
     kShootSpeaker_2m(185, 0, 500, 500),
     kShootSpeaker_3m(187, 0, 500, 500),
     kShootAmp(80, 6, 1000, 1000),
+    kLongPass(170, 0, 5500, 5500),
+    kDiscardNote(185, 0, 0, 5500),
     kStartClimb(90, 10, 0, 0);
 
     private final double m_rot;

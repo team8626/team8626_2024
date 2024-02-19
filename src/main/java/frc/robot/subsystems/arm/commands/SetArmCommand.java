@@ -5,7 +5,7 @@
 package frc.robot.subsystems.arm.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.SubsystemsConstants.Preset;
+import frc.robot.Presets.Preset;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 public class SetArmCommand extends Command {
