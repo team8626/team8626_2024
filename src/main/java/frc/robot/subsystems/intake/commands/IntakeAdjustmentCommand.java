@@ -6,6 +6,7 @@ package frc.robot.subsystems.intake.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeStates.IntakeStatus;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeAdjustmentCommand extends Command {
@@ -20,6 +21,7 @@ public class IntakeAdjustmentCommand extends Command {
   @Override
   public void initialize() {
     m_intake.start(IntakeConstants.kSpeed_Adjust);
+    m_intake.setStatus(IntakeStatus.ADJUSTING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,11 +32,12 @@ public class IntakeAdjustmentCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_intake.stop();
+    m_intake.setStatus(IntakeStatus.IDLE);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.isFull();
+    return (m_intake.isFull() && !m_intake.limitReached());
   }
 }
