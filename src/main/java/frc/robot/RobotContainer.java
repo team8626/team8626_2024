@@ -13,18 +13,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.SubsystemsConstants.Preset;
+import frc.robot.Presets.Preset;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
-import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.commands.IntakeAdjustmentCommand;
 import frc.robot.subsystems.intake.commands.IntakeCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.commands.ShooterCommand;
 import frc.robot.subsystems.shooter.commands.SimpleShooterCommand;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -86,8 +85,6 @@ public class RobotContainer {
     //             new InstantCommand(() -> m_intake.stop()),
     //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
 
-
-    
     /** Test Controller Buttons * */
     m_buttonBox
         .button_1()
@@ -99,42 +96,44 @@ public class RobotContainer {
         .button_3()
         .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_3m, m_shooter));
 
-    m_buttonBox
-        .button_4()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
-    m_buttonBox
-        .button_5()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
-    m_buttonBox
-        .button_6()
-        .toggleOnTrue(
-            new StartEndCommand(
-                () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
+    // m_buttonBox
+    //     .button_4()
+    //     .toggleOnTrue(
+    //         new StartEndCommand(
+    //             () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
+    // m_buttonBox
+    //     .button_5()
+    //     .toggleOnTrue(
+    //         new StartEndCommand(
+    //             () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
+    // m_buttonBox
+    //     .button_6()
+    //     .toggleOnTrue(
+    //         new StartEndCommand(
+    //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
 
     // Set to Angle Testing
     m_buttonBox.button_7().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(180)));
     m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(195)));
-    m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(90)));
+    // m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(90)));
 
-    // FOR FUTURE USE... 
-    // m_buttonBox
-    //     .button_7()
-    //     .toggleOnTrue(
-    //         new IntakeCommand(m_intake)
-    //             .andThen(
-    //                 new IntakeAdjustmentCommand(m_intake)
-    //                     .onlyIf(() -> !m_intake.isFull() && m_intake.limitReached())));
+    // FOR FUTURE USE...
+    m_buttonBox
+        .button_4()
+        .toggleOnTrue(new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)));
+
+    m_buttonBox
+        .button_5()
+        .toggleOnTrue(new ShooterCommand(m_intake, m_shooter, Preset.kShootSpeaker_0m));
+
+    //         .onlyIf(() -> m_intake.isFull() && !m_intake.limitReached())));
 
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_shooter.stop()));
     // m_buttonBox.button_5().toggleOnTrue(new ShooterCommand(Shoom_intake, m_shooter, m_leds)
 
-    // m_buttonBox
-    //     .button_9()
-    //     .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
+    m_buttonBox
+        .button_9()
+        .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
   }
 
   private void configureDefaultCommands() {
