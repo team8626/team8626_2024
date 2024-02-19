@@ -13,9 +13,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.SubsystemsConstants.Preset;
+import frc.robot.Presets.Preset;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.shooter.ShooterConstants.ShooterStates.ShooterStatus;
 
 public class ShooterSubsystem extends SubsystemBase implements ImplementDashboard {
   private CANSparkMax m_motor1;
@@ -30,7 +31,10 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private double m_desiredRPM_Top = Preset.kShootSpeaker_0m.getTopRPM();
   private double m_currentRPM_Bottom = 0;
   private double m_currentRPM_Top = 0;
+
   private boolean m_enabled = false;
+  private boolean m_isAtSpeed = false;
+  private ShooterStatus m_status = ShooterStatus.IDLE;
 
   private double m_kP = 0.0001;
   private double m_kI = 0;
@@ -106,12 +110,23 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   }
 
   public boolean isAtSpeed() {
-    boolean retval = true; // TODO: compute the setpoint
-    // if( (Math.abs(m_encoder1.getVelocity() - m_RPMSetPoint1) > Shooter.kRPMTolerance)
-    //   && (Math.abs(m_encoder2.getVelocity() - m_RPMSetPoint2) <= Shooter.kRPMTolerance) ){
-    //   retval = false;
-    // }
-    return retval;
+    return m_isAtSpeed;
+  }
+
+  private void checkRPM() {
+    if (m_enabled) {
+      if (MathUtil.isNear(m_desiredRPM_Bottom, m_currentRPM_Bottom, ShooterConstants.kRPMTolerance)
+          && MathUtil.isNear(m_desiredRPM_Top, m_currentRPM_Top, ShooterConstants.kRPMTolerance)) {
+        m_isAtSpeed = true;
+        m_status = ShooterStatus.ATSPEED;
+      } else {
+        m_isAtSpeed = false;
+        m_status = ShooterStatus.RAMPUP;
+      }
+    } else {
+      m_isAtSpeed = false;
+      m_status = ShooterStatus.IDLE;
+    }
   }
 
   @Override
@@ -131,10 +146,7 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
       } else {
         m_pidController1.setReference(0, CANSparkMax.ControlType.kDutyCycle);
         m_pidController2.setReference(0, CANSparkMax.ControlType.kDutyCycle);
-        // m_motor1.set(0);
-        // m_motor2.set(0);
       }
-
       m_currentRPM_Bottom = m_encoder1.getVelocity();
       m_currentRPM_Top = m_encoder2.getVelocity();
 
@@ -156,22 +168,16 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
         m_currentRPM_Top = 0;
       }
     }
+    checkRPM();
+  }
+
+  private void setStatus(ShooterStatus newStatus) {
+    m_status = newStatus;
+    System.out.printf("[SHOOTER] New Status: %s\n", m_status.getString());
   }
 
   @Override
-  public void initDashboard() {
-    SmartDashboard.putBoolean("Shooter/ENABLED", m_enabled);
-
-    SmartDashboard.putNumber("Shooter/DesiredRPM_Bottom", m_desiredRPM_Bottom);
-    SmartDashboard.putNumber("Shooter/DesiredRPM_Top", m_desiredRPM_Top);
-
-    SmartDashboard.putNumber("Shooter/CurrentRPM_Bottom", m_currentRPM_Bottom);
-    SmartDashboard.putNumber("Shooter/CurrentRPM_Top", m_currentRPM_Top);
-
-    SmartDashboard.putNumber("Shooter/P Gain", m_kP);
-    SmartDashboard.putNumber("Shooter/D Gain", m_kD);
-    SmartDashboard.putNumber("Shooter/Feed Forward", m_kFF);
-  }
+  public void initDashboard() {}
 
   @Override
   public void updateDashboard() {
@@ -207,8 +213,10 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
       m_kFF = ff;
     }
 
-    m_enabled = SmartDashboard.getBoolean("Shooter/ENABLED", m_enabled);
+    SmartDashboard.putString("Shooter/Status", m_status.getString());
     SmartDashboard.putBoolean("Shooter/ENABLED", m_enabled);
+    m_enabled = SmartDashboard.getBoolean("Shooter/ENABLED", m_enabled);
+    SmartDashboard.putBoolean("Shooter/AtSpeed", isAtSpeed());
 
     SmartDashboard.putNumber("Shooter/DesiredRPM_Bottom", m_desiredRPM_Bottom);
     SmartDashboard.putNumber("Shooter/DesiredRPM_Top", m_desiredRPM_Top);
