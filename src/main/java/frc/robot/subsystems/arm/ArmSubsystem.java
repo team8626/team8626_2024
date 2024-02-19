@@ -175,9 +175,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   }
 
   /**
-   * Set Arm Length to a specific extension in Inches. The desired length will be forced between
+   * Set Arm Length to a specific extension in Inches.
    *
-   * @param newLengthInches requested length kMinExtInches and kMaxExtInches
+   * @param newLengthInches
    */
   public void setLengthInches(double newLengthInches) {
     if (m_armZeroed) {
@@ -188,9 +188,9 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   }
 
   /**
-   * Set Arm Rotation to a specific angle in Degres. The desired length will be forced between
+   * Set Arm Rotation to a specific rotation in Degrees.
    *
-   * @param newLengthInches requested length kMinRotDeg and kMaxRotDeg
+   * @param newAngleDeg
    */
   public void setAngleDeg(double newAngleDeg) {
     m_desiredAngleDeg = newAngleDeg; // Value Clamped in periodic()
@@ -225,8 +225,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
       // Allow control only if rotation is in range or coming back to range
       if ((m_currentAngleDeg < (Rotation.kMinRotDeg) && (newSpeed > 0))
           || (m_currentAngleDeg > (Rotation.kMaxRotDeg) && (newSpeed < 0))
-          || ((m_currentAngleDeg >= (Rotation.kMinRotDeg) && (m_currentAngleDeg <= (Rotation.kMaxRotDeg)))))
-      {
+          || ((m_currentAngleDeg >= (Rotation.kMinRotDeg)
+              && (m_currentAngleDeg <= (Rotation.kMaxRotDeg))))) {
         m_rotationPIDController.setReference(-newSpeed * 0.50, ControlType.kDutyCycle);
       }
     } else { // Simulation
@@ -248,12 +248,14 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   }
 
   public boolean atExtensionSetpoint() {
-    return MathUtil.isNear(m_desiredExtensionInches, m_currentExtInches, Extension.kAtInchesTolerance);
+    return MathUtil.isNear(
+        m_desiredExtensionInches, m_currentExtInches, Extension.kAtInchesTolerance);
   }
 
   public boolean atAngleSetpoint() {
     return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, Rotation.kAtAngleTolerance);
   }
+
   /*
    * Convert Reel Rotations from Extension Length
    */
@@ -328,36 +330,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   }
 
   @Override
-  public void initDashboard() {
-    m_kRotationP = SmartDashboard.getNumber("Arm/Rotation/P Gain", Rotation.kRotP);
-    m_kRotationD = SmartDashboard.getNumber("Arm/Rotation/D Gain", Rotation.kRotD);
-    m_kRotationFF = SmartDashboard.getNumber("Arm/Rotation/Feed Forward", Rotation.kRotFF);
-
-    m_kExtensionP = SmartDashboard.getNumber("Arm/Extension/P Gain", Extension.kExtP);
-    m_kExtensionD = SmartDashboard.getNumber("Arm/Extension/D Gain", Extension.kExtD);
-    m_kExtensionFF = SmartDashboard.getNumber("Arm/Extension/Feed Forward", Extension.kExtFF);
-
-    SmartDashboard.putNumber("Arm/Rotation/DesiredDegres", m_desiredAngleDeg);
-    SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_currentAngleDeg);
-    SmartDashboard.putNumber("Arm/Rotation/AMPs_L", m_rotationMotor_L.getOutputCurrent());
-    SmartDashboard.putNumber("Arm/Rotation/AMPs_R", m_rotationMotor_R.getOutputCurrent());
-
-    SmartDashboard.putNumber("Arm/Extension/DesiredInches", m_desiredExtensionInches);
-    SmartDashboard.putNumber("Arm/Extension/CurrentInches", m_currentExtInches);
-    SmartDashboard.putNumber("Arm/Extension/CurrentDegrees", m_extensionEncoder.getPosition());
-    SmartDashboard.putNumber("Arm/Extension/AMPs_L", m_extensionMotor_L.getOutputCurrent());
-
-    SmartDashboard.putBoolean("Arm/Extension/Resetting", m_armIsResetting);
-    SmartDashboard.putBoolean("Arm/Extension/Zeroed", m_armZeroed);
-
-    SmartDashboard.putNumber("Arm/Rotation/P Gain", m_kRotationP);
-    SmartDashboard.putNumber("Arm/Rotation/D Gain", m_kRotationD);
-    SmartDashboard.putNumber("Arm/Rotation/Feed Forward", m_kRotationFF);
-
-    SmartDashboard.putNumber("Arm/Extension/P Gain", m_kRotationP);
-    SmartDashboard.putNumber("Arm/Extension/D Gain", m_kRotationD);
-    SmartDashboard.putNumber("Arm/Extension/Feed Forward", m_kRotationFF);
-  }
+  public void initDashboard() {}
 
   @Override
   public void updateDashboard() {
