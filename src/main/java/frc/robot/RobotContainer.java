@@ -18,15 +18,17 @@ import frc.robot.Presets.Preset;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.drive.DriveConstants.IOControlsConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.commands.IntakeAdjustmentCommand;
 import frc.robot.subsystems.intake.commands.IntakeCommand;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.commands.ShooterCommand;
 import frc.robot.subsystems.shooter.commands.SimpleShooterCommand;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
+import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
@@ -47,13 +49,13 @@ public class RobotContainer {
   public final LEDSubsystem m_leds = new LEDSubsystem();
 
   private final XboxController m_xboxController =
-      new XboxController(IOControlsConstants.kXboxControllerPort);
+      new XboxController(Constants.OperatorConstants.kXboxControllerPort);
 
   private final CommandXboxController m_testController =
-      new CommandXboxController(IOControlsConstants.kTestControllerPort);
+      new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
 
   private final CommandButtonController m_buttonBox =
-      new CommandButtonController(IOControlsConstants.kButtonBoxPort);
+      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
 
   public RobotContainer() {
 
@@ -208,14 +210,18 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        // return new DriveToPoseCommand(m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
-        return m_drivebase.driveToPose(new Pose2d(3, 0, Rotation2d.fromDegrees(0)));
+        return new DriveToPoseCommand(
+            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
 
       case PRINT:
         return Commands.print("Print Auto Command");
 
       case DO_NOTHING:
         return Commands.none();
+
+      case TRAJECTORY_DTP:
+        return new DriveToPoseTrajPIDCommand(
+            m_drivebase, new Pose2d(6, 6, Rotation2d.fromDegrees(180)), false);
     }
   }
 }

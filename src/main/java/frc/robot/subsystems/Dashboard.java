@@ -36,7 +36,8 @@ public class Dashboard extends SubsystemBase {
   public enum AutoOptions {
     PRINT,
     DO_NOTHING,
-    EXIT
+    EXIT,
+    TRAJECTORY_DTP
   };
 
   public static interface ImplementDashboard {
@@ -61,6 +62,8 @@ public class Dashboard extends SubsystemBase {
     m_autoChooser.setDefaultOption("PRINT", AutoOptions.PRINT);
     m_autoChooser.addOption("DO NOTHING", AutoOptions.DO_NOTHING);
     m_autoChooser.addOption("EXIT STARTING ZONE", AutoOptions.EXIT);
+    m_autoChooser.addOption("TRAJECTORY DTP", AutoOptions.TRAJECTORY_DTP);
+
     SmartDashboard.putData("Autonomous Selection", m_autoChooser);
   }
 

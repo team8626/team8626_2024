@@ -22,6 +22,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
@@ -88,6 +89,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
 
+    swerveDrive.getGyro().setInverted(true);
     setupPathPlanner();
   }
 
@@ -306,17 +308,17 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   @Override
   public void periodic() {
 
-    // Correct pose estimate with vision measurements
-    var visionEst = m_vision.getEstimatedGlobalPose();
-    visionEst.ifPresent(
-        est -> {
-          var estPose = est.estimatedPose.toPose2d();
-          // Change our trust in the measurement based on the tags we can see
-          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+    // // Correct pose estimate with vision measurements
+    // var visionEst = m_vision.getEstimatedGlobalPose();
+    // visionEst.ifPresent(
+    //     est -> {
+    //       var estPose = est.estimatedPose.toPose2d();
+    //       // Change our trust in the measurement based on the tags we can see
+    //       var estStdDevs = m_vision.getEstimationStdDevs(estPose);
 
-          swerveDrive.addVisionMeasurement(
-              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-        });
+    //       swerveDrive.addVisionMeasurement(
+    //           est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+    //     });
   }
 
   @Override
@@ -393,7 +395,22 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
-    return getPose().getRotation();
+    // Just switched this to try original return Friday 10:00 AM
+    return swerveDrive.getPose().getRotation();
+    // return swerveDrive.getYaw();
+  }
+
+  public Rotation2d getOdometryHeading() {
+    // TRY THIS ASWELL
+    return swerveDrive.getOdometryHeading();
+  }
+  // Converts the angle from a range of -180:180 to 0:360
+  public static double convertAngle(double angle) {
+    if (angle < 0 && angle >= -180) {
+      return -angle;
+    } else {
+      return 360 - angle;
+    }
   }
 
   /**
@@ -490,12 +507,15 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public void initDashboard() {
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
   }
 
   @Override
   public void updateDashboard() {
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
+    SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
   }
 
   @Override
