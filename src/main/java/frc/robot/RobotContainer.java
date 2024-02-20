@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
@@ -21,6 +23,7 @@ import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -45,14 +48,32 @@ public class RobotContainer {
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
 
-  private final XboxController m_xboxController =
-      new XboxController(Constants.OperatorConstants.kXboxControllerPort);
+  private final CommandXboxController m_xboxController =
+      new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
 
-  private final CommandButtonController m_buttonBox =
-      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+  private final CommandButtonController m_buttonBox = new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+
+  private boolean isSlowDrive = false;
+  private double driveSpeedFactor = 1;
+  private double rotationSpeedFactor = 1;
+
+  Command driveFieldOrientedAnglularVelocity;
+
+  private class RotateSlowCommand extends RunCommand {
+    public RotateSlowCommand(boolean clockwise) {
+      super(
+          () ->
+              m_drivebase.drive(
+                  new Translation2d(),
+                  clockwise
+                      ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                      : Constants.OperatorConstants.kIncrementalRotationSpeed,
+                  true));
+    }
+  }
 
   public RobotContainer() {
 
@@ -63,7 +84,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
     /** Button Box Bindings */
     // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
@@ -91,6 +111,13 @@ public class RobotContainer {
     m_buttonBox
         .button_9()
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
+
+    m_xboxController.y().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
+    // hardware
+    m_xboxController.x().whileTrue(new RotateSlowCommand(false));
+    m_xboxController.b().whileTrue(new RotateSlowCommand(true));
   }
 
   private void configureDefaultCommands() {
@@ -107,10 +134,10 @@ public class RobotContainer {
             () ->
                 MathUtil.applyDeadband(
                     -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
-            m_xboxController::getBButtonPressed,
-            m_xboxController::getAButtonPressed,
-            m_xboxController::getXButtonPressed,
-            m_xboxController::getBButtonPressed);
+            () -> m_xboxController.b().getAsBoolean(),
+            () -> m_xboxController.x().getAsBoolean(),
+            () -> m_xboxController.y().getAsBoolean(),
+            () -> m_xboxController.a().getAsBoolean());
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -129,11 +156,13 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity =
+    driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-            () -> -m_xboxController.getRawAxis(4));
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
+
+    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -157,6 +186,13 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
     m_arm.setDefaultCommand(controlArm);
+  }
+
+  public void toggleSlowDrive() {
+    driveSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowDriveSpeedFactor;
+    rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
+
+    isSlowDrive = !isSlowDrive;
   }
 
   public Command getAutonomousCommand() {
