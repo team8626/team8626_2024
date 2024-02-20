@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.SparkRelativeEncoder;
 
 public class ArmConstants {
 
@@ -8,27 +9,29 @@ public class ArmConstants {
     public static final int extensionCANID_L = 20;
 
     // Using Through Bore Encoder
-    public static final SparkMaxAlternateEncoder.Type kAltEncType =
-        SparkMaxAlternateEncoder.Type.kQuadrature;
+    public static final SparkRelativeEncoder.Type kEncType = SparkRelativeEncoder.Type.kQuadrature;
     public static final int kCPR = 8192;
 
     public static final double kMinExtInches = 0;
     public static final double kMaxExtInches = 10;
     public static final double kExtPulleyDiameter = 2; // Inches
 
-    public static final float kExtMinExtRotDeg = (float) 0; // Degres
-    public static final float kExtMaxExtRotDeg =
-        (float) ((kMaxExtInches - kMinExtInches) / (Math.PI * kExtPulleyDiameter)) * 360; // Degres
+    // public static final float kExtMinExtRotDeg = (float) 0; // Degres
+    // public static final float kExtMaxExtRotDeg =
+    //     (float) ((kMaxExtInches - kMinExtInches) / (Math.PI * kExtPulleyDiameter)) * 360; //
+    // Degres
 
     public static final int kCurrentLimit = 30;
     public static final int kZeroingCurrent = 25;
 
-    public static final double kExtensionEncoderPositionFactorDeg = 360; // degres
-    public static final double kExtensionEncoderVelocityFactorDeg = 360 / 60; // degres per second
+    public static final double kExtensionEncoderPositionFactorDeg =
+        (Math.PI * kExtPulleyDiameter); // Inches
+    public static final double kExtensionEncoderVelocityFactorDeg =
+        kExtensionEncoderPositionFactorDeg / 2;
 
-    public static final double kExtensionEncoderPositionPIDMinInput = 0; // degrees
+    public static final double kExtensionEncoderPositionPIDMinInput = 0; // inches
     public static final double kExtensionEncoderPositionPIDMaxInput =
-        kExtensionEncoderPositionFactorDeg; // degrees
+        kExtensionEncoderPositionFactorDeg * kMaxExtInches; // inches
 
     public static final double kExtP = 0.02;
     public static final double kExtI = 0;
@@ -61,7 +64,7 @@ public class ArmConstants {
     public static final double kRotD = 0;
     public static final double kRotFF = 0;
     public static final double kRotMinOutput = -1;
-    public static final double kRotMaxOutput = +1;
+    public static final double kRotMaxOutput = +0.25;
 
     public static final double kMaxAngleForSafeRetraction = 180;
 
