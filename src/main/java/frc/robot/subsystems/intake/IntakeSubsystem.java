@@ -91,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
   @Override
   public void periodic() {
     if (Robot.isReal()) {
-      m_bottomSensor = m_infrared1.get();
+      m_bottomSensor = !m_infrared1.get();
       m_exitSensor = !m_infrared2.get();
     } else if (Robot.isSimulation()) {
       m_bottomSensor = SmartDashboard.getBoolean("Intake/BottomSensor", m_bottomSensor);
