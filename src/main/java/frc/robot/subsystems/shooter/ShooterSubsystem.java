@@ -36,11 +36,11 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private boolean m_isAtSpeed = false;
   private ShooterStatus m_status = ShooterStatus.IDLE;
 
-  private double m_kP = 0.0001;
+  private double m_kP = 0.00015;
   private double m_kI = 0;
-  private double m_kD = 0;
+  private double m_kD = 0.00038;
   private double m_kIz = 0;
-  private double m_kFF = 0.000016;
+  private double m_kFF = 0.00017;
   private double m_kMaxOutput = 1;
   private double m_kMinOutput = -1;
 
@@ -192,9 +192,9 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
       m_desiredRPM_Top = newRPM_Top;
     }
 
-    double p = SmartDashboard.getNumber("Shooter/P Gain", 0);
-    double d = SmartDashboard.getNumber("Shooter/D Gain", 0);
-    double ff = SmartDashboard.getNumber("Shooter/Feed Forward", 0);
+    double p = SmartDashboard.getNumber("Shooter/P Gain", m_kP);
+    double d = SmartDashboard.getNumber("Shooter/D Gain", m_kD);
+    double ff = SmartDashboard.getNumber("Shooter/Feed Forward", m_kFF);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if ((p != m_kP)) {
