@@ -89,21 +89,6 @@ public class RobotContainer {
 
   Command driveFieldOrientedAnglularVelocity;
 
-  // Initialized here because speed factors are created in constants
-  private final Command slowDriveCommand =
-      m_drivebase.driveCommand(
-          () ->
-              MathUtil.applyDeadband(
-                  -m_xboxController.getLeftY() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
-                  0.1),
-          () ->
-              MathUtil.applyDeadband(
-                  -m_xboxController.getLeftX() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
-                  0.1),
-          () ->
-              -m_xboxController.getRawAxis(4)
-                  * Constants.OperatorConstants.kSlowRotationSpeedFactor);
-
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
       super(
@@ -262,7 +247,6 @@ public class RobotContainer {
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
-    slowDriveCommand.setName("Slow Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -289,17 +273,10 @@ public class RobotContainer {
   }
 
   public void toggleSlowDrive() {
-    switch (m_drivebase.getDefaultCommand().getName()) {
-      case "Drive Field Oriented Anglular Velocity Command":
-        m_drivebase.setDefaultCommand(slowDriveCommand);
-        Commands.print("Slow Drive Enabled").schedule();
-        break;
+    driveSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowDriveSpeedFactor;
+    rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
 
-      case "Slow Drive Field Oriented Anglular Velocity Command":
-        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-        Commands.print("Slow Drive Disabled").schedule();
-        break;
-    }
+    isSlowDrive = !isSlowDrive;
   }
 
   public Command getAutonomousCommand() {
