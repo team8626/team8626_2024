@@ -41,22 +41,11 @@ public class RobotContainer {
 
   private final CommandButtonController m_buttonBox = new CommandButtonController(2);
 
-  Command driveFieldOrientedAnglularVelocity;
+  private boolean isSlowDrive = false;
+  private double driveSpeedFactor = 1;
+  private double rotationSpeedFactor = 1;
 
-  // Initialized here because speed factors are created in constants
-  private final Command slowDriveCommand =
-      m_drivebase.driveCommand(
-          () ->
-              MathUtil.applyDeadband(
-                  -m_xboxController.getLeftY() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
-                  0.1),
-          () ->
-              MathUtil.applyDeadband(
-                  -m_xboxController.getLeftX() * Constants.OperatorConstants.kSlowDriveSpeedFactor,
-                  0.1),
-          () ->
-              -m_xboxController.getRawAxis(4)
-                  * Constants.OperatorConstants.kSlowRotationSpeedFactor);
+  Command driveFieldOrientedAnglularVelocity;
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
@@ -138,12 +127,11 @@ public class RobotContainer {
     // right stick controls the angular velocity of the robot
     driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-            () -> -m_xboxController.getRawAxis(4));
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
-    slowDriveCommand.setName("Slow Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -170,17 +158,10 @@ public class RobotContainer {
   }
 
   public void toggleSlowDrive() {
-    switch (m_drivebase.getDefaultCommand().getName()) {
-      case "Drive Field Oriented Anglular Velocity Command":
-        m_drivebase.setDefaultCommand(slowDriveCommand);
-        Commands.print("Slow Drive Enabled").schedule();
-        break;
+    driveSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowDriveSpeedFactor;
+    rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
 
-      case "Slow Drive Field Oriented Anglular Velocity Command":
-        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-        Commands.print("Slow Drive Disabled").schedule();
-        break;
-    }
+    isSlowDrive = !isSlowDrive;
   }
 
   public Command getAutonomousCommand() {
