@@ -75,7 +75,7 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
    * @return true ifno NOTE is loaded
    */
   public boolean isEmpty() {
-    return m_bottomSensor && m_exitSensor;
+    return !(m_bottomSensor || m_exitSensor);
   }
 
   /**
@@ -114,6 +114,7 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
     SmartDashboard.putNumber("Intake/SetSpeed", m_speed);
 
+    SmartDashboard.putBoolean("Intake/IsEmpty", isEmpty());
     SmartDashboard.putBoolean("Intake/BottomSensor", m_bottomSensor);
     SmartDashboard.putBoolean("Intake/ExitSensor", m_exitSensor);
   }
