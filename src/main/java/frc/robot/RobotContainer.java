@@ -92,7 +92,7 @@ public class RobotContainer {
         .a()
         .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
 
-    m_testController.rightStick().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    m_xboxController.y().onTrue(new InstantCommand(() -> toggleSlowDrive()));
 
     // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
     // hardware
@@ -173,10 +173,12 @@ public class RobotContainer {
     switch (m_drivebase.getDefaultCommand().getName()) {
       case "Drive Field Oriented Anglular Velocity Command":
         m_drivebase.setDefaultCommand(slowDriveCommand);
+        Commands.print("Slow Drive Enabled").schedule();
         break;
 
       case "Slow Drive Field Oriented Anglular Velocity Command":
         m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        Commands.print("Slow Drive Disabled").schedule();
         break;
     }
   }

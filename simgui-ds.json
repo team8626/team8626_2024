@@ -84,14 +84,20 @@
         }
       ],
       "axisCount": 2,
-      "buttonCount": 6,
+      "buttonCount": 12,
       "buttonKeys": [
         47,
         46,
         44,
         77,
         78,
-        66
+        66,
+        -1,
+        -1,
+        -1,
+        84,
+        -1,
+        48
       ],
       "povCount": 0
     },
@@ -103,11 +109,9 @@
   ],
   "robotJoysticks": [
     {
-      "guid": "Keyboard0"
-    },
-    {
       "guid": "Keyboard2"
     },
+    {},
     {
       "guid": "Keyboard1",
       "name": "Botton Box"
