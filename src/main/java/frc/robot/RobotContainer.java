@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.auto.DriveToNoteCommand;
+import frc.robot.commands.auto.TrackNoteCommand;
 import frc.robot.Presets.Preset;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
@@ -22,6 +24,8 @@ import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
+// import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -48,7 +52,7 @@ public class RobotContainer {
   public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
   public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
 
-  public final IntakeSubsystem m_intake = new IntakeSubsystem();
+public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public PresetSubsystem m_presetStorage = new PresetSubsystem();

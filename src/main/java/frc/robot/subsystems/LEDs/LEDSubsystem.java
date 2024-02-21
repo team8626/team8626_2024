@@ -147,6 +147,10 @@ public class LEDSubsystem extends SubsystemBase {
         rainbow(LEDConstants.waveSlowCycleLength, LEDConstants.waveSlowDuration);
         break;
 
+      case FOLLOWNOTE:
+        flow(Color.kOrange, 1);
+        break;
+
       case DEFAULT:
       default:
         wave(m_currentColor[0], m_currentColor[1], 25, 2.0);

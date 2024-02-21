@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -40,12 +41,19 @@ public class RobotConstants {
   public static double kArmExtensionOffMeters = Units.inchesToMeters(-3);
 
   public static class Vision {
-    public static final String kCameraName = "Arducam_AT002";
-    // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-    public static final Transform3d kRobotToCam =
+    // april tag camera constants
+    public static final String kATCameraName = "Arducam_AT002";
+    public static final Transform3d kATRobotToCam =
         new Transform3d(
             new Translation3d(-0.222275, -0.275290, 0.249531),
             new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(167.04746)));
+
+    // Object Detection camera Constants
+    public static final String kODCameraName = "Arducam_OD003";
+    public static final Pose3d kODCamPose =
+        new Pose3d(
+            new Translation3d(0.208264, 0, 0.346066),
+            new Rotation3d(0, Units.degreesToRadians(20), 0));
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =

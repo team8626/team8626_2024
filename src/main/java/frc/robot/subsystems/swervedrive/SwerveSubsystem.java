@@ -47,7 +47,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public double maximumSpeed = Units.feetToMeters(14.5);
 
   /** Vision object */
-  private Vision m_vision = new Vision();
+  private Vision m_vision = new Vision(this);
   /** Publisher for robot pose (AdvantageScope) */
   StructPublisher<Pose3d> m_publisher =
       NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
