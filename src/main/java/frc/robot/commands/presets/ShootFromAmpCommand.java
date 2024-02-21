@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Presets.Preset;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
+import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -17,9 +18,13 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootFromAmpCommand extends SequentialCommandGroup {
 
-  public ShootFromAmpCommand(IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
+  public ShootFromAmpCommand(
+      ArmRotationSubsystem armRot,
+      ArmExtensionSubsystem armExt,
+      IntakeSubsystem intake,
+      ShooterSubsystem shooter) {
     addCommands(
-        new SetArmCommand(arm, Preset.kShootAmp),
-        new ShooterCommand(intake, shooter, Preset.kShootAmp));
+        new SetArmCommand(armRot, armExt, () -> Preset.kShootAmp),
+        new ShooterCommand(intake, shooter, () -> Preset.kShootAmp));
   }
 }

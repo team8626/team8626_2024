@@ -20,7 +20,6 @@ import frc.robot.Presets.Preset;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.robot.subsystems.arm.ArmConstants.Rotation;
 import java.util.function.DoubleSupplier;
 
 public class ArmRotationSubsystem extends SubsystemBase implements ImplementDashboard {
@@ -45,19 +44,19 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
   //     NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
   // Pose3d.struct).publish();
 
-  private double m_kRotationP = Rotation.kRotP;
+  private double m_kRotationP = RotConstants.kRotP;
 
-  private double m_kRotationI = Rotation.kRotI;
-  private double m_kRotationD = Rotation.kRotD;
-  private double m_kRotationFF = Rotation.kRotFF;
-  private double m_kRotationMaxOutput = Rotation.kRotMaxOutput;
-  private double m_kRotationMinOutput = Rotation.kRotMinOutput;
+  private double m_kRotationI = RotConstants.kRotI;
+  private double m_kRotationD = RotConstants.kRotD;
+  private double m_kRotationFF = RotConstants.kRotFF;
+  private double m_kRotationMaxOutput = RotConstants.kRotMaxOutput;
+  private double m_kRotationMinOutput = RotConstants.kRotMinOutput;
 
   /** Creates a new ArmExtensionSubsystem. */
   public ArmRotationSubsystem() {
     // Reset & Initialize Controllers
-    m_rotationMotor_L = new CANSparkMax(Rotation.rotationCANID_L, MotorType.kBrushless);
-    m_rotationMotor_R = new CANSparkMax(Rotation.rotationCANID_R, MotorType.kBrushless);
+    m_rotationMotor_L = new CANSparkMax(RotConstants.rotationCANID_L, MotorType.kBrushless);
+    m_rotationMotor_R = new CANSparkMax(RotConstants.rotationCANID_R, MotorType.kBrushless);
 
     m_rotationMotor_L.restoreFactoryDefaults();
     m_rotationMotor_R.restoreFactoryDefaults();
@@ -73,13 +72,13 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     // Rotation Soft Limits
     m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, false);
     m_rotationMotor_L.enableSoftLimit(SoftLimitDirection.kForward, false);
-    m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kReverse, Rotation.kMinRotDeg);
-    m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kForward, Rotation.kMaxRotDeg);
+    m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kReverse, RotConstants.kMinRotDeg);
+    m_rotationMotor_L.setSoftLimit(SoftLimitDirection.kForward, RotConstants.kMaxRotDeg);
 
     // Apply position and velocity conversion factors for the turning encoder.
     // We want these in degrees and degrees per second
-    m_rotationEncoder.setPositionConversionFactor(Rotation.kRotationEncoderPositionFactorDeg);
-    m_rotationEncoder.setVelocityConversionFactor(Rotation.kRotationEncoderVelocityFactorDeg);
+    m_rotationEncoder.setPositionConversionFactor(RotConstants.kRotationEncoderPositionFactorDeg);
+    m_rotationEncoder.setVelocityConversionFactor(RotConstants.kRotationEncoderVelocityFactorDeg);
     m_rotationEncoder.setZeroOffset(m_rotationEncoder.getZeroOffset() + 180);
     m_rotationEncoder.setInverted(false);
 
@@ -92,7 +91,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
 
     // Idle Modes and max current
     m_rotationMotor_L.setIdleMode(IdleMode.kBrake);
-    m_rotationMotor_L.setSmartCurrentLimit(Rotation.kCurrentLimit);
+    m_rotationMotor_L.setSmartCurrentLimit(RotConstants.kCurrentLimit);
 
     // DO NOT WRITE (BURNFLASH) TO MOTOR SINCE WE UPDATED THE ZERO OFFSET!!!!
 
@@ -115,16 +114,17 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
    */
   public void setAngleDeg(double newAngleDeg) {
     m_desiredAngleDeg = newAngleDeg; // Value Clamped in periodic()
+    System.out.printf("[ARM] New Angle: %f\n", m_desiredAngleDeg);
   }
 
   public void rotate(double newSpeed) {
     if (Robot.isReal()) {
       // Soft Limit...
       // Allow control only if rotation is in range or coming back to range
-      if ((m_currentAngleDeg < (Rotation.kMinRotDeg) && (newSpeed > 0))
-          || (m_currentAngleDeg > (Rotation.kMaxRotDeg) && (newSpeed < 0))
-          || ((m_currentAngleDeg >= (Rotation.kMinRotDeg)
-              && (m_currentAngleDeg <= (Rotation.kMaxRotDeg))))) {
+      if ((m_currentAngleDeg < (RotConstants.kMinRotDeg) && (newSpeed > 0))
+          || (m_currentAngleDeg > (RotConstants.kMaxRotDeg) && (newSpeed < 0))
+          || ((m_currentAngleDeg >= (RotConstants.kMinRotDeg)
+              && (m_currentAngleDeg <= (RotConstants.kMaxRotDeg))))) {
         m_rotationPIDController.setReference(-newSpeed * 0.50, ControlType.kDutyCycle);
       }
     } else { // Simulation
@@ -137,7 +137,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
   }
 
   public boolean atSetpoint() {
-    return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, Rotation.kAtAngleTolerance);
+    return MathUtil.isNear(m_desiredAngleDeg, m_currentAngleDeg, RotConstants.kAtAngleTolerance);
   }
 
   private boolean isInRange(double angleDegree) {
@@ -148,10 +148,15 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     return retval;
   }
 
+  public double getRotDegrees() {
+    return m_currentAngleDeg;
+  }
+
   @Override
   public void periodic() {
     /** Check for value in Range * */
-    m_desiredAngleDeg = MathUtil.clamp(m_desiredAngleDeg, Rotation.kMinRotDeg, Rotation.kMaxRotDeg);
+    m_desiredAngleDeg =
+        MathUtil.clamp(m_desiredAngleDeg, RotConstants.kMinRotDeg, RotConstants.kMaxRotDeg);
 
     /** Update Current Arm Positions */
     if (Robot.isReal()) {
@@ -168,7 +173,6 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     SmartDashboard.getNumber("Arm/Rotation/P Gain", m_kRotationP);
     SmartDashboard.getNumber("Arm/Rotation/D Gain", m_kRotationD);
     SmartDashboard.getNumber("Arm/Rotation/Feed Forward", m_kRotationFF);
-    SmartDashboard.getNumber("Arm/Rotation/DesiredDegres", m_desiredAngleDeg);
   }
 
   @Override
@@ -177,13 +181,11 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_rotationEncoder.getPosition());
     SmartDashboard.putNumber("Arm/Rotation/AMPs_L", m_rotationMotor_L.getOutputCurrent());
     SmartDashboard.putNumber("Arm/Rotation/AMPs_R", m_rotationMotor_R.getOutputCurrent());
+    SmartDashboard.putBoolean("Arm/Rotation/atSetPoint", atSetpoint());
 
-    // TODO: Remove Angle Adjustment
-    double angle = SmartDashboard.getNumber("Arm/Rotation/DesiredDegres", m_desiredAngleDeg);
-
-    double rotP = SmartDashboard.getNumber("Arm/Rotation/P Gain", Rotation.kRotP);
-    double rotD = SmartDashboard.getNumber("Arm/Rotation/D Gain", Rotation.kRotD);
-    double rotFF = SmartDashboard.getNumber("Arm/Rotation/Feed Forward", Rotation.kRotFF);
+    double rotP = SmartDashboard.getNumber("Arm/Rotation/P Gain", RotConstants.kRotP);
+    double rotD = SmartDashboard.getNumber("Arm/Rotation/D Gain", RotConstants.kRotD);
+    double rotFF = SmartDashboard.getNumber("Arm/Rotation/Feed Forward", RotConstants.kRotFF);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if ((rotP != m_kRotationP)) {
@@ -197,10 +199,6 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     if ((rotFF != m_kRotationFF)) {
       m_rotationPIDController.setFF(rotFF);
       m_kRotationFF = rotFF;
-    }
-
-    if ((angle != m_desiredAngleDeg) && (isInRange(angle))) {
-      m_desiredAngleDeg = angle;
     }
 
     SmartDashboard.putNumber("Arm/Rotation/P Gain", m_kRotationP);
@@ -250,7 +248,8 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
       m_currentAngleDeg -= 0.5;
     }
     // Clamp values for stable simulation
-    m_currentAngleDeg = MathUtil.clamp(m_currentAngleDeg, Rotation.kMinRotDeg, Rotation.kMaxRotDeg);
+    m_currentAngleDeg =
+        MathUtil.clamp(m_currentAngleDeg, RotConstants.kMinRotDeg, RotConstants.kMaxRotDeg);
   }
 
   /** Controlling the Arm */

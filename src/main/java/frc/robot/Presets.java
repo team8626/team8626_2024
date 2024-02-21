@@ -1,28 +1,31 @@
 package frc.robot;
 
 public class Presets {
-  public static enum Preset {
-    kStart(110, 0, 0, 0),
-    kStow(195, 0, 0, 0),
-    kFloorPickup(200, 10, 500, 500),
-    kShootSpeaker_0m(195, 0, 4000, 5500),
-    kShootSpeaker_2m(185, 0, 500, 500),
-    kShootSpeaker_3m(187, 0, 500, 500),
-    kShootAmp(80, 6, 1000, 1000),
-    kLongPass(170, 0, 5500, 5500),
-    kDiscardNote(185, 0, 0, 5500),
-    kStartClimb(90, 10, 0, 0);
+  public enum Preset {
+    kStart("START", 110, 0, 0, 0),
+    kStow("STOW", 195, 0, 0, 0),
+    kFloorPickup("FLOOR PICKUP", 204, 10, 500, 500),
+    kShootSpeaker_0m("SPEAKER_0M", 204, 10, 4000, 5200),
+    kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4000, 4000),
+    kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
+    kShootAmp("AMP", 80, 10, 3000, 3000),
+    kLongPass("PASS", 170, 0, 5500, 5500),
+    kDiscardNote("DISCARD", 185, 0, 0, 5500),
+    kStartClimb("START_CLIMB", 90, 10, 0, 0);
 
-    private final double m_rot;
-    private final double m_ext;
-    private final int m_topRPM;
-    private final int m_bottomRPM;
+    private double m_rot;
+    private double m_ext;
+    private int m_topRPM;
+    private int m_bottomRPM;
+    private String m_string;
 
-    Preset(double newRotDeg, double newExtInches, int newTopRPM, int newBottomRPM) {
+    Preset(
+        String newString, double newRotDeg, double newExtInches, int newTopRPM, int newBottomRPM) {
       this.m_rot = newRotDeg;
       this.m_ext = newExtInches;
       this.m_topRPM = newTopRPM;
       this.m_bottomRPM = newBottomRPM;
+      this.m_string = newString;
     }
 
     public double getRotDegrees() {
@@ -33,12 +36,16 @@ public class Presets {
       return m_ext;
     }
 
-    public double getTopRPM() {
+    public int getTopRPM() {
       return m_topRPM;
     }
 
-    public double getBottomRPM() {
+    public int getBottomRPM() {
       return m_bottomRPM;
+    }
+
+    public String getString() {
+      return m_string;
     }
   }
 }

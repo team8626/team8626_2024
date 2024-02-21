@@ -19,7 +19,6 @@ import frc.robot.Presets.Preset;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.robot.subsystems.arm.ArmConstants.Extension;
 
 public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDashboard {
 
@@ -41,18 +40,17 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
-  private double m_kExtensionP = Extension.kExtP;
-  private double m_kExtensionI = Extension.kExtI;
-  private double m_kExtensionD = Extension.kExtD;
-  private double m_kExtensionFF = Extension.kExtFF;
-  private double m_kExtensionMaxOutput = Extension.kExtMaxOutput;
-  private double m_kExtensionMinOutput = Extension.kExtMinOutput;
+  private double m_kExtensionP = ExtConstants.kExtP;
+  private double m_kExtensionI = ExtConstants.kExtI;
+  private double m_kExtensionD = ExtConstants.kExtD;
+  private double m_kExtensionFF = ExtConstants.kExtFF;
+  private double m_kExtensionMaxOutput = ExtConstants.kExtMaxOutput;
+  private double m_kExtensionMinOutput = ExtConstants.kExtMinOutput;
 
   /** Creates a new ArmExtensionSubsystem. */
   public ArmExtensionSubsystem() {
-    // EXTENSION
     // Motors
-    m_extensionMotor_L = new CANSparkMax(Extension.extensionCANID_L, MotorType.kBrushless);
+    m_extensionMotor_L = new CANSparkMax(ExtConstants.extensionCANID_L, MotorType.kBrushless);
 
     // Reset & Initialize Controllers
     m_extensionMotor_L.restoreFactoryDefaults();
@@ -81,13 +79,13 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     // We want these in degrees and degrees per second
     m_extensionMotor_L.setInverted(false);
     m_theOtherExtensionEncoder.setPositionConversionFactor(
-        Extension.kExtensionEncoderPositionFactorDeg);
+        ExtConstants.kExtensionEncoderPositionFactorDeg);
     m_theOtherExtensionEncoder.setVelocityConversionFactor(
-        Extension.kExtensionEncoderVelocityFactorDeg);
+        ExtConstants.kExtensionEncoderVelocityFactorDeg);
 
     // Idle Modes and max current
     m_extensionMotor_L.setIdleMode(IdleMode.kBrake);
-    m_extensionMotor_L.setSmartCurrentLimit(Extension.kCurrentLimit);
+    m_extensionMotor_L.setSmartCurrentLimit(ExtConstants.kCurrentLimit);
 
     // Write configuration to Controllers
     m_extensionMotor_L.burnFlash();
@@ -96,8 +94,7 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     updateDashboard();
 
     if (RobotBase.isReal()) {
-      // TODO: Launch zeroing of the arm
-      // this.reset();
+      this.reset();
     } else if (RobotBase.isSimulation()) {
       m_desiredExtensionInches = Preset.kStart.getExtInches();
       m_currentExtInches = m_desiredExtensionInches;
@@ -121,8 +118,8 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
 
   private void extend(double newSpeed) {
     if (Robot.isReal()) {
-      if ((m_currentExtInches < Extension.kMaxExtInches)
-          && (m_currentExtInches > Extension.kMinExtInches)) {
+      if ((m_currentExtInches < ExtConstants.kMaxExtInches)
+          && (m_currentExtInches > ExtConstants.kMinExtInches)) {
         m_extensionMotor_L.set(0.5);
       }
     } else { // Simulation
@@ -142,9 +139,9 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     System.out.println("[ARM] Resetting Initiated");
   }
 
-  public boolean atExtensionSetpoint() {
+  public boolean atSetpoint() {
     return MathUtil.isNear(
-        m_desiredExtensionInches, m_currentExtInches, Extension.kAtInchesTolerance);
+        m_desiredExtensionInches, m_currentExtInches, ExtConstants.kAtInchesTolerance);
   }
 
   private boolean isInRange(double extensionInches) {
@@ -156,11 +153,16 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     return retval;
   }
 
+  public double getExtInches() {
+    return m_desiredExtensionInches;
+  }
+
   @Override
   public void periodic() {
     /** Check for value in Range * */
     m_desiredExtensionInches =
-        MathUtil.clamp(m_desiredExtensionInches, Extension.kMinExtInches, Extension.kMaxExtInches);
+        MathUtil.clamp(
+            m_desiredExtensionInches, ExtConstants.kMinExtInches, ExtConstants.kMaxExtInches);
 
     /** Update Current Arm Positions */
     if (RobotBase.isReal()) {
@@ -178,7 +180,7 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
       }
     } else {
       /** Use Motor output current to detect low limit * */
-      if (m_extensionMotor_L.getOutputCurrent() < Extension.kZeroingCurrent) {
+      if (m_extensionMotor_L.getOutputCurrent() < ExtConstants.kZeroingCurrent) {
         // Resetting the Arm - Move backwards until Current raises for that motor
         m_extensionMotor_L.set(-0.5);
         System.out.println("[ARM] Resetting -0.5");
@@ -212,7 +214,6 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     SmartDashboard.getNumber("Arm/Extension/P Gain", m_kExtensionP);
     SmartDashboard.getNumber("Arm/Extension/D Gain", m_kExtensionD);
     SmartDashboard.getNumber("Arm/Extension/Feed Forward", m_kExtensionFF);
-    SmartDashboard.getNumber("Arm/Extension/DesiresInches", m_desiredExtensionInches);
   }
 
   @Override
@@ -220,15 +221,14 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     SmartDashboard.putNumber("Arm/Extension/DesiredInches", m_desiredExtensionInches);
     SmartDashboard.putNumber("Arm/Extension/CurrentInches", m_currentExtInches);
     SmartDashboard.putNumber("Arm/Extension/AMPs_L", m_extensionMotor_L.getOutputCurrent());
+    SmartDashboard.putBoolean("Arm/Extension/atSetPoint", atSetpoint());
 
     SmartDashboard.putBoolean("Arm/Extension/Resetting", m_armIsResetting);
     SmartDashboard.putBoolean("Arm/Extension/Zeroed", m_armZeroed);
 
-    // TODO: Remove Angle Adjustment
-    double length = SmartDashboard.getNumber("Extension/DesiresInches", m_desiredExtensionInches);
-    double extP = SmartDashboard.getNumber("Arm/Extension/P Gain", Extension.kExtP);
-    double extD = SmartDashboard.getNumber("Arm/Extension/D Gain", Extension.kExtD);
-    double extFF = SmartDashboard.getNumber("Arm/Extension/Feed Forward", Extension.kExtFF);
+    double extP = SmartDashboard.getNumber("Arm/Extension/P Gain", ExtConstants.kExtP);
+    double extD = SmartDashboard.getNumber("Arm/Extension/D Gain", ExtConstants.kExtD);
+    double extFF = SmartDashboard.getNumber("Arm/Extension/Feed Forward", ExtConstants.kExtFF);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if ((extP != m_kExtensionP)) {
@@ -248,14 +248,9 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
       m_kExtensionFF = extFF;
     }
 
-    if ((length != m_desiredExtensionInches) && (isInRange(length))) {
-      m_desiredExtensionInches = length;
-    }
-
     SmartDashboard.putNumber("Arm/Extension/P Gain", m_kExtensionP);
     SmartDashboard.putNumber("Arm/Extension/D Gain", m_kExtensionD);
     SmartDashboard.putNumber("Arm/Extension/Feed Forward", m_kExtensionFF);
-    SmartDashboard.putNumber("Arm/Extension/DesiredInches", m_desiredExtensionInches);
   }
 
   @Override
@@ -272,6 +267,6 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
 
     // Clamp values for stable simulation
     m_currentExtInches =
-        MathUtil.clamp(m_currentExtInches, Extension.kMinExtInches, Extension.kMaxExtInches);
+        MathUtil.clamp(m_currentExtInches, ExtConstants.kMinExtInches, ExtConstants.kMaxExtInches);
   }
 }

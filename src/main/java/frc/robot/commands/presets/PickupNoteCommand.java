@@ -12,7 +12,8 @@ import frc.robot.Presets.Preset;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.PoseDisplacementCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
+import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -21,9 +22,13 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PickupNoteCommand extends SequentialCommandGroup {
 
-  public PickupNoteCommand(SwerveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake) {
+  public PickupNoteCommand(
+      SwerveSubsystem drive,
+      ArmRotationSubsystem armRot,
+      ArmExtensionSubsystem armExt,
+      IntakeSubsystem intake) {
     addCommands(
-        new SetArmCommand(arm, Preset.kFloorPickup),
+        new SetArmCommand(armRot, armExt, () -> Preset.kFloorPickup),
         new IntakeCommand(intake)
             .deadlineWith(
                 new PoseDisplacementCommand(

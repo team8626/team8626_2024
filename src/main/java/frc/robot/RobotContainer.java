@@ -9,12 +9,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Presets.Preset;
+import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
@@ -25,11 +25,10 @@ import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.preset.PresetSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
-import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
 
@@ -52,9 +51,10 @@ public class RobotContainer {
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
+  public PresetSubsystem m_presetStorage = new PresetSubsystem();
 
-  private final XboxController m_xboxController =
-      new XboxController(Constants.OperatorConstants.kXboxControllerPort);
+  private final CommandXboxController m_xboxController =
+      new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
@@ -67,7 +67,8 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drivebase, m_armRot, m_armExt, m_intake, m_shooter);
+    m_dashboard =
+        new Dashboard(m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_presetStorage);
   }
 
   private void configureBindings() {
@@ -120,46 +121,89 @@ public class RobotContainer {
     //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
 
     // Set to Angle Testing
-    m_testController.b().onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(++m_angle)));
-    m_testController.a().onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(--m_angle)));
+    m_testController
+        .b()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() + 1)));
+    m_testController
+        .a()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() - 1)));
 
-    m_testController.y().onTrue(new InstantCommand(() -> m_armExt.setLengthInches(++m_length)));
-    m_testController.x().onTrue(new InstantCommand(() -> m_armExt.setLengthInches(--m_length)));
+    m_testController
+        .y()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() + 1)));
+    m_testController
+        .x()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() - 1)));
 
-    m_buttonBox
-        .button_1()
-        .onTrue(
-            new InstantCommand(() -> m_armRot.setAngleDeg(Preset.kFloorPickup.getRotDegrees())));
-    m_buttonBox
-        .button_2()
-        .onTrue(
-            new InstantCommand(
-                () -> m_armRot.setAngleDeg(Preset.kShootSpeaker_0m.getRotDegrees())));
+    // Set Angle/Extension to Floor Fickup/Shoot0m + Shooter Speed
     m_buttonBox
         .button_3()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(Preset.kStow.getRotDegrees())));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
 
-    m_buttonBox
-        .button_4()
-        .onTrue(
-            new InstantCommand(() -> m_armExt.setLengthInches(Preset.kFloorPickup.getExtInches())));
-    m_buttonBox
-        .button_5()
-        .onTrue(
-            new InstantCommand(
-                () -> m_armExt.setLengthInches(Preset.kShootSpeaker_0m.getExtInches())));
-    m_buttonBox
-        .button_6()
-        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(Preset.kStow.getExtInches())));
+    // Set Angle/Extension to Amp + Shooter Speed
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
 
-    m_buttonBox
-        .button_7()
-        .toggleOnTrue(new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)));
+    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
+
+    m_xboxController
+        .leftBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+                .andThen(
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+
+    m_xboxController
+        .rightBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get())
+                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     m_buttonBox
         .button_8()
-        .toggleOnTrue(new ShooterCommand(m_intake, m_shooter, Preset.kShootSpeaker_0m));
+        .toggleOnTrue(new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootSpeaker_0m));
 
+    // m_buttonBox
+    //     .button_3()
+    //     .onTrue(
+    //         new InstantCommand(() ->
+    // m_armExt.setLengthInches(Preset.kFloorPickup.getExtInches()))
+    //             .andThen(
+    //                 new InstantCommand(
+    //                     () -> m_armRot.setAngleDeg(Preset.kFloorPickup.getRotDegrees()))));
+
+    // m_buttonBox
+    //     .button_4()
+    //     .onTrue(
+    //         new InstantCommand(() ->
+    // m_armExt.setLengthInches(Preset.kFloorPickup.getExtInches())));
+    // m_buttonBox
+    //     .button_5()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> m_armExt.setLengthInches(Preset.kShootSpeaker_0m.getExtInches())));
+    // m_buttonBox
+    //     .button_6()
+    //     .onTrue(
+    //         new InstantCommand(() ->
+    // m_armRot.setAngleDeg(Preset.kShootSpeaker_0m.getRotDegrees()))
+    //             .andThen(
+    //                 new InstantCommand(
+    //                     () ->
+    // m_armExt.setLengthInches(Preset.kShootSpeaker_0m.getExtInches()))));
+
+    // m_buttonBox
+    //     .button_7()
+    //     .toggleOnTrue(new IntakeCommand(m_intake).andThen(new
+    // IntakeAdjustmentCommand(m_intake)));
+
+    // m_buttonBox
+    //     .button_8()
+    //     .toggleOnTrue(new ShooterCommand(m_intake, m_shooter, Preset.kShootSpeaker_0m));
+
+    // Zero The Arm Extension
     m_buttonBox
         .button_9()
         .onTrue(new InstantCommand(() -> m_armExt.reset())); // Start Zeroing of the arm
@@ -176,22 +220,22 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
 
-    AbsoluteDriveAdv closedAbsoluteDriveAdv =
-        new AbsoluteDriveAdv(
-            m_drivebase,
-            () ->
-                MathUtil.applyDeadband(
-                    -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () ->
-                MathUtil.applyDeadband(
-                    m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () ->
-                MathUtil.applyDeadband(
-                    -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
-            m_xboxController::getBButtonPressed,
-            m_xboxController::getAButtonPressed,
-            m_xboxController::getXButtonPressed,
-            m_xboxController::getBButtonPressed);
+    // AbsoluteDriveAdv closedAbsoluteDriveAdv =
+    //     new AbsoluteDriveAdv(
+    //         m_drivebase,
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
+    //         m_xboxController::getBButtonPressed,
+    //         m_xboxController::getAButtonPressed,
+    //         m_xboxController::getXButtonPressed,
+    //         m_xboxController::getBButtonPressed);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
