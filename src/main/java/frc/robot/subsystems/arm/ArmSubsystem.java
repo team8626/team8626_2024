@@ -5,7 +5,6 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
@@ -34,18 +33,22 @@ import frc.robot.subsystems.arm.ArmConstants.Rotation;
 import java.util.function.DoubleSupplier;
 
 public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
+
   /** Create Motors * */
-  private final CANSparkBase m_extensionMotor_L;
-  // private final CANSparkMax m_extensionMotor_R;
-  private final CANSparkBase m_rotationMotor_L;
-  private final CANSparkBase m_rotationMotor_R;
+  private final CANSparkMax m_extensionMotor_L;
+
+  private final CANSparkMax m_rotationMotor_L;
+  private final CANSparkMax m_rotationMotor_R;
 
   /** Create Sensors * */
-  private final RelativeEncoder m_extensionEncoder;
+  // private final RelativeEncoder m_extensionEncoder;
+
+  private final RelativeEncoder m_theOtherExtensionEncoder;
+
+  private final SparkPIDController m_theOtherPIDController;
 
   private final AbsoluteEncoder m_rotationEncoder;
-
-  private final SparkPIDController m_extensionPIDController;
+  // private final SparkPIDController m_extensionPIDController;
   private final SparkPIDController m_rotationPIDController;
 
   /** Class States * */
@@ -53,11 +56,11 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
 
   private double m_desiredExtensionInches = 0;
 
-  private double m_currentAngleDeg = 0;
+  private double m_currentAngleDeg = 180;
   private double m_currentExtInches = 0;
 
   private boolean m_armIsResetting = false;
-  private boolean m_armIsExtending = false;
+  // private boolean m_armIsExtending = false;
 
   private boolean m_armZeroed = false;
 
@@ -89,12 +92,19 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_extensionMotor_L.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for SPARKMAX.
-    // m_extensionEncoder =
-    //     m_extensionMotor_L.getAlternateEncoder(Extension.kAltEncType, Extension.kCPR);
-    m_extensionEncoder = m_extensionMotor_L.getEncoder(Extension.kEncType, Extension.kCPR);
+    // m_extensionEncoder = m_extensionMotor_L.getAlternateEncoder(Extension.kEncType,
+    // Extension.kCPR);
+    m_theOtherExtensionEncoder = m_extensionMotor_L.getEncoder();
 
-    m_extensionPIDController = m_extensionMotor_L.getPIDController();
-    m_extensionPIDController.setFeedbackDevice(m_extensionEncoder);
+    m_theOtherPIDController = m_extensionMotor_L.getPIDController();
+    m_theOtherPIDController.setFeedbackDevice(m_theOtherExtensionEncoder);
+    m_theOtherPIDController.setP(Extension.kExtP);
+    m_theOtherPIDController.setI(Extension.kExtI);
+    m_theOtherPIDController.setD(Extension.kExtD);
+    m_theOtherPIDController.setFF(Extension.kExtFF);
+
+    // m_extensionPIDController = m_extensionMotor_L.getPIDController();
+    // m_extensionPIDController.setFeedbackDevice(m_theOtherExtensionEncoder);
 
     // Extension Soft Limits
     m_extensionMotor_L.enableSoftLimit(SoftLimitDirection.kReverse, false);
@@ -104,17 +114,21 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
 
     // Apply position and velocity conversion factors for the turning encoder.
     // We want these in degrees and degrees per second
-    m_extensionEncoder.setPositionConversionFactor(Extension.kExtensionEncoderPositionFactorDeg);
-    m_extensionEncoder.setVelocityConversionFactor(Extension.kExtensionEncoderVelocityFactorDeg);
+    // m_extensionEncoder.setPositionConversionFactor(Extension.kExtensionEncoderPositionFactorDeg);
+    // m_extensionEncoder.setVelocityConversionFactor(Extension.kExtensionEncoderVelocityFactorDeg);
     m_extensionMotor_L.setInverted(false);
+    m_theOtherExtensionEncoder.setPositionConversionFactor(
+        Extension.kExtensionEncoderPositionFactorDeg);
+    m_theOtherExtensionEncoder.setVelocityConversionFactor(
+        Extension.kExtensionEncoderVelocityFactorDeg);
 
     // Set the PID gains for the motor.
-    m_extensionPIDController.setP(m_kExtensionP);
-    m_extensionPIDController.setI(m_kExtensionI);
-    m_extensionPIDController.setD(m_kExtensionD);
-    m_extensionPIDController.setFF(m_kExtensionFF);
-    m_extensionPIDController.setOutputRange(m_kExtensionMinOutput, m_kExtensionMaxOutput);
-    m_extensionPIDController.setPositionPIDWrappingEnabled(false);
+    // m_extensionPIDController.setP(m_kExtensionP);
+    // m_extensionPIDController.setI(m_kExtensionI);
+    // m_extensionPIDController.setD(m_kExtensionD);
+    // m_extensionPIDController.setFF(m_kExtensionFF);
+    // m_extensionPIDController.setOutputRange(m_kExtensionMinOutput, m_kExtensionMaxOutput);
+    // m_extensionPIDController.setPositionPIDWrappingEnabled(false);
 
     // Idle Modes and max current
     m_extensionMotor_L.setIdleMode(IdleMode.kBrake);
@@ -135,6 +149,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     m_rotationMotor_L.setInverted(false);
 
     m_rotationEncoder = m_rotationMotor_L.getAbsoluteEncoder(Type.kDutyCycle);
+
     m_rotationPIDController = m_rotationMotor_L.getPIDController();
     m_rotationPIDController.setFeedbackDevice(m_rotationEncoder);
 
@@ -172,7 +187,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     if (RobotBase.isReal()) {
       // TODO: Hold Starting position
       // m_desiredAngleDeg = m_rotationEncoder.getPosition();
-      // m_desiredExtensionInches = getExtensionInchesFromDeg(m_extensionEncoder.getPosition());
+      // m_desiredExtensionInches = ;
 
       // TODO: Launch zeroing of the arm
       // this.reset();
@@ -193,6 +208,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   public void setLengthInches(double newLengthInches) {
     if (m_armZeroed) {
       m_desiredExtensionInches = newLengthInches; // Value Clamped in periodic()
+      System.out.printf("[ARM] New Length: %f\n", m_desiredExtensionInches);
+
     } else {
       System.out.println("[ARM] Arm not initialized, cannot set length");
     }
@@ -215,11 +232,12 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     return m_currentAngleDeg;
   }
 
-  public void extend(double newSpeed) {
+  private void extend(double newSpeed) {
     if (Robot.isReal()) {
       if ((m_currentExtInches < Extension.kMaxExtInches)
           && (m_currentExtInches > Extension.kMinExtInches)) {
-        m_extensionPIDController.setReference(newSpeed * 0.50, ControlType.kDutyCycle);
+        // m_extensionPIDController.setReference(newSpeed * 0.50, ControlType.kDutyCycle);
+        m_extensionMotor_L.set(0.5);
       }
     } else { // Simulation
       if (newSpeed > 0) {
@@ -230,7 +248,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     }
   }
 
-  public void rotate(double newSpeed) {
+  private void rotate(double newSpeed) {
     if (Robot.isReal()) {
       // Soft Limit...
       // Allow control only if rotation is in range or coming back to range
@@ -256,14 +274,8 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     }
     m_armZeroed = false;
     m_armIsResetting = true;
-    m_armIsExtending = false;
 
     System.out.println("[ARM] Resetting Initiated");
-  }
-
-  public void getOut() {
-    m_armIsExtending = true;
-    m_armIsResetting = false;
   }
 
   public boolean atExtensionSetpoint() {
@@ -285,7 +297,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     /** Update Current Arm Positions */
     if (RobotBase.isReal()) {
       m_currentAngleDeg = m_rotationEncoder.getPosition();
-      m_currentExtInches = m_extensionEncoder.getPosition();
+      m_currentExtInches = m_theOtherExtensionEncoder.getPosition();
     } else {
       updateSimValues();
     }
@@ -297,35 +309,38 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
 
       // TODO: Is this Extension allowed based on current rotation?
       if (m_armZeroed) {
-        m_extensionPIDController.setReference(m_desiredExtensionInches, ControlType.kPosition);
+        // m_extensionPIDController.setReference(m_desiredExtensionInches, ControlType.kPosition);
+        m_theOtherPIDController.setReference(m_desiredExtensionInches, ControlType.kPosition);
       } else {
         // System.out.println("[ARM] Arm not initialized, will not setReference");
       }
-    }
-    /** Resetting the Arm * */
-    if (m_armIsResetting) {
+    } else {
       // Wait for safe angle before retracting
-      if (MathUtil.isNear(Rotation.kMaxAngleForSafeRetraction, m_currentAngleDeg, 3 /*degrees*/)) {
-        /** Use Motor output current to detect low limit * */
-        if (m_extensionMotor_L.getOutputCurrent() < Extension.kZeroingCurrent) {
-          // Resetting the Arm - Move backwards until Current raises for that motor
-          System.out.println("[ARM] Resetting -0.4");
-
-          m_extensionPIDController.setReference(-0.4, ControlType.kDutyCycle);
-        }
-        /** Reached current threshold, we found the zero!* */
-        else {
-          // Reset done!
-          System.out.println("[ARM] Resetting DONE");
-
-          m_extensionPIDController.setReference(0, ControlType.kDutyCycle);
-          m_extensionEncoder.setPosition(0);
-          m_currentExtInches = 0;
-          m_desiredExtensionInches = 0;
-          m_armZeroed = true;
-          m_armIsResetting = false;
-        }
+      // if (MathUtil.isNear(Rotation.kMaxAngleForSafeRetraction, m_currentAngleDeg, 3 /*degrees*/))
+      // {
+      /** Use Motor output current to detect low limit * */
+      if (m_extensionMotor_L.getOutputCurrent() < Extension.kZeroingCurrent) {
+        // Resetting the Arm - Move backwards until Current raises for that motor
+        // m_extensionPIDController.setReference(-0.5, ControlType.kDutyCycle);
+        m_extensionMotor_L.set(-0.5);
+        System.out.println("[ARM] Resetting -0.5");
       }
+      /** Reached current threshold, we found the zero!* */
+      else {
+        // Reset done!
+        System.out.println("[ARM] Resetting DONE");
+
+        // m_extensionPIDController.setReference(0, ControlType.kDutyCycle);
+        // m_extensionEncoder.setPosition(0);
+        m_extensionMotor_L.set(0);
+        m_theOtherExtensionEncoder.setPosition(0);
+
+        m_currentExtInches = 0;
+        m_desiredExtensionInches = 0;
+        m_armZeroed = true;
+        m_armIsResetting = false;
+      }
+      // }
       /** Running simulation, Reset "done" * */
       if (Robot.isSimulation()) {
         m_currentExtInches = 0;
@@ -335,25 +350,26 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
       }
     }
 
-    if (m_armIsExtending) {
-      /** Use Motor output current to detect low limit * */
-      if (m_extensionMotor_L.getOutputCurrent() < Extension.kZeroingCurrent) {
-        // Resetting the Arm - Move backwards until Current raises for that motor
-        System.out.println("[ARM] Extending 0.4");
+    // TODO: This is a hack... SHould not be needed
+    // if (m_armIsExtending) {
+    //   /** Use Motor output current to detect low limit * */
+    //   if (m_extensionMotor_L.getOutputCurrent() < Extension.kZeroingCurrent) {
+    //     // Resetting the Arm - Move backwards until Current raises for that motor
+    //     System.out.println("[ARM] Extending 0.4");
 
-        m_extensionPIDController.setReference(0.4, ControlType.kDutyCycle);
-      }
-      /** Reached current threshold, we found the zero!* */
-      else {
-        // Reset done!
-        System.out.println("[ARM] Extending DONE");
+    //     m_extensionPIDController.setReference(0.4, ControlType.kDutyCycle);
+    //   }
+    //   /** Reached current threshold, we found the zero!* */
+    //   else {
+    //     // Reset done!
+    //     System.out.println("[ARM] Extending DONE");
 
-        m_extensionPIDController.setReference(0, ControlType.kDutyCycle);
-        m_currentExtInches = 10;
-        m_desiredExtensionInches = 10;
-        m_armIsExtending = false;
-      }
-    }
+    //     m_extensionPIDController.setReference(0, ControlType.kDutyCycle);
+    //     m_currentExtInches = 10;
+    //     m_desiredExtensionInches = 10;
+    //     m_armIsExtending = false;
+    //   }
+    // }
   }
 
   @Override
@@ -366,7 +382,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   @Override
   public void updateDashboard() {
     SmartDashboard.putNumber("Arm/Rotation/DesiredDegres", m_desiredAngleDeg);
-    SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_currentAngleDeg);
+    SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_rotationEncoder.getPosition());
     SmartDashboard.putNumber("Arm/Rotation/AMPs_L", m_rotationMotor_L.getOutputCurrent());
     SmartDashboard.putNumber("Arm/Rotation/AMPs_R", m_rotationMotor_R.getOutputCurrent());
 
@@ -403,15 +419,19 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
     }
 
     if ((extP != m_kExtensionP)) {
-      m_extensionPIDController.setP(extP);
+      m_theOtherPIDController.setP(extP);
+      // m_extensionPIDController.setP(extP);
+
       m_kExtensionP = extP;
     }
     if ((extD != m_kExtensionD)) {
-      m_extensionPIDController.setD(extD);
+      m_theOtherPIDController.setP(extD);
+      // m_extensionPIDController.setD(extD);
       m_kExtensionD = extD;
     }
     if ((extFF != m_kExtensionFF)) {
-      m_extensionPIDController.setFF(extFF);
+      m_theOtherPIDController.setP(extFF);
+      // m_extensionPIDController.setFF(extFF);
       m_kExtensionFF = extFF;
     }
 
@@ -494,7 +514,7 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
   }
 
   public void control(double newRot, double newExt) {
-    this.rotate(newRot);
-    this.extend(newExt);
+    // this.rotate(newRot);
+    // this.extend(newExt);
   }
 }

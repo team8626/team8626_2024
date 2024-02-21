@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm;
 
 import com.revrobotics.SparkMaxAlternateEncoder;
-import com.revrobotics.SparkRelativeEncoder;
 
 public class ArmConstants {
 
@@ -9,7 +8,8 @@ public class ArmConstants {
     public static final int extensionCANID_L = 20;
 
     // Using Through Bore Encoder
-    public static final SparkRelativeEncoder.Type kEncType = SparkRelativeEncoder.Type.kQuadrature;
+    public static final SparkMaxAlternateEncoder.Type kEncType =
+        SparkMaxAlternateEncoder.Type.kQuadrature;
     public static final int kCPR = 8192;
 
     public static final double kMinExtInches = 0;
@@ -24,10 +24,12 @@ public class ArmConstants {
     public static final int kCurrentLimit = 30;
     public static final int kZeroingCurrent = 25;
 
-    public static final double kExtensionEncoderPositionFactorDeg =
-        (Math.PI * kExtPulleyDiameter); // Inches
-    public static final double kExtensionEncoderVelocityFactorDeg =
-        kExtensionEncoderPositionFactorDeg / 2;
+    // public static final double kExtensionEncoderPositionFactorDeg =
+    //     (Math.PI * kExtPulleyDiameter); // Inches
+    // public static final double kExtensionEncoderVelocityFactorDeg =
+    //     kExtensionEncoderPositionFactorDeg / 2;
+    public static final double kExtensionEncoderPositionFactorDeg = 0.333;
+    public static final double kExtensionEncoderVelocityFactorDeg = 0.333;
 
     public static final double kExtensionEncoderPositionPIDMinInput = 0; // inches
     public static final double kExtensionEncoderPositionPIDMaxInput =
@@ -37,8 +39,8 @@ public class ArmConstants {
     public static final double kExtI = 0;
     public static final double kExtD = 0;
     public static final double kExtFF = 0;
-    public static final double kExtMinOutput = -0.1;
-    public static final double kExtMaxOutput = +0.1;
+    public static final double kExtMinOutput = -1;
+    public static final double kExtMaxOutput = +1;
 
     public static final double kAtInchesTolerance = 0.2;
   }
@@ -63,10 +65,10 @@ public class ArmConstants {
     public static final double kRotI = 0;
     public static final double kRotD = 0;
     public static final double kRotFF = 0;
-    public static final double kRotMinOutput = -1;
-    public static final double kRotMaxOutput = +0.25;
+    public static final double kRotMinOutput = -0.75;
+    public static final double kRotMaxOutput = +0.75;
 
-    public static final double kMaxAngleForSafeRetraction = 180;
+    public static final double kMaxAngleForSafeRetraction = 195;
 
     public static final double kAtAngleTolerance = 3;
   }
