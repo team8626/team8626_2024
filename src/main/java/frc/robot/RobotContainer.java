@@ -22,7 +22,8 @@ import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
+import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
@@ -44,7 +45,9 @@ public class RobotContainer {
   public final SwerveSubsystem m_drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
-  public final ArmSubsystem m_arm = new ArmSubsystem();
+  // public final ArmSubsystem m_arm = new ArmSubsystem();
+  public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
+  public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
@@ -64,7 +67,7 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
+    m_dashboard = new Dashboard(m_drivebase, m_armRot, m_armExt, m_intake, m_shooter);
   }
 
   private void configureBindings() {
@@ -117,30 +120,57 @@ public class RobotContainer {
     //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
 
     // Set to Angle Testing
-    m_buttonBox.button_7().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(++m_angle)));
-    m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(--m_angle)));
-    // m_buttonBox.button_8().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(90)));
+    m_testController.b().onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(++m_angle)));
+    m_testController.a().onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(--m_angle)));
 
-    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setLengthInches(++m_length)));
-    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setLengthInches(--m_length)));
+    m_testController.y().onTrue(new InstantCommand(() -> m_armExt.setLengthInches(++m_length)));
+    m_testController.x().onTrue(new InstantCommand(() -> m_armExt.setLengthInches(--m_length)));
 
-    // FOR FUTURE USE...
+    m_buttonBox
+        .button_1()
+        .onTrue(
+            new InstantCommand(() -> m_armRot.setAngleDeg(Preset.kFloorPickup.getRotDegrees())));
+    m_buttonBox
+        .button_2()
+        .onTrue(
+            new InstantCommand(
+                () -> m_armRot.setAngleDeg(Preset.kShootSpeaker_0m.getRotDegrees())));
+    m_buttonBox
+        .button_3()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(Preset.kStow.getRotDegrees())));
+
     m_buttonBox
         .button_4()
+        .onTrue(
+            new InstantCommand(() -> m_armExt.setLengthInches(Preset.kFloorPickup.getExtInches())));
+    m_buttonBox
+        .button_5()
+        .onTrue(
+            new InstantCommand(
+                () -> m_armExt.setLengthInches(Preset.kShootSpeaker_0m.getExtInches())));
+    m_buttonBox
+        .button_6()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(Preset.kStow.getExtInches())));
+
+    m_buttonBox
+        .button_7()
         .toggleOnTrue(new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)));
 
     m_buttonBox
-        .button_5()
+        .button_8()
         .toggleOnTrue(new ShooterCommand(m_intake, m_shooter, Preset.kShootSpeaker_0m));
+
+    m_buttonBox
+        .button_9()
+        .onTrue(new InstantCommand(() -> m_armExt.reset())); // Start Zeroing of the arm
+
+    // FOR FUTURE USE...
 
     //         .onlyIf(() -> m_intake.isFull() && !m_intake.limitReached())));
 
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_shooter.stop()));
     // m_buttonBox.button_5().toggleOnTrue(new ShooterCommand(Shoom_intake, m_shooter, m_leds)
 
-    // m_buttonBox
-    //     .button_1()
-    //     .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
     // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.getOut()));
   }
 
@@ -202,10 +232,10 @@ public class RobotContainer {
     // Manual Arm Control on test controller
     // X-> Rotation
     // Y-> Extention
-    Command controlArm =
-        m_arm.controlCommand(
-            () -> MathUtil.applyDeadband(m_testController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
+    // Command controlArm =
+    //     m_arm.controlCommand(
+    //         () -> MathUtil.applyDeadband(m_testController.getLeftY(), 0.1),
+    //         () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
     // m_arm.setDefaultCommand(controlArm);
   }
