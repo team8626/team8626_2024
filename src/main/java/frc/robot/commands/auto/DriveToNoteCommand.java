@@ -71,9 +71,8 @@ public class DriveToNoteCommand extends Command {
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
     if (m_ODCamera.getLatestResult().hasTargets()) {
-    double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
-    double currentRobotYaw = m_drive.getPose().getRotation().getDegrees();
-    m_drive.drive(new ChassisSpeeds(Math.cos(360- currentRobotYaw), Math.sin(360- currentRobotYaw), m_rotPID.calculate(currentNoteYaw, 0)));
+      double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
+      m_drive.drive(new ChassisSpeeds(1, 0, m_rotPID.calculate(currentNoteYaw, 0)));
     }
   }
 

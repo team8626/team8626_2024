@@ -6,6 +6,8 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -76,10 +78,17 @@ public class TrackNoteCommand extends Command {
 
     if (m_ODCamera.getLatestResult().hasTargets()) {
       double currentYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
-      m_drive.driveCommand(
-          () -> MathUtil.applyDeadband(m_XboxController.getLeftX(), 0.1),
-          () -> MathUtil.applyDeadband(m_XboxController.getLeftY(), 0.1),
-          () -> m_rotPID.calculate(currentYaw, 0));
+      new ChassisSpeeds();
+      m_drive.drive(
+          new Translation2d(
+              MathUtil.applyDeadband(-m_XboxController.getLeftY(), 0.1),
+              MathUtil.applyDeadband(-m_XboxController.getLeftX(), 0.1)),
+          m_rotPID.calculate(currentYaw, 0),
+          true);
+      // m_drive.driveCommand(
+      //     () -> MathUtil.applyDeadband(m_XboxController.getLeftX(), 0.1),
+      //     () -> MathUtil.applyDeadband(m_XboxController.getLeftY(), 0.1),
+      //     () -> m_rotPID.calculate(currentYaw, 0));
       // m_drive.drive(new ChassisSpeeds(m_ySpeed, m_xSpeed, m_rotPID.calculate(currentYaw, 0)));
     }
   }
