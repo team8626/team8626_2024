@@ -9,8 +9,10 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.intake.IntakeConstants.IntakeStates.IntakeStatus;
 
 public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard {
   // private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1,
@@ -22,6 +24,10 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
   private double m_speed = IntakeConstants.kSpeed_Intake;
   private boolean m_enabled = false;
+  private IntakeStatus m_status = IntakeStatus.IDLE;
+
+  private boolean m_bottomSensor = false;
+  private boolean m_exitSensor = false;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -33,8 +39,7 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   public void setSpeed(double speed) {
-    m_motor1.set(speed);
-    m_motor2.set(speed);
+    m_speed = speed;
   }
 
   public void start() {
@@ -43,29 +48,60 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     m_enabled = true;
   }
 
+  public void start(double speed) {
+    setSpeed(speed);
+    start();
+  }
+
   public void stop() {
     m_motor1.set(0);
     m_motor2.set(0);
     m_enabled = false;
   }
 
+  /**
+   * Checks if a NOTE is loaded in the Intake
+   *
+   * @return true if NOTE is loaded
+   */
   public boolean isFull() {
     // 0 means something is there, 1 means nothing is there
-    return m_infrared1.get();
+    return m_bottomSensor;
   }
 
+  /**
+   * Checks if a NOTE is present in the Intake
+   *
+   * @return true ifno NOTE is loaded
+   */
+  public boolean isEmpty() {
+    return !(m_bottomSensor || m_exitSensor);
+  }
+
+  /**
+   * Checks if a NOTE was "overshot" in the Intake
+   *
+   * @return true if NOTE is loaded
+   */
   public boolean limitReached() {
-    return !m_infrared2.get();
+    if (Robot.isReal()) {}
+    return m_exitSensor;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Intake/ENABLED", m_enabled);
-    SmartDashboard.putNumber("Intake/SetSpeed", m_speed);
+    if (Robot.isReal()) {
+      m_bottomSensor = !m_infrared1.get();
+      m_exitSensor = !m_infrared2.get();
+    } else if (Robot.isSimulation()) {
+      m_bottomSensor = SmartDashboard.getBoolean("Intake/BottomSensor", m_bottomSensor);
+      m_exitSensor = SmartDashboard.getBoolean("Intake/ExitSensor", m_exitSensor);
+    }
+  }
 
-    SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/BottomSensor", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared1.get());
+  public void setStatus(IntakeStatus newStatus) {
+    m_status = newStatus;
+    System.out.printf("[INTAKE] New Status: %s\n", m_status.getString());
   }
 
   @Override
@@ -74,11 +110,13 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
   @Override
   public void updateDashboard() {
     SmartDashboard.putBoolean("Intake/ENABLED", m_enabled);
+    SmartDashboard.putString("Intake/Status", m_status.getString());
+
     SmartDashboard.putNumber("Intake/SetSpeed", m_speed);
 
-    SmartDashboard.putBoolean("Intake Loaded", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/BottomSensor", !m_infrared1.get());
-    SmartDashboard.putBoolean("Intake/ExitSensor", !m_infrared1.get());
+    SmartDashboard.putBoolean("Intake/IsEmpty", isEmpty());
+    SmartDashboard.putBoolean("Intake/BottomSensor", m_bottomSensor);
+    SmartDashboard.putBoolean("Intake/ExitSensor", m_exitSensor);
   }
 
   @Override

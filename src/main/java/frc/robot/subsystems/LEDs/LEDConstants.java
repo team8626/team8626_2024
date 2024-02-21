@@ -18,7 +18,7 @@ public class LEDConstants {
     // AUTONOMOUS,
     // CLIMBING,
     // HANGING,
-    // SHOOTING,
+    SHOOTING,
     // CONTAINING,
     INTAKING,
     BLUE_ALLIANCE,

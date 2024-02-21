@@ -10,8 +10,29 @@ public class ShooterConstants {
   public static final int kCANMotor2 = 25;
   public static final int kMaxRPM = 5700;
 
-  public static final int kShootFromSpeakerRPM = 4000;
-  public static final int kShootFrom3ftRPM = 4500;
-  public static final int kShootFrom5ftRPM = 5000;
-  public static final int kShootToAmp = 2000;
+  public static final int kRPMTolerance = 100;
+
+  public class ShooterStates {
+    public static enum ShooterStatus {
+      IDLE(0, "idle"),
+      RAMPUP(1, "Ramping Up"),
+      ATSPEED(1, "At Speed");
+
+      private final int m_id;
+      private final String m_string;
+
+      ShooterStatus(int newId, String newString) {
+        this.m_id = newId;
+        this.m_string = newString.toUpperCase();
+      }
+
+      public String getString() {
+        return m_string;
+      }
+
+      public double getId() {
+        return m_id;
+      }
+    }
+  }
 }

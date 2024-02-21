@@ -8,7 +8,7 @@ public class ArmConstants {
     public static final int extensionCANID_L = 20;
 
     // Using Through Bore Encoder
-    public static final SparkMaxAlternateEncoder.Type kAltEncType =
+    public static final SparkMaxAlternateEncoder.Type kEncType =
         SparkMaxAlternateEncoder.Type.kQuadrature;
     public static final int kCPR = 8192;
 
@@ -16,85 +16,60 @@ public class ArmConstants {
     public static final double kMaxExtInches = 10;
     public static final double kExtPulleyDiameter = 2; // Inches
 
-    public static final float kExtMinExtRotDeg = (float) 0; // Degres
-    public static final float kExtMaxExtRotDeg =
-        (float) ((kMaxExtInches - kMinExtInches) / (Math.PI * kExtPulleyDiameter)) * 360; // Degres
+    // public static final float kExtMinExtRotDeg = (float) 0; // Degres
+    // public static final float kExtMaxExtRotDeg =
+    //     (float) ((kMaxExtInches - kMinExtInches) / (Math.PI * kExtPulleyDiameter)) * 360; //
+    // Degres
 
     public static final int kCurrentLimit = 30;
     public static final int kZeroingCurrent = 25;
 
-    public static final double kExtensionEncoderPositionFactorDeg = 360; // degres
-    public static final double kExtensionEncoderVelocityFactorDeg = 360 / 60; // degres per second
+    // public static final double kExtensionEncoderPositionFactorDeg =
+    //     (Math.PI * kExtPulleyDiameter); // Inches
+    // public static final double kExtensionEncoderVelocityFactorDeg =
+    //     kExtensionEncoderPositionFactorDeg / 2;
+    public static final double kExtensionEncoderPositionFactorDeg = 0.333;
+    public static final double kExtensionEncoderVelocityFactorDeg = 0.333;
 
-    public static final double kExtensionEncoderPositionPIDMinInput = 0; // degrees
+    public static final double kExtensionEncoderPositionPIDMinInput = 0; // inches
     public static final double kExtensionEncoderPositionPIDMaxInput =
-        kExtensionEncoderPositionFactorDeg; // degrees
+        kExtensionEncoderPositionFactorDeg * kMaxExtInches; // inches
 
     public static final double kExtP = 0.02;
     public static final double kExtI = 0;
     public static final double kExtD = 0;
     public static final double kExtFF = 0;
-    public static final double kExtMinOutput = -0.5;
-    public static final double kExtMaxOutput = +0.5;
+    public static final double kExtMinOutput = -1;
+    public static final double kExtMaxOutput = +1;
+
+    public static final double kAtInchesTolerance = 0.2;
   }
 
   public static final class Rotation {
     public static final int rotationCANID_L = 22;
     public static final int rotationCANID_R = 23;
 
-    public static final float kMinRotDeg = -103;
-    public static final float kMaxRotDeg = 20;
+    public static final float kMinRotDeg = 120;
+    public static final float kMaxRotDeg = 205;
 
-    public static final int kCurrentLimit = 30;
+    public static final int kCurrentLimit = 10; // TODO; was 30
 
-    public static final double kRotationEncoderVelocityFactorDeg = 360; // degres
-    public static final double kRotationEncoderPositionFactorDeg = 360 / 60; // degres per second
+    public static final double kRotationEncoderPositionFactorDeg = 360; // degres
+    public static final double kRotationEncoderVelocityFactorDeg = 360 / 60; // degres per second
 
     public static final double kRotationEncoderPositionPIDMinInput = 0; // degrees
     public static final double kRotationEncoderPositionPIDMaxInput =
-        kRotationEncoderVelocityFactorDeg; // degrees
+        kRotationEncoderPositionFactorDeg; // degrees
 
     public static final double kRotP = 0.02;
     public static final double kRotI = 0;
     public static final double kRotD = 0;
     public static final double kRotFF = 0;
-    public static final double kRotMinOutput = -0.5;
-    public static final double kRotMaxOutput = +0.5;
+    public static final double kRotMinOutput = -0.75;
+    public static final double kRotMaxOutput = +0.75;
 
-    public static final double kReelDiameterInches = 2;
-    public static final double kMaxAngleForSafeRetraction = 10;
+    public static final double kMaxAngleForSafeRetraction = 195;
+
+    public static final double kAtAngleTolerance = 3;
   }
-
-  public static class Preset {
-    private double m_rot = 0;
-    private double m_ext = 0;
-
-    public Preset(double newRotDeg, double newExtInches) {
-      m_rot = newRotDeg;
-      m_ext = newExtInches;
-    }
-
-    public double getRotDegrees() {
-      return m_rot;
-    }
-
-    public double getExtInches() {
-      return m_ext;
-    }
-  }
-
-  public static final class Presets {
-    public static final Preset kStart = new Preset(45, 0);
-    public static final Preset kStow = new Preset(10, 0);
-    public static final Preset kFloorPickup = new Preset(20, 5);
-    public static final Preset kAmp = new Preset(-110, 10);
-    public static final Preset kShootSpeaker_0ft = new Preset(15, 4);
-    public static final Preset kShootSpeaker_3ft = new Preset(15, 4);
-    public static final Preset kShootSpeaker_5ft = new Preset(15, 4);
-    public static final Preset kStartClimb = new Preset(100, 0);
-    public static final Preset kShootAmplifier_0ft = new Preset(15, 4);
-    public static final Preset kShootAmplifier_3ft = new Preset(15, 4);
-    public static final Preset kShootAmplifier_5ft = new Preset(15, 4);
-  }
-  ;
 }

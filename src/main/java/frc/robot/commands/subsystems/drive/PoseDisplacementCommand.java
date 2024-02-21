@@ -2,10 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.swervedrive.commands;
+package frc.robot.commands.subsystems.drive;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
-public class DriveToPoseCommand extends Command {
+public class PoseDisplacementCommand extends Command {
 
   private final SwerveSubsystem m_drive;
 
@@ -24,8 +25,8 @@ public class DriveToPoseCommand extends Command {
   private final ProfiledPIDController m_rotPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
 
-  private static Pose2d m_pose;
-
+  private Transform2d m_displacement;
+  private Pose2d m_pose;
   private double m_xDesiredPos;
   private double m_yDesiredPos;
   private double m_rotDesiredPos;
@@ -33,46 +34,14 @@ public class DriveToPoseCommand extends Command {
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
-  public DriveToPoseCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean finish) {
+  public PoseDisplacementCommand(SwerveSubsystem drive, Transform2d displacement, boolean finish) {
     m_drive = drive;
-
-    m_xDesiredPos = desiredPose.getX();
-    m_yDesiredPos = desiredPose.getY();
-    m_rotDesiredPos = desiredPose.getRotation().getDegrees();
-
+    m_displacement = displacement;
     m_finish = finish;
 
     addRequirements(m_drive);
 
-    setName("Drive To Pose PID Command");
-
-    SmartDashboard.putNumber("Drive Position P Value", 0);
-    SmartDashboard.putNumber("Drive Position I Value", 0);
-    SmartDashboard.putNumber("Drive Position D Value", 0);
-
-    // 0.005
-    SmartDashboard.putNumber(
-        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 0.015));
-    SmartDashboard.putNumber("Drive Rotation I Value", 0);
-    SmartDashboard.putNumber("Drive Rotation D Value", 0);
-
-    //     SmartDashboard.getNumber("Drive Position P Value", 0);
-    //     SmartDashboard.getNumber("Drive Position I Value", 0);
-    //     SmartDashboard.getNumber("Drive Position D Value", 0);
-
-    //     // 0.015
-    //     SmartDashboard.getNumber("Drive Rotation P Value", 0.01);
-    //     SmartDashboard.getNumber("Drive Rotation I Value", 0);
-    //    SmartDashboard.getNumber("Drive Rotation D Value", 0);
-
-    SmartDashboard.putNumber("Drive Velocity Constraint", Constants.Auton.kMaxSpeedMetersPerSecond);
-    SmartDashboard.putNumber(
-        "Drive Acceleration Constraint", Constants.Auton.kMaxAccelerationMetersPerSecondSquared);
-    SmartDashboard.putNumber(
-        "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
-    SmartDashboard.putNumber(
-        "Rotation Acceleration Constraint",
-        Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
+    setName("Pose Displacement Command");
   }
 
   // Called when the command is initially scheduled.
@@ -80,12 +49,17 @@ public class DriveToPoseCommand extends Command {
   public void initialize() {
     m_pose = m_drive.getPose();
 
+    Pose2d transformedPose = m_pose.transformBy(m_displacement);
+    m_xDesiredPos = transformedPose.getX();
+    m_yDesiredPos = transformedPose.getY();
+    m_rotDesiredPos = transformedPose.getRotation().getDegrees();
+
     double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
     // 0.015
-    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
@@ -139,7 +113,6 @@ public class DriveToPoseCommand extends Command {
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
             m_rotPID.calculate(m_drive.getOdometryHeading().getDegrees(), m_rotDesiredPos)));
-    //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
   }
 
   // Called once the command ends or is interrupted.

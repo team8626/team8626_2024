@@ -2,19 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.presets;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.Presets.Preset;
+import frc.robot.commands.subsystems.arm.SetArmCommand;
+import frc.robot.commands.subsystems.drive.PoseDisplacementCommand;
+import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.arm.commands.SetArmCommand;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.commands.IntakeCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.commands.PoseDisplacementCommand;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -23,7 +23,7 @@ public class PickupNoteCommand extends SequentialCommandGroup {
 
   public PickupNoteCommand(SwerveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake) {
     addCommands(
-        new SetArmCommand(arm, ArmConstants.Presets.kFloorPickup),
+        new SetArmCommand(arm, Preset.kFloorPickup),
         new IntakeCommand(intake)
             .deadlineWith(
                 new PoseDisplacementCommand(
