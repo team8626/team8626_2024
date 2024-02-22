@@ -1,9 +1,7 @@
 package frc.robot.subsystems.LEDs;
 
 public class LEDConstants {
-  // TODO: DO NOT COMMIT. BATTERY SAVING FOR TESTING
-  // public static final int kLEDLength = 75;
-  public static final int kLEDLength = 1;
+  public static final int kLEDLength = 75;
   public static final int kLEDPort = 9;
 
   public static final int[][] kErrorLightIndex = {
