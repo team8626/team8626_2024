@@ -13,25 +13,33 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.auto.DriveToNoteCommand;
+import frc.robot.commands.subsystems.arm.SetArmCommand;
+import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
+import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
+import frc.robot.commands.subsystems.intake.IntakeCommand;
+import frc.robot.commands.subsystems.shooter.ShooterCommand;
 import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
-import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
+import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.preset.PresetManager;
+import frc.robot.subsystems.preset.Presets.Preset;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
-import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
-import frc.robot.subsystems.swervedrive.commands.TurnToAngleCommand;
-import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
 
 public class RobotContainer {
+
+  int m_angle = 180;
+  int m_length = 0;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   Dashboard m_dashboard;
@@ -40,11 +48,14 @@ public class RobotContainer {
   public final SwerveSubsystem m_drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_goose"));
 
-  public final ArmSubsystem m_arm = new ArmSubsystem();
+  // public final ArmSubsystem m_arm = new ArmSubsystem();
+  public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
+  public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final LEDSubsystem m_leds = new LEDSubsystem();
+  public PresetManager m_presetStorage = new PresetManager();
 
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
@@ -79,64 +90,112 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCommands();
 
-    m_dashboard = new Dashboard(m_drivebase, m_arm, m_intake, m_shooter);
+    m_dashboard =
+        new Dashboard(m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_presetStorage);
   }
 
   private void configureBindings() {
-    /** Button Box Bindings */
-    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
 
-    // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
-    // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
+    // Rotation & Extension Adjustment
+    m_testController
+        .b()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() + 1)));
+    m_testController
+        .a()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() - 1)));
+    m_testController
+        .y()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() + 1)));
+    m_testController
+        .x()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() - 1)));
 
+    // Store Angle/Extension + Shooter Speed to Amp
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
+
+    // Store Angle/Extension + Shooter Speed to ShootSpeaker 0m
     m_buttonBox
-        .button_1()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.start()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
+        .button_3()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
+
+    // Activate DriveToNote Intaking (Documentation Order? To Be Tested)
     m_buttonBox
-        .button_2()
-        .onTrue(
-            new ParallelCommandGroup(
-                new InstantCommand(() -> m_intake.stop()),
-                new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
+        .button_4()
+        .toggleOnTrue(
+            new DriveToNoteCommand(m_drivebase)
+                .deadlineWith(
+                    new SequentialCommandGroup(
+                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                        new IntakeCommand(m_intake)
+                            .andThen(new IntakeAdjustmentCommand(m_intake))
+                            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
 
-    m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_shooter.start()));
-    m_buttonBox.button_5().onTrue(new InstantCommand(() -> m_shooter.stop()));
+    // Move Arm to Stow
+    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
-    /** Test Controller Buttons * */
+    // Activate DriveToNote Intaking (Ned's Order)
     m_buttonBox
-        .button_9()
-        .onTrue(new InstantCommand(() -> m_arm.reset())); // Start Zeroing of the arm
+        .button_7()
+        .toggleOnTrue(
+            new SequentialCommandGroup(
+                    new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
+                .deadlineWith(new DriveToNoteCommand(m_drivebase)));
 
-    m_xboxController.y().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    // Basic Shooting from The Speaker
+    m_buttonBox
+        .button_8()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSpeaker_0m, () -> 0.5)
+                .andThen(new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootSpeaker_0m)));
+
+    // Zero The Arm Extension (to be used if reset didn't happen at trobot activation)
+    m_buttonBox.button_9().onTrue(new InstantCommand(() -> m_armExt.reset()));
+
+    // Triggers Intake (set arm + start intaking))
+    m_xboxController
+        .leftBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+                .andThen(
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+
+    // Triggers shooting to stored preset settings
+    m_xboxController
+        .rightBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
+                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
     // hardware
-    m_xboxController.x().whileTrue(new RotateSlowCommand(false));
-    m_xboxController.b().whileTrue(new RotateSlowCommand(true));
+    // m_xboxController.x().whileTrue(new RotateSlowCommand(false));
+    // m_xboxController.b().whileTrue(new RotateSlowCommand(true));
   }
 
   private void configureDefaultCommands() {
 
-    AbsoluteDriveAdv closedAbsoluteDriveAdv =
-        new AbsoluteDriveAdv(
-            m_drivebase,
-            () ->
-                MathUtil.applyDeadband(
-                    -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
-            () ->
-                MathUtil.applyDeadband(
-                    m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-            () ->
-                MathUtil.applyDeadband(
-                    -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
-            () -> m_xboxController.b().getAsBoolean(),
-            () -> m_xboxController.x().getAsBoolean(),
-            () -> m_xboxController.y().getAsBoolean(),
-            () -> m_xboxController.a().getAsBoolean());
+    // AbsoluteDriveAdv closedAbsoluteDriveAdv =
+    //     new AbsoluteDriveAdv(
+    //         m_drivebase,
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+    //         () ->
+    //             MathUtil.applyDeadband(
+    //                 -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
+    //         m_xboxController.getHID()::getYButtonPressed,
+    //         m_xboxController.getHID()::getAButtonPressed,
+    //         m_xboxController.getHID()::getXButtonPressed,
+    //         m_xboxController.getHID()::getBButtonPressed);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
@@ -185,13 +244,6 @@ public class RobotContainer {
     //         () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
     // m_arm.setDefaultCommand(controlArm);
-  }
-
-  public void toggleSlowDrive() {
-    driveSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowDriveSpeedFactor;
-    rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
-
-    isSlowDrive = !isSlowDrive;
   }
 
   public Command getAutonomousCommand() {

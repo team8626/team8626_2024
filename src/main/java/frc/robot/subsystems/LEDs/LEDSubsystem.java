@@ -140,10 +140,15 @@ public class LEDSubsystem extends SubsystemBase {
             Timer.getFPGATimestamp());
         break;
       case INTAKING:
+      case SHOOTING:
         flow(m_currentColor[0], 0.5);
         break;
       case TEST:
         rainbow(LEDConstants.waveSlowCycleLength, LEDConstants.waveSlowDuration);
+        break;
+
+      case FOLLOWNOTE:
+        flow(Color.kOrange, 1);
         break;
 
       case DEFAULT:

@@ -18,14 +18,15 @@ public class LEDConstants {
     // AUTONOMOUS,
     // CLIMBING,
     // HANGING,
-    // SHOOTING,
+    SHOOTING,
     // CONTAINING,
     INTAKING,
     BLUE_ALLIANCE,
     RED_ALLIANCE,
     // LOW_BATTERY_ALERT,
     // DISABLED,
-    OFF
+    OFF,
+    FOLLOWNOTE
   }
 
   public static enum LedErrorMode {
