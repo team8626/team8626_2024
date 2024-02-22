@@ -45,7 +45,7 @@ public class Presets {
     }
 
     public String getString() {
-      return m_string;
+      return m_string.toUpperCase();
     }
   }
 }
