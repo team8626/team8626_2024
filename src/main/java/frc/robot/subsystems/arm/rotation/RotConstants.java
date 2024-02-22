@@ -4,7 +4,7 @@ public class RotConstants {
   public static final int rotationCANID_L = 22;
   public static final int rotationCANID_R = 23;
 
-  public static final float kMinRotDeg = 120;
+  public static final float kMinRotDeg = 77;
   public static final float kMaxRotDeg = 205;
 
   public static final int kCurrentLimit = 10; // TODO; was 30
@@ -16,14 +16,14 @@ public class RotConstants {
   public static final double kRotationEncoderPositionPIDMaxInput =
       kRotationEncoderPositionFactorDeg; // degrees
 
-  public static final double kRotP = 0.02;
-  public static final double kRotI = 0;
-  public static final double kRotD = 0;
-  public static final double kRotFF = 0;
-  public static final double kRotMinOutput = -0.75;
-  public static final double kRotMaxOutput = +0.75;
+  public static final double kRotP = 0.06;
+  public static final double kRotI = 0.00;
+  public static final double kRotD = 0.00;
+  public static final double kRotFF = 0.00;
+  public static final double kRotMinOutput = -1;
+  public static final double kRotMaxOutput = +0.1;
 
   public static final double kMaxAngleForSafeRetraction = 195;
 
-  public static final double kAtAngleTolerance = 3;
+  public static final double kAtAngleTolerance = 1;
 }

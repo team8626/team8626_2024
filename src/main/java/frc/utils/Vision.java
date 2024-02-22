@@ -29,11 +29,20 @@ import static frc.robot.RobotConstants.Vision.*;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
+import frc.robot.subsystems.Dashboard.DashboardUses;
+import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -43,22 +52,30 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class Vision {
-  private final PhotonCamera camera;
+public class Vision implements ImplementDashboard {
+  private final PhotonCamera ATCamera;
+  private final PhotonCamera ODCamera;
   private final PhotonPoseEstimator photonEstimator;
   private double lastEstTimestamp = 0;
+  SwerveSubsystem drive;
+
+  StructPublisher<Pose2d> m_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("NotePose", Pose2d.struct).publish();
 
   // Simulation
   private PhotonCameraSim cameraSim;
   private VisionSystemSim visionSim;
 
-  public Vision() {
-    camera = new PhotonCamera(kCameraName);
+  public Vision(SwerveSubsystem swerveSubsystem) {
+    drive = swerveSubsystem;
+    ATCamera = new PhotonCamera(kATCameraName);
+    ODCamera = new PhotonCamera(kODCameraName);
 
     photonEstimator =
         new PhotonPoseEstimator(
-            kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, kRobotToCam);
+            kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ATCamera, kATRobotToCam);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation
@@ -76,16 +93,16 @@ public class Vision {
       cameraProp.setLatencyStdDevMs(15);
       // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
       // targets.
-      cameraSim = new PhotonCameraSim(camera, cameraProp);
+      cameraSim = new PhotonCameraSim(ATCamera, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, kRobotToCam);
+      visionSim.addCamera(cameraSim, kATRobotToCam);
 
       cameraSim.enableDrawWireframe(true);
     }
   }
 
   public PhotonPipelineResult getLatestResult() {
-    return camera.getLatestResult();
+    return ATCamera.getLatestResult();
   }
 
   /**
@@ -97,7 +114,7 @@ public class Vision {
    */
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     var visionEst = photonEstimator.update();
-    double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
+    double latestTimestamp = ATCamera.getLatestResult().getTimestampSeconds();
     boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
     if (Robot.isSimulation()) {
       visionEst.ifPresentOrElse(
@@ -159,5 +176,35 @@ public class Vision {
   public Field2d getSimDebugField() {
     if (!Robot.isSimulation()) return null;
     return visionSim.getDebugField();
+  }
+
+  public Translation3d getBestNotePose() {
+    PhotonTrackedTarget target = ODCamera.getLatestResult().getBestTarget();
+
+    double height = kODCamPose.getTranslation().getZ();
+    double pitch = Math.toRadians(target.getPitch()) + kODCamPose.getRotation().getY();
+    double yaw = Math.toRadians(target.getYaw());
+    double xDistance = height / Math.tan(pitch);
+    double yDistance = xDistance * Math.tan(yaw);
+    var camToObj = new Translation3d(xDistance, yDistance, 0);
+
+    return new Pose3d(
+            new Translation3d(
+                kODCamPose.getTranslation().getX(), kODCamPose.getTranslation().getY(), 0),
+            new Rotation3d(kODCamPose.getRotation().getX(), 0, kODCamPose.getRotation().getZ()))
+        .transformBy(new Transform3d(camToObj, new Rotation3d()))
+        .getTranslation();
+  }
+
+  @Override
+  public void initDashboard() {}
+
+  @Override
+  public void updateDashboard() {}
+
+  @Override
+  public DashboardUses getDashboardUses() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getDashboardUses'");
   }
 }

@@ -25,7 +25,8 @@ public class LEDConstants {
     RED_ALLIANCE,
     // LOW_BATTERY_ALERT,
     // DISABLED,
-    OFF
+    OFF,
+    FOLLOWNOTE
   }
 
   public static enum LedErrorMode {
