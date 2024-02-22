@@ -258,23 +258,24 @@ public class ArmSubsystem extends SubsystemBase implements ImplementDashboard {
 
   @Override
   public void periodic() {
-    /** Check for value in Range * */
-    m_desiredAngleDeg =
-        MathUtil.clamp(
-            m_desiredAngleDeg, ArmConstants.Rotation.kMinRotDeg, ArmConstants.Rotation.kMaxRotDeg);
-    m_desiredExtensionInches =
-        MathUtil.clamp(
-            m_desiredExtensionInches,
-            ArmConstants.Extension.kMinExtInches,
-            ArmConstants.Extension.kMaxExtInches);
+    // /** Check for value in Range * */
+    // m_desiredAngleDeg =
+    //     MathUtil.clamp(
+    //         m_desiredAngleDeg, ArmConstants.Rotation.kMinRotDeg,
+    // ArmConstants.Rotation.kMaxRotDeg);
+    // m_desiredExtensionInches =
+    //     MathUtil.clamp(
+    //         m_desiredExtensionInches,
+    //         ArmConstants.Extension.kMinExtInches,
+    //         ArmConstants.Extension.kMaxExtInches);
 
-    /** Update Current Arm Positions */
-    if (RobotBase.isReal()) {
-      m_currentAngleDeg = m_rotationEncoder.getPosition();
-      m_currentExtInches = this.getExtensionInchesFromDeg(m_extensionEncoder.getPosition());
-    } else {
-      updateSimValues();
-    }
+    // /** Update Current Arm Positions */
+    // if (RobotBase.isReal()) {
+    //   m_currentAngleDeg = m_rotationEncoder.getPosition();
+    //   m_currentExtInches = this.getExtensionInchesFromDeg(m_extensionEncoder.getPosition());
+    // } else {
+    //   updateSimValues();
+    // }
 
     /** Set Target Positions into the Controllers * */
     if (!m_armIsResetting) {

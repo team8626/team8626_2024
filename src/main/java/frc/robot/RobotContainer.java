@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,11 +23,10 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
-import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.Constants.OperatorConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.commands.DriveToPoseCommand;
 import frc.robot.subsystems.swervedrive.commands.DriveToPoseTrajPIDCommand;
+import frc.robot.subsystems.swervedrive.commands.TurnToAngleCommand;
 import frc.robot.subsystems.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.utils.CommandButtonController;
 import java.io.File;
@@ -40,7 +38,7 @@ public class RobotContainer {
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   public final SwerveSubsystem m_drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_goose"));
 
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
@@ -54,7 +52,8 @@ public class RobotContainer {
   private final CommandXboxController m_testController =
       new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
 
-  private final CommandButtonController m_buttonBox = new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+  private final CommandButtonController m_buttonBox =
+      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
 
   private boolean isSlowDrive = false;
   private double driveSpeedFactor = 1;
@@ -180,12 +179,12 @@ public class RobotContainer {
     // Manual Arm Control on test controller
     // X-> Rotation
     // Y-> Extention
-    Command controlArm =
-        m_arm.controlCommand(
-            () -> MathUtil.applyDeadband(m_testController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
+    // Command controlArm =
+    //     m_arm.controlCommand(
+    //         () -> MathUtil.applyDeadband(m_testController.getLeftY(), 0.1),
+    //         () -> MathUtil.applyDeadband(m_testController.getLeftX(), 0.1));
 
-    m_arm.setDefaultCommand(controlArm);
+    // m_arm.setDefaultCommand(controlArm);
   }
 
   public void toggleSlowDrive() {
@@ -201,8 +200,9 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+        // return new DriveToPoseCommand(
+        //     m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), false);
+        return new TurnToAngleCommand(m_drivebase, Rotation2d.fromDegrees(45), isSlowDrive);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -212,7 +212,7 @@ public class RobotContainer {
 
       case TRAJECTORY_DTP:
         return new DriveToPoseTrajPIDCommand(
-            m_drivebase, new Pose2d(6, 6, Rotation2d.fromDegrees(180)), false);
+            m_drivebase, new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
     }
   }
 }
