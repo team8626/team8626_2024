@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems.preset;
 
 public class Presets {
   public enum Preset {

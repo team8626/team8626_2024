@@ -5,15 +5,15 @@
 package frc.robot.subsystems.preset;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Presets.Preset;
+// import frc.robot.Presets.Preset;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.preset.Presets.Preset;
 
-public class PresetSubsystem implements ImplementDashboard {
-  /** Creates a new LEDSubsystem. */
+public class PresetManager implements ImplementDashboard {
   private Preset m_preset;
 
-  public PresetSubsystem() {
+  public PresetManager() {
     m_preset = Preset.kStow;
   }
 

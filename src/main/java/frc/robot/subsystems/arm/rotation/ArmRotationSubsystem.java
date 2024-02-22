@@ -16,10 +16,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Presets.Preset;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.preset.Presets.Preset;
 import java.util.function.DoubleSupplier;
 
 public class ArmRotationSubsystem extends SubsystemBase implements ImplementDashboard {

@@ -7,9 +7,9 @@ package frc.robot.commands.subsystems.arm;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Presets.Preset;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
+import frc.robot.subsystems.preset.Presets.Preset;
 import java.util.function.Supplier;
 
 public class SetArmCommand extends Command {
@@ -106,7 +106,7 @@ public class SetArmCommand extends Command {
 
     if (m_armRot.atSetpoint() && m_armExt.atSetpoint()) {
       m_timer.start();
-      if (m_timer.hasElapsed(1)) {
+      if (m_timer.hasElapsed(0.25)) {
         retval = true;
       }
     }
