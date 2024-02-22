@@ -10,15 +10,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.preset.Presets.Preset;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class SetArmCommand extends Command {
   private ArmRotationSubsystem m_armRot;
   private ArmExtensionSubsystem m_armExt;
   private Supplier<Preset> m_preset;
-  private boolean m_goodAngle = false;
 
   private Timer m_timer = new Timer();
+  private double m_waitTime;
 
   double m_desiredExtensionInches, m_desiredAngleDegrees;
 
@@ -51,6 +52,7 @@ public class SetArmCommand extends Command {
     m_armExt = armExt;
     m_armRot = armRot;
     m_preset = desiredState;
+    m_waitTime = 0;
 
     // m_desiredExtensionInches = desiredState.getExtInches();
     // m_desiredAngleDegrees = desiredState.getRotDegrees();
@@ -58,7 +60,26 @@ public class SetArmCommand extends Command {
     addRequirements(armRot);
     addRequirements(armExt);
 
-    setName("Set Arm Command");
+    setName("SetArmCommand");
+  }
+
+  public SetArmCommand(
+      ArmRotationSubsystem armRot,
+      ArmExtensionSubsystem armExt,
+      Supplier<Preset> desiredState,
+      DoubleSupplier newWaitTime) {
+    m_armExt = armExt;
+    m_armRot = armRot;
+    m_preset = desiredState;
+    m_waitTime = Math.max(newWaitTime.getAsDouble(), 0);
+
+    // m_desiredExtensionInches = desiredState.getExtInches();
+    // m_desiredAngleDegrees = desiredState.getRotDegrees();
+
+    addRequirements(armRot);
+    addRequirements(armExt);
+
+    setName("SetArmCommand");
   }
 
   // Called when the command is initially scheduled.
@@ -69,7 +90,6 @@ public class SetArmCommand extends Command {
     System.out.printf("[SetArmCommand] Preset: %s\n", m_preset.get().getString());
 
     m_armRot.setAngleDeg(m_preset.get().getRotDegrees());
-    m_goodAngle = false;
 
     System.out.printf("[SetArmCommand] New rot: %f\n", m_preset.get().getRotDegrees());
     // m_armExt.setLengthInches(m_preset.getExtInches());
@@ -93,7 +113,6 @@ public class SetArmCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_goodAngle = false;
     m_timer.stop();
 
     System.out.println("[SetArmCommand] Ended!");
@@ -106,7 +125,7 @@ public class SetArmCommand extends Command {
 
     if (m_armRot.atSetpoint() && m_armExt.atSetpoint()) {
       m_timer.start();
-      if (m_timer.hasElapsed(0.25)) {
+      if (m_timer.hasElapsed(m_waitTime)) {
         retval = true;
       }
     }
