@@ -154,7 +154,7 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
   }
 
   public double getExtInches() {
-    return m_desiredExtensionInches;
+    return m_currentExtInches;
   }
 
   @Override
