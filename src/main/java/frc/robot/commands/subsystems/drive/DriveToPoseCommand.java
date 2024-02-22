@@ -38,7 +38,7 @@ public class DriveToPoseCommand extends Command {
 
     m_xDesiredPos = desiredPose.getX();
     m_yDesiredPos = desiredPose.getY();
-    m_rotDesiredPos = desiredPose.getRotation().getDegrees();
+    m_rotDesiredPos = desiredPose.getRotation().getRadians();
 
     m_finish = finish;
 
@@ -46,15 +46,20 @@ public class DriveToPoseCommand extends Command {
 
     setName("Drive To Pose PID Command");
 
-    SmartDashboard.putNumber("Drive Position P Value", 0);
-    SmartDashboard.putNumber("Drive Position I Value", 0);
-    SmartDashboard.putNumber("Drive Position D Value", 0);
+    SmartDashboard.putNumber(
+        "Drive Position P Value", SmartDashboard.getNumber("Drive Position P Value", 12.03125));
+    SmartDashboard.putNumber(
+        "Drive Position I Value", SmartDashboard.getNumber("Drive Position I Value", 0));
+    SmartDashboard.putNumber(
+        "Drive Position D Value", SmartDashboard.getNumber("Drive Position D Value", 1));
 
     // 0.005
     SmartDashboard.putNumber(
-        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 0.015));
-    SmartDashboard.putNumber("Drive Rotation I Value", 0);
-    SmartDashboard.putNumber("Drive Rotation D Value", 0);
+        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 5));
+    SmartDashboard.putNumber(
+        "Drive Rotation I Value", SmartDashboard.getNumber("Drive Rotation I Value", 0.5));
+    SmartDashboard.putNumber(
+        "Drive Rotation D Value", SmartDashboard.getNumber("Drive Rotation D Value", 0.25));
 
     //     SmartDashboard.getNumber("Drive Position P Value", 0);
     //     SmartDashboard.getNumber("Drive Position I Value", 0);
@@ -85,7 +90,7 @@ public class DriveToPoseCommand extends Command {
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
     // 0.015
-    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0.015);
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
@@ -124,9 +129,9 @@ public class DriveToPoseCommand extends Command {
 
     m_xPID.reset(m_pose.getX());
     m_yPID.reset(m_pose.getY());
-    m_rotPID.reset(m_drive.getOdometryHeading().getDegrees());
+    m_rotPID.reset(m_drive.getOdometryHeading().getRadians());
 
-    m_rotPID.enableContinuousInput(-180, 180);
+    m_rotPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -138,8 +143,10 @@ public class DriveToPoseCommand extends Command {
         new ChassisSpeeds(
             m_xPID.calculate(m_pose.getX(), m_xDesiredPos),
             m_yPID.calculate(m_pose.getY(), m_yDesiredPos),
-            m_rotPID.calculate(m_drive.getOdometryHeading().getDegrees(), m_rotDesiredPos)));
-    //  SmartDashboard.putNumber("Angle Setpoint", m_rotPID.getPositionError() +
+            m_rotPID.calculate(m_drive.getOdometryHeading().getRadians(), m_rotDesiredPos)));
+    SmartDashboard.putNumber("X Error", m_xPID.getPositionError());
+    SmartDashboard.putNumber("Y Error", m_yPID.getPositionError());
+    SmartDashboard.putNumber("Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
   }
 
   // Called once the command ends or is interrupted.

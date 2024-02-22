@@ -18,7 +18,7 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
 
     addCommands(
         new DriveToPosePPCommand(drive, desiredPose),
-        new DriveToPoseCommand(drive, desiredPose, true),
+        new TurnToAngleCommand(drive, desiredPose.getRotation(), true),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 
     setName("Drive To Pose Trajectory and PID Command");

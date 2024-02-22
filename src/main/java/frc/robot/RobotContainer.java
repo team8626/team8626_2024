@@ -7,17 +7,19 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
-import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
@@ -44,7 +46,7 @@ public class RobotContainer {
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   public final SwerveSubsystem m_drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve_goose"));
 
   // public final ArmSubsystem m_arm = new ArmSubsystem();
   public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
@@ -64,6 +66,25 @@ public class RobotContainer {
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
 
+  private boolean isSlowDrive = false;
+  private double driveSpeedFactor = 1;
+  private double rotationSpeedFactor = 1;
+
+  Command driveFieldOrientedAnglularVelocity;
+
+  private class RotateSlowCommand extends RunCommand {
+    public RotateSlowCommand(boolean clockwise) {
+      super(
+          () ->
+              m_drivebase.drive(
+                  new Translation2d(),
+                  clockwise
+                      ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                      : Constants.OperatorConstants.kIncrementalRotationSpeed,
+                  true));
+    }
+  }
+
   public RobotContainer() {
 
     configureBindings();
@@ -75,54 +96,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    /** Button Box Bindings */
-    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
-
-    // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
-    // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
-
-    // m_buttonBox
-    //     .button_1()
-    //     .onTrue(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> m_intake.start()),
-    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
-    // m_buttonBox
-    //     .button_2()
-    //     .onTrue(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> m_intake.stop()),
-    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
-
-    /** Test Controller Buttons * */
-    // m_buttonBox
-    //     .button_1()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_0m, m_shooter));
-    // m_buttonBox
-    //     .button_2()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_2m, m_shooter));
-    // m_buttonBox
-    //     .button_3()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_3m, m_shooter));
-
-    // m_buttonBox
-    //     .button_4()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
-    // m_buttonBox
-    //     .button_5()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
-    // m_buttonBox
-    //     .button_6()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
-
-    // Set to Angle Testing
+    // Rotation & Extension Adjustment
     m_testController
         .b()
         .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() + 1)));
@@ -136,41 +110,13 @@ public class RobotContainer {
         .x()
         .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() - 1)));
 
+    // Store Angle/Extension + Shooter Speed to Amp
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
+
     // Store Angle/Extension + Shooter Speed to ShootSpeaker 0m
     m_buttonBox
         .button_3()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
-
-    // Store Angle/Extension + Shooter Speed to Amp
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
-
-    // Move Arm to Stow
-    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
-
-    // Triggers Intake (set arm + start intaking))
-    m_xboxController
-        .leftBumper()
-        .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
-                .andThen(
-                    new IntakeCommand(m_intake)
-                        .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
-
-    m_buttonBox
-        .button_3()
-        .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
-                .andThen(new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
-
-    // Triggers shooting to stored preset settings
-    m_xboxController
-        .rightBumper()
-        .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
-                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     // Activate DriveToNote Intaking (Documentation Order? To Be Tested)
     m_buttonBox
@@ -183,6 +129,9 @@ public class RobotContainer {
                         new IntakeCommand(m_intake)
                             .andThen(new IntakeAdjustmentCommand(m_intake))
                             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
+
+    // Move Arm to Stow
+    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // Activate DriveToNote Intaking (Ned's Order)
     m_buttonBox
@@ -203,9 +152,30 @@ public class RobotContainer {
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootSpeaker_0m)));
 
     // Zero The Arm Extension (to be used if reset didn't happen at trobot activation)
-    m_buttonBox
-        .button_9()
-        .onTrue(new InstantCommand(() -> m_armExt.reset())); // Start Zeroing of the arm
+    m_buttonBox.button_9().onTrue(new InstantCommand(() -> m_armExt.reset()));
+
+    // Triggers Intake (set arm + start intaking))
+    m_xboxController
+        .leftBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+                .andThen(
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+
+    // Triggers shooting to stored preset settings
+    m_xboxController
+        .rightBumper()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
+                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+
+    // TODO: Assign commands to whatever the controller paddles are mapped to on the controller
+    // hardware
+    // m_xboxController.x().whileTrue(new RotateSlowCommand(false));
+    // m_xboxController.b().whileTrue(new RotateSlowCommand(true));
   }
 
   private void configureDefaultCommands() {
@@ -244,11 +214,13 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity =
+    driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-            () -> -m_xboxController.getRawAxis(4));
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
+
+    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -280,8 +252,9 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+        // return new DriveToPoseCommand(
+        //     m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), false);
+        return new TurnToAngleCommand(m_drivebase, Rotation2d.fromDegrees(45), isSlowDrive);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -291,7 +264,7 @@ public class RobotContainer {
 
       case TRAJECTORY_DTP:
         return new DriveToPoseTrajPIDCommand(
-            m_drivebase, new Pose2d(6, 6, Rotation2d.fromDegrees(180)), false);
+            m_drivebase, new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
     }
   }
 }
