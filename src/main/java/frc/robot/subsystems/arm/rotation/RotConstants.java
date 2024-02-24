@@ -7,7 +7,7 @@ public class RotConstants {
   public static final float kMinRotDeg = 77;
   public static final float kMaxRotDeg = 205;
 
-  public static final int kCurrentLimit = 10; // TODO; was 30
+  public static final int kCurrentLimit = 30;
 
   public static final double kRotationEncoderPositionFactorDeg = 360; // degres
   public static final double kRotationEncoderVelocityFactorDeg = 360 / 60; // degres per second
