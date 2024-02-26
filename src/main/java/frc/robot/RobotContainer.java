@@ -72,8 +72,6 @@ public class RobotContainer {
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
-  Command driveFieldOrientedAnglularVelocity;
-
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
       super(
@@ -88,19 +86,6 @@ public class RobotContainer {
   }
 
   Command driveFieldOrientedAnglularVelocity;
-
-  private class RotateSlowCommand extends RunCommand {
-    public RotateSlowCommand(boolean clockwise) {
-      super(
-          () ->
-              m_drivebase.drive(
-                  new Translation2d(),
-                  clockwise
-                      ? -Constants.OperatorConstants.kIncrementalRotationSpeed
-                      : Constants.OperatorConstants.kIncrementalRotationSpeed,
-                  true));
-    }
-  }
 
   public RobotContainer() {
 
