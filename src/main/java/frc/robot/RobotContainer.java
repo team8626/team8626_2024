@@ -122,21 +122,29 @@ public class RobotContainer {
     //         new StartEndCommand(
     //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
 
-    // Set to Angle Testing
+    // ---------------------------------------- Set to Angle Testing (Test Controller)
+    //                                          A/B Rotation
+    //                                          X/Y Extension
     m_testController
-        .b()
+        .y()
         .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() + 1)));
     m_testController
         .a()
         .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() - 1)));
     m_testController
-        .y()
+        .b()
         .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() + 1)));
     m_testController
         .x()
         .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() - 1)));
 
-    // Store Angle/Extension + Shooter Speed to ShootSpeaker 0m
+    // ---------------------------------------- Store Angle/Extension + Shooter Speed to
+    // ShootSpeaker Long Distance
+    m_buttonBox
+        .button_1()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_2m)));
+
+    // ShootSpeaker 0m
     m_buttonBox
         .button_3()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
@@ -157,14 +165,9 @@ public class RobotContainer {
                         .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
-    m_buttonBox
-        .button_3()
-        .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
-                .andThen(new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+    // m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.5)
 
-    // Triggers shooting to stored preset settings
+    // ---------------------------------------- Triggers shooting to stored preset settings
     m_xboxController
         .rightBumper()
         .toggleOnTrue(
@@ -172,7 +175,17 @@ public class RobotContainer {
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
-    // Activate DriveToNote Intaking (Documentation Order? To Be Tested)
+    // ---------------------------------------- BUTTON 1
+    //                                          Not Used
+
+    // ---------------------------------------- BUTTON 2
+    //                                          Not Used
+
+    // ---------------------------------------- BUTTON 3
+    //                                          Triggers shooting to stored preset settings
+
+    // ---------------------------------------- BUTTON 4
+    //                                          Activate DriveToNote Intaking (Documentation Order?
     m_buttonBox
         .button_4()
         .toggleOnTrue(
@@ -184,7 +197,14 @@ public class RobotContainer {
                             .andThen(new IntakeAdjustmentCommand(m_intake))
                             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
 
-    // Activate DriveToNote Intaking (Ned's Order)
+    // ---------------------------------------- BUTTON 5
+    //                                          Not Used
+
+    // ---------------------------------------- BUTTON 6
+    //                                          Not Used
+
+    // ---------------------------------------- BUTTON 7
+    //                                          Activate DriveToNote Intaking (Ned's Order)
     m_buttonBox
         .button_7()
         .toggleOnTrue(
@@ -195,14 +215,16 @@ public class RobotContainer {
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
                 .deadlineWith(new DriveToNoteCommand(m_drivebase)));
 
-    // Basic Shooting from The Speaker
+    // ---------------------------------------- BUTTON 8
+    //                                          Basic Shooting from The Speaker
     m_buttonBox
         .button_8()
         .toggleOnTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSpeaker_0m, () -> 0.5)
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootSpeaker_0m)));
 
-    // Zero The Arm Extension (to be used if reset didn't happen at trobot activation)
+    // ---------------------------------------- BUTTON 9
+    //                                          Zero The Arm Extension
     m_buttonBox
         .button_9()
         .onTrue(new InstantCommand(() -> m_armExt.reset())); // Start Zeroing of the arm
