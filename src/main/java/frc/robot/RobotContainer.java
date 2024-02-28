@@ -8,17 +8,17 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.DriveToNoteCommand;
+import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
@@ -185,6 +185,11 @@ public class RobotContainer {
     // hardware
     m_xboxController.x().whileTrue(new RotateSlowCommand(false));
     m_xboxController.b().whileTrue(new RotateSlowCommand(true));
+
+    m_xboxController
+        .start()
+        .toggleOnTrue(
+            new RumbleCommand(m_xboxController.getHID(), 1, 5, 0.5, 0.25, RumbleType.kBothRumble));
   }
 
   private void configureDefaultCommands() {
@@ -231,8 +236,6 @@ public class RobotContainer {
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
-    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
-
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
@@ -267,7 +270,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     switch (m_dashboard.getSelectedAuto()) {
       default:
-        return Commands.print("Print Auto Command");
+        return new RumbleCommand(
+            m_xboxController.getHID(), 1, driveSpeedFactor, RumbleType.kBothRumble);
 
       case EXIT:
         // return new DriveToPoseCommand(
