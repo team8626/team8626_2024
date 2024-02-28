@@ -1,10 +1,13 @@
 package frc.robot.commands.subsystems.drive;
 
+import java.util.function.Supplier;
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -20,15 +23,16 @@ public class TurnToAngleCommand extends Command {
   private final ProfiledPIDController m_rotPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
 
-  private double m_rotDesiredPos;
+  private Supplier<Pose2d> m_desiredPoseSupplier;
+  private double rotDesiredPos;
 
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
-  public TurnToAngleCommand(SwerveSubsystem drive, Rotation2d desiredPose, boolean finish) {
+  public TurnToAngleCommand(SwerveSubsystem drive, Supplier<Pose2d> desiredRotSupplier, boolean finish) {
     m_drive = drive;
 
-    m_rotDesiredPos = desiredPose.getRadians();
+    m_desiredPoseSupplier = desiredRotSupplier;
 
     m_finish = finish;
 
@@ -53,6 +57,7 @@ public class TurnToAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    rotDesiredPos = m_desiredPoseSupplier.get().getRotation().getRadians();
 
     double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
@@ -87,7 +92,7 @@ public class TurnToAngleCommand extends Command {
 
     m_drive.drive(
         new ChassisSpeeds(
-            0, 0, m_rotPID.calculate(m_drive.getOdometryHeading().getRadians(), m_rotDesiredPos)));
+            0, 0, m_rotPID.calculate(m_drive.getOdometryHeading().getRadians(), rotDesiredPos)));
     SmartDashboard.putNumber("Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
   }
 

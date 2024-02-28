@@ -276,7 +276,7 @@ public class RobotContainer {
       case EXIT:
         // return new DriveToPoseCommand(
         //     m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(90)), false);
-        return new TurnToAngleCommand(m_drivebase, Rotation2d.fromDegrees(45), isSlowDrive);
+        return new TurnToAngleCommand(m_drivebase, () -> new Pose2d(new Translation2d(), Rotation2d.fromDegrees(45)), isSlowDrive);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -286,7 +286,7 @@ public class RobotContainer {
 
       case TRAJECTORY_DTP:
         return new DriveToPoseTrajPIDCommand(
-            m_drivebase, new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
+            m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
     }
   }
 }
