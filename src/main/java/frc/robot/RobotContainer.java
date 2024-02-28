@@ -270,7 +270,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     switch (m_dashboard.getSelectedAuto()) {
       default:
-        return Commands.print("Print Auto Command");
+        return new RumbleCommand(
+            m_xboxController.getHID(), 1, driveSpeedFactor, RumbleType.kBothRumble);
 
       case EXIT:
         // return new DriveToPoseCommand(

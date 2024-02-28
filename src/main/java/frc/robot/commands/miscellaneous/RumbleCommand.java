@@ -18,10 +18,10 @@ public class RumbleCommand extends Command {
   private Timer m_timer = new Timer();
   private double m_intensity;
   private RumbleType m_rumbleType;
-  private int m_pulseCount;
+  private int m_currentPulseCount;
   // Change name
   private boolean m_isPulsing;
-  private int m_pulses;
+  private int m_pulseCount;
 
   public RumbleCommand(
       GenericHID controller, double intensity, double time, RumbleType rumbleType) {
@@ -35,26 +35,26 @@ public class RumbleCommand extends Command {
   public RumbleCommand(
       GenericHID controller,
       double intensity,
-      int pulses,
-      double pulseInterval,
-      double pulsePause,
+      int pulseCount,
+      double pulseLength,
+      double pulsePauseLength,
       RumbleType rumbleType) {
     m_rumbleType = rumbleType;
     m_controller = controller;
     m_intensity = intensity;
     m_isPulsing = true;
-    m_pulses = pulses;
+    m_pulseCount = pulseCount;
     m_execute =
         () -> {
           if (m_isPulsing) {
-            if (m_timer.hasElapsed(pulseInterval)) {
+            if (m_timer.hasElapsed(pulseLength)) {
               m_controller.setRumble(m_rumbleType, 0);
               m_timer.reset();
-              m_pulseCount++;
+              m_currentPulseCount++;
               m_isPulsing = false;
             }
           } else {
-            if (m_timer.hasElapsed(pulsePause)) {
+            if (m_timer.hasElapsed(pulsePauseLength)) {
               m_controller.setRumble(m_rumbleType, m_intensity);
               m_timer.reset();
               m_isPulsing = true;
@@ -62,14 +62,14 @@ public class RumbleCommand extends Command {
           }
         };
 
-    m_isFinished = () -> arePulsesCompleted();
+    m_isFinished = () -> arepulseCountCompleted();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_timer.start();
-    m_pulseCount = 0;
+    m_currentPulseCount = 0;
     m_controller.setRumble(m_rumbleType, m_intensity);
   }
 
@@ -91,7 +91,7 @@ public class RumbleCommand extends Command {
     return m_isFinished.getAsBoolean();
   }
 
-  private boolean arePulsesCompleted() {
-    return m_pulseCount == m_pulses;
+  private boolean arepulseCountCompleted() {
+    return m_currentPulseCount == m_pulseCount;
   }
 }
