@@ -97,7 +97,7 @@ public class SetArmCommand extends Command {
 
   @Override
   public void execute() {
-    if (MathUtil.isNear(m_preset.get().getRotDegrees(), m_armRot.getRotDegrees(), 35)) {
+    if (MathUtil.isNear(m_preset.get().getRotDegrees(), m_armRot.getRotDegrees(), 50)) {
       m_armExt.setLengthInches(m_preset.get().getExtInches());
       // System.out.printf(
       //     "[SetArmCommand] New ext: %f (Current Rot: %f want %f)\n",
