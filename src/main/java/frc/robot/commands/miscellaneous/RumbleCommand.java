@@ -62,7 +62,7 @@ public class RumbleCommand extends Command {
           }
         };
 
-    m_isFinished = () -> arepulseCountCompleted();
+    m_isFinished = () -> arePulseCountCompleted();
   }
 
   // Called when the command is initially scheduled.
@@ -91,7 +91,7 @@ public class RumbleCommand extends Command {
     return m_isFinished.getAsBoolean();
   }
 
-  private boolean arepulseCountCompleted() {
+  private boolean arePulseCountCompleted() {
     return m_currentPulseCount == m_pulseCount;
   }
 }

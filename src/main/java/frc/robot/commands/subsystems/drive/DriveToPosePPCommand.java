@@ -5,6 +5,7 @@
 package frc.robot.commands.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.Supplier;
@@ -22,9 +23,9 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
   }
 
   public DriveToPosePPCommand(SwerveSubsystem drive, Supplier<Pose2d> desiredPose) {
-
     setName("Drive To Pose Path Planner Command");
-
-    addCommands(drive.driveToPose(desiredPose));
+    addCommands(
+        new InstantCommand(() -> drive.currentDTP = desiredPose.get()),
+        drive.driveToPose(drive.currentDTP));
   }
 }

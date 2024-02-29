@@ -24,14 +24,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -47,6 +45,8 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   private final SwerveDrive swerveDrive;
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
+
+  public Pose2d currentDTP = new Pose2d();
 
   /** Vision object */
   private Vision m_vision = new Vision(this);
@@ -184,33 +184,6 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
         0.0 // Rotation delay distance in meters. This is how far the robot should travel before
         // attempting to rotate.
         );
-  }
-
-  public Command driveToPose(Supplier<Pose2d> poseSupplier) {
-    Command DTPCommand =
-        new InstantCommand(
-            () -> {
-
-              // Create the constraints to use while pathfinding
-              PathConstraints constraints =
-                  new PathConstraints(
-                      swerveDrive.getMaximumVelocity(),
-                      4.0,
-                      swerveDrive.getMaximumAngularVelocity(),
-                      Units.degreesToRadians(720));
-
-              // Since AutoBuilder is configured, we can use it to build pathfinding commands
-              AutoBuilder.pathfindToPose(
-                      poseSupplier.get(),
-                      constraints,
-                      0.0, // Goal end velocity in meters/sec
-                      0.0 // Rotation delay distance in meters. This is how far the robot should
-                      // travel before
-                      // attempting to rotate.
-                      )
-                  .schedule();
-            });
-    return DTPCommand;
   }
 
   /**
