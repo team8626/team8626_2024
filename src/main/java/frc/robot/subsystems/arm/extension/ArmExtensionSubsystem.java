@@ -107,13 +107,8 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
    * @param newLengthInches
    */
   public void setLengthInches(double newLengthInches) {
-    if (m_armZeroed) {
-      m_desiredExtensionInches = newLengthInches; // Value Clamped in periodic()
-      System.out.printf("[ARM] New Length: %f\n", m_desiredExtensionInches);
-
-    } else {
-      System.out.println("[ARM] Arm not initialized, cannot set length");
-    }
+    m_desiredExtensionInches = newLengthInches; // Value Clamped in periodic()
+    // System.out.printf("[ARM] New Length: %f\n", m_desiredExtensionInches);
   }
 
   private void extend(double newSpeed) {
@@ -159,39 +154,41 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
 
   @Override
   public void periodic() {
+
     /** Check for value in Range * */
     m_desiredExtensionInches =
         MathUtil.clamp(
             m_desiredExtensionInches, ExtConstants.kMinExtInches, ExtConstants.kMaxExtInches);
 
-    /** Update Current Arm Positions */
+    /** Update Current Arm Positions * */
     if (RobotBase.isReal()) {
       m_currentExtInches = m_theOtherExtensionEncoder.getPosition();
     } else {
       updateSimValues();
     }
 
-    // /** Set Target Positions into the Controllers * */
+    /** Set Target Positions into the Controllers * */
     if (!m_armIsResetting) {
       if (m_armZeroed) {
         m_theOtherPIDController.setReference(m_desiredExtensionInches, ControlType.kPosition);
       } else {
-        // System.out.println("[ARM] Arm not initialized, will not setReference");
+        // Not Zeroed and Not Resetting
+        // Something when wrong, Force Reset!
+        this.reset();
       }
     } else {
       /** Use Motor output current to detect low limit * */
       if (m_extensionMotor_L.getOutputCurrent() < ExtConstants.kZeroingCurrent) {
         // Resetting the Arm - Move backwards until Current raises for that motor
         m_extensionMotor_L.set(-0.5);
-        System.out.println("[ARM] Resetting -0.5");
       }
       /** Reached current threshold, we found the zero!* */
       else {
         // Reset done!
         System.out.println("[ARM] Resetting DONE");
 
-        m_extensionMotor_L.set(0);
         m_theOtherExtensionEncoder.setPosition(0);
+        m_extensionMotor_L.set(0);
 
         m_currentExtInches = 0;
         m_desiredExtensionInches = 0;

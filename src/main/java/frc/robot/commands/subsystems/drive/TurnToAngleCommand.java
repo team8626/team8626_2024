@@ -1,20 +1,17 @@
-package frc.robot.commands.subsystems.drive;
-
-import java.util.function.Supplier;
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+package frc.robot.commands.subsystems.drive;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import java.util.function.Supplier;
 
 public class TurnToAngleCommand extends Command {
 
@@ -29,7 +26,8 @@ public class TurnToAngleCommand extends Command {
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
-  public TurnToAngleCommand(SwerveSubsystem drive, Supplier<Pose2d> desiredRotSupplier, boolean finish) {
+  public TurnToAngleCommand(
+      SwerveSubsystem drive, Supplier<Pose2d> desiredRotSupplier, boolean finish) {
     m_drive = drive;
 
     m_desiredPoseSupplier = desiredRotSupplier;

@@ -4,19 +4,19 @@
 
 package frc.robot.commands.subsystems.drive;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import java.util.function.Supplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
 
-  public DriveToPoseTrajPIDCommand(SwerveSubsystem drive, Supplier<Pose2d> desiredPose, boolean lockPose) {
+  public DriveToPoseTrajPIDCommand(
+      SwerveSubsystem drive, Supplier<Pose2d> desiredPose, boolean lockPose) {
 
     addCommands(
         new DriveToPosePPCommand(drive, desiredPose),

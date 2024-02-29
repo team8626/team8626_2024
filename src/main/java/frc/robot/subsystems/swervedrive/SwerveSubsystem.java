@@ -32,7 +32,6 @@ import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -188,28 +187,30 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   public Command driveToPose(Supplier<Pose2d> poseSupplier) {
-  Command DTPCommand = new InstantCommand(() -> {
+    Command DTPCommand =
+        new InstantCommand(
+            () -> {
 
-   // Create the constraints to use while pathfinding
-   PathConstraints constraints =
-   new PathConstraints(
-       swerveDrive.getMaximumVelocity(),
-       4.0,
-       swerveDrive.getMaximumAngularVelocity(),
-       Units.degreesToRadians(720));
+              // Create the constraints to use while pathfinding
+              PathConstraints constraints =
+                  new PathConstraints(
+                      swerveDrive.getMaximumVelocity(),
+                      4.0,
+                      swerveDrive.getMaximumAngularVelocity(),
+                      Units.degreesToRadians(720));
 
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
-  AutoBuilder.pathfindToPose(
-  poseSupplier.get(),
-   constraints,
-   0.0, // Goal end velocity in meters/sec
-   0.0 // Rotation delay distance in meters. This is how far the robot should travel before
-   // attempting to rotate.
-   ).schedule();
-
-});
-return DTPCommand;
- 
+              // Since AutoBuilder is configured, we can use it to build pathfinding commands
+              AutoBuilder.pathfindToPose(
+                      poseSupplier.get(),
+                      constraints,
+                      0.0, // Goal end velocity in meters/sec
+                      0.0 // Rotation delay distance in meters. This is how far the robot should
+                      // travel before
+                      // attempting to rotate.
+                      )
+                  .schedule();
+            });
+    return DTPCommand;
   }
 
   /**
@@ -336,17 +337,17 @@ return DTPCommand;
   @Override
   public void periodic() {
 
-    //   // Correct pose estimate with vision measurements
-    //   var visionEst = m_vision.getEstimatedGlobalPose();
-    //   visionEst.ifPresent(
-    //       est -> {
-    //         var estPose = est.estimatedPose.toPose2d();
-    //         // Change our trust in the measurement based on the tags we can see
-    //         var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+    // Correct pose estimate with vision measurements
+    var visionEst = m_vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          var estPose = est.estimatedPose.toPose2d();
+          // Change our trust in the measurement based on the tags we can see
+          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
 
-    //         swerveDrive.addVisionMeasurement(
-    //             est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-    //       });
+          swerveDrive.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
   }
 
   @Override

@@ -11,6 +11,7 @@ public class IntakeConstants {
   public static final int kIRSensor1 = 0; // DIO
   public static final int kIRSensor2 = 1; // DIO
 
+  public static final double kSpeed_Idle = 0.0;
   public static final double kSpeed_Intake = 0.9;
   public static final double kSpeed_Coast = 0.3;
   public static final double kSpeed_Shoot = 1;
@@ -34,7 +35,7 @@ public class IntakeConstants {
       }
 
       public String getString() {
-        return m_string;
+        return m_string.toUpperCase();
       }
 
       public double getId() {

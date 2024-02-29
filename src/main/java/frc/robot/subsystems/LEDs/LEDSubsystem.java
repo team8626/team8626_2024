@@ -276,10 +276,10 @@ public class LEDSubsystem extends SubsystemBase {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       if (ally.get() == Alliance.Red) {
-        m_currentColor = new Color[] {Color.kRed, Color.kDarkRed};
+        m_currentColor = new Color[] {Color.kRed, Color.kBlack};
       }
       if (ally.get() == Alliance.Blue) {
-        m_currentColor = new Color[] {Color.kBlue, Color.kAqua};
+        m_currentColor = new Color[] {Color.kNavy, Color.kBlack};
       }
     } else {
       m_currentColor = new Color[] {Color.kHotPink, Color.kPink};

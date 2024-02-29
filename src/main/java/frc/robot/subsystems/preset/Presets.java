@@ -2,10 +2,10 @@ package frc.robot.subsystems.preset;
 
 public class Presets {
   public enum Preset {
-    kStart("START", 110, 0, 0, 0),
-    kStow("STOW", 195, 0, 0, 0),
-    kFloorPickup("FLOOR PICKUP", 204, 10, 500, 500),
-    kShootSpeaker_0m("SPEAKER_0M", 204, 10, 4000, 5200),
+    kStart("START", 180, 0, 0, 0),
+    kStow("STOW", 180, 0, 0, 0),
+    kFloorPickup("FLOOR PICKUP", 200, 11, 500, 500),
+    kShootSpeaker_0m("SPEAKER_0M", 200, 10, 4000, 5200),
     kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4000, 4000),
     kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
     kShootAmp("AMP", 80, 10, 3000, 3000),
@@ -19,13 +19,12 @@ public class Presets {
     private int m_bottomRPM;
     private String m_string;
 
-    Preset(
-        String newString, double newRotDeg, double newExtInches, int newTopRPM, int newBottomRPM) {
-      this.m_rot = newRotDeg;
-      this.m_ext = newExtInches;
-      this.m_topRPM = newTopRPM;
-      this.m_bottomRPM = newBottomRPM;
-      this.m_string = newString;
+    Preset(String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM) {
+      this.m_rot = Rot_Deg;
+      this.m_ext = Ext_In;
+      this.m_topRPM = TopRPM;
+      this.m_bottomRPM = BottomRPM;
+      this.m_string = Name;
     }
 
     public double getRotDegrees() {
