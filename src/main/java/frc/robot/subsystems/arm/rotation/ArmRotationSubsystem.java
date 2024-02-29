@@ -99,7 +99,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     updateDashboard();
 
     if (Robot.isReal()) {
-      m_desiredAngleDeg = m_rotationEncoder.getPosition();
+      m_desiredAngleDeg = Preset.kStow.getRotDegrees();
 
     } else if (Robot.isSimulation()) {
       m_desiredAngleDeg = Preset.kStart.getRotDegrees();
@@ -170,9 +170,10 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
 
   @Override
   public void initDashboard() {
-    SmartDashboard.getNumber("Arm/Rotation/P Gain", m_kRotationP);
-    SmartDashboard.getNumber("Arm/Rotation/D Gain", m_kRotationD);
-    SmartDashboard.getNumber("Arm/Rotation/Feed Forward", m_kRotationFF);
+    SmartDashboard.putNumber("Arm/Rotation/P Gain", m_kRotationP);
+    SmartDashboard.putNumber("Arm/Rotation/I Gain", m_kRotationI);
+    SmartDashboard.putNumber("Arm/Rotation/D Gain", m_kRotationD);
+    SmartDashboard.putNumber("Arm/Rotation/Feed Forward", m_kRotationFF);
   }
 
   @Override
@@ -184,6 +185,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     SmartDashboard.putBoolean("Arm/Rotation/atSetPoint", atSetpoint());
 
     double rotP = SmartDashboard.getNumber("Arm/Rotation/P Gain", RotConstants.kRotP);
+    double rotI = SmartDashboard.getNumber("Arm/Rotation/I Gain", RotConstants.kRotI);
     double rotD = SmartDashboard.getNumber("Arm/Rotation/D Gain", RotConstants.kRotD);
     double rotFF = SmartDashboard.getNumber("Arm/Rotation/Feed Forward", RotConstants.kRotFF);
 
@@ -191,6 +193,10 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     if ((rotP != m_kRotationP)) {
       m_rotationPIDController.setP(rotP);
       m_kRotationP = rotP;
+    }
+    if ((rotI != m_kRotationI)) {
+      m_rotationPIDController.setD(rotI);
+      m_kRotationI = rotI;
     }
     if ((rotD != m_kRotationD)) {
       m_rotationPIDController.setD(rotD);
@@ -202,7 +208,9 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     }
 
     SmartDashboard.putNumber("Arm/Rotation/P Gain", m_kRotationP);
+    SmartDashboard.putNumber("Arm/Rotation/I Gain", m_kRotationI);
     SmartDashboard.putNumber("Arm/Rotation/D Gain", m_kRotationD);
+    SmartDashboard.putNumber("Arm/Rotation/Error", m_desiredAngleDeg - m_currentAngleDeg);
     SmartDashboard.putNumber("Arm/Rotation/Feed Forward", m_kRotationFF);
 
     // Pose3d ArmFramePose =
