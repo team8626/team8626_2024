@@ -41,6 +41,7 @@ public class ShooterCommand extends Command {
     m_timer.reset();
     m_shooter.setRPM(m_speedBottom, m_speedTop);
     m_shooter.start();
+    m_intake.setSpeed(IntakeConstants.kSpeed_Shoot);
     LEDSubsystem.setMode(LedMode.SHOOTING);
   }
 
@@ -48,7 +49,9 @@ public class ShooterCommand extends Command {
   @Override
   public void execute() {
     if (m_shooter.isAtSpeed()) {
-      m_intake.setSpeed(IntakeConstants.kSpeed_Shoot);
+      m_timer.start();
+    }
+    if (m_timer.hasElapsed(0.5)) {
       m_intake.start();
     }
   }
@@ -69,7 +72,6 @@ public class ShooterCommand extends Command {
 
     if (m_intake.isEmpty()) {
       m_timer.start();
-      m_intake.stop();
 
       if (m_timer.hasElapsed(1)) {
         retval = true;
