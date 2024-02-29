@@ -7,11 +7,13 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,6 +67,25 @@ public class RobotContainer {
 
   private final CommandButtonController m_buttonBox =
       new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+
+  private boolean isSlowDrive = false;
+  private double driveSpeedFactor = 1;
+  private double rotationSpeedFactor = 1;
+
+  private class RotateSlowCommand extends RunCommand {
+    public RotateSlowCommand(boolean clockwise) {
+      super(
+          () ->
+              m_drivebase.drive(
+                  new Translation2d(),
+                  clockwise
+                      ? -Constants.OperatorConstants.kIncrementalRotationSpeed
+                      : Constants.OperatorConstants.kIncrementalRotationSpeed,
+                  true));
+    }
+  }
+
+  Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
 
@@ -267,11 +288,13 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    Command driveFieldOrientedAnglularVelocity =
+    driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
-            () -> -m_xboxController.getRawAxis(4));
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
+
+    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -297,6 +320,13 @@ public class RobotContainer {
     // m_arm.setDefaultCommand(controlArm);
   }
 
+  public void toggleSlowDrive() {
+    driveSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowDriveSpeedFactor;
+    rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
+
+    isSlowDrive = !isSlowDrive;
+  }
+
   public Command getAutonomousCommand() {
     switch (m_dashboard.getSelectedAuto()) {
       default:
@@ -314,7 +344,7 @@ public class RobotContainer {
 
       case TRAJECTORY_DTP:
         return new DriveToPoseTrajPIDCommand(
-            m_drivebase, new Pose2d(6, 6, Rotation2d.fromDegrees(180)), false);
+            m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
     }
   }
 }

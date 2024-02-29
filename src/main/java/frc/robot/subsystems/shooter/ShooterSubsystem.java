@@ -204,11 +204,6 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     checkRPM();
   }
 
-  private void setStatus(ShooterStatus newStatus) {
-    m_status = newStatus;
-    System.out.printf("[SHOOTER] New Status: %s\n", m_status.getString());
-  }
-
   @Override
   public void initDashboard() {
     SmartDashboard.putNumber("Shooter/P Gain Top", m_kP_top);

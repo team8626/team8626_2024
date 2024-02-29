@@ -24,12 +24,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -184,6 +186,33 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
         );
   }
 
+  public Command driveToPose(Supplier<Pose2d> poseSupplier) {
+    Command DTPCommand =
+        new InstantCommand(
+            () -> {
+
+              // Create the constraints to use while pathfinding
+              PathConstraints constraints =
+                  new PathConstraints(
+                      swerveDrive.getMaximumVelocity(),
+                      4.0,
+                      swerveDrive.getMaximumAngularVelocity(),
+                      Units.degreesToRadians(720));
+
+              // Since AutoBuilder is configured, we can use it to build pathfinding commands
+              AutoBuilder.pathfindToPose(
+                      poseSupplier.get(),
+                      constraints,
+                      0.0, // Goal end velocity in meters/sec
+                      0.0 // Rotation delay distance in meters. This is how far the robot should
+                      // travel before
+                      // attempting to rotate.
+                      )
+                  .schedule();
+            });
+    return DTPCommand;
+  }
+
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
    *
@@ -308,17 +337,17 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   @Override
   public void periodic() {
 
-    // // Correct pose estimate with vision measurements
-    // var visionEst = m_vision.getEstimatedGlobalPose();
-    // visionEst.ifPresent(
-    //     est -> {
-    //       var estPose = est.estimatedPose.toPose2d();
-    //       // Change our trust in the measurement based on the tags we can see
-    //       var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+    // Correct pose estimate with vision measurements
+    var visionEst = m_vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          var estPose = est.estimatedPose.toPose2d();
+          // Change our trust in the measurement based on the tags we can see
+          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
 
-    //       swerveDrive.addVisionMeasurement(
-    //           est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-    //     });
+          swerveDrive.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
   }
 
   @Override
