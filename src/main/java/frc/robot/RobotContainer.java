@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -25,6 +26,8 @@ import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.preset.PresetManager;
 import frc.robot.subsystems.preset.Presets.Preset;
@@ -35,9 +38,6 @@ import frc.utils.CommandButtonController;
 import java.io.File;
 
 public class RobotContainer {
-
-  int m_angle = 180;
-  int m_length = 0;
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   Dashboard m_dashboard;
@@ -52,6 +52,8 @@ public class RobotContainer {
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem();
+
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public PresetManager m_presetStorage = new PresetManager();
 
@@ -70,92 +72,17 @@ public class RobotContainer {
     configureDefaultCommands();
 
     m_dashboard =
-        new Dashboard(m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_presetStorage);
+        new Dashboard(
+            m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_climber, m_presetStorage);
   }
 
   private void configureBindings() {
 
-    /** Button Box Bindings */
-    // m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(-103)));
-    // m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_arm.setAngleDeg(20.0)));
+    // ---------------------------------------- MAIN CONTROLLER -------------------------
+    // ----------------------------------------------------------------------------------
+    //
 
-    // m_buttonBox.button_3().onTrue(new InstantCommand(() -> m_arm.setLeng  thInches(0)));
-    // m_buttonBox.button_4().onTrue(new InstantCommand(() -> m_arm.setLengthInches(10)));
-
-    // m_buttonBox
-    //     .button_1()
-    //     .onTrue(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> m_intake.start()),
-    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.INTAKING))));
-    // m_buttonBox
-    //     .button_2()
-    //     .onTrue(
-    //         new ParallelCommandGroup(
-    //             new InstantCommand(() -> m_intake.stop()),
-    //             new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT))));
-
-    /** Test Controller Buttons * */
-    // m_buttonBox
-    //     .button_1()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_0m, m_shooter));
-    // m_buttonBox
-    //     .button_2()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_2m, m_shooter));
-    // m_buttonBox
-    //     .button_3()
-    //     .toggleOnTrue(new SimpleShooterCommand(Preset.kShootSpeaker_3m, m_shooter));
-
-    // m_buttonBox
-    //     .button_4()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Intake), () -> m_intake.stop()));
-    // m_buttonBox
-    //     .button_5()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Adjust), () -> m_intake.stop()));
-    // m_buttonBox
-    //     .button_6()
-    //     .toggleOnTrue(
-    //         new StartEndCommand(
-    //             () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
-
-    // ---------------------------------------- Set to Angle Testing (Test Controller)
-    //                                          A/B Rotation
-    //                                          X/Y Extension
-    m_testController
-        .y()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() + 1)));
-    m_testController
-        .a()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg(m_armRot.getRotDegrees() - 1)));
-    m_testController
-        .b()
-        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() + 1)));
-    m_testController
-        .x()
-        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches(m_armExt.getExtInches() - 1)));
-
-    // ---------------------------------------- Store Angle/Extension + Shooter Speed to
-    // ShootSpeaker Long Distance
-    m_buttonBox
-        .button_1()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_2m)));
-
-    // ShootSpeaker 0m
-    m_buttonBox
-        .button_3()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
-
-    // Store Angle/Extension + Shooter Speed to Amp
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
-
-    // Move Arm to Stow
-    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
-
-    // Triggers Intake (set arm + start intaking))
+    // ---------------------------------------- Triggers Intake (set arm + start intaking))
     m_xboxController
         .leftBumper()
         .toggleOnTrue(
@@ -165,8 +92,6 @@ public class RobotContainer {
                         .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
-    // m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.5)
-
     // ---------------------------------------- Triggers shooting to stored preset settings
     m_xboxController
         .rightBumper()
@@ -175,33 +100,84 @@ public class RobotContainer {
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
+    // ---------------------------------------- TEST CONTROLLER -------------------------
+    // ----------------------------------------------------------------------------------
+    //
+    // ---------------------------------------- Set to Angle Testing (Test Controller)
+    //                                          A/B Rotation
+    //                                          X/Y Extension
+    m_testController
+        .y()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 30))));
+    m_testController
+        .a()
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() + 30))));
+    m_testController
+        .b()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches((m_armExt.getExtInches() + 1))));
+    m_testController
+        .x()
+        .onTrue(new InstantCommand(() -> m_armExt.setLengthInches((m_armExt.getExtInches() - 1))));
+
+    // ---------------------------------------- Start/Stop Intake
+    m_testController
+        .leftBumper()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_intake.start(IntakeConstants.kSpeed_Shoot), () -> m_intake.stop()));
+
+    // ---------------------------------------- Start/Stop Shooter
+    m_testController
+        .rightBumper()
+        .toggleOnTrue(
+            new StartEndCommand(
+                () -> m_shooter.start(Preset.kShootSpeaker_0m), () -> m_shooter.stop()));
+
+    // ---------------------------------------- Climb
+    m_testController
+        .leftTrigger()
+        .whileTrue(new InstantCommand(() -> m_climber.setPower(-1.0)))
+        .onFalse(new InstantCommand(() -> m_climber.setPower(0)));
+
+    m_testController
+        .rightTrigger()
+        .whileTrue(new InstantCommand(() -> m_climber.setPower(1.0)))
+        .onFalse(new InstantCommand(() -> m_climber.setPower(0)));
+
+    // m_testController.rightBumper().toggleOnTrue(m_shooter.startCmd());
+
+    // ---------------------------------------- BUTTON BOX ------------------------------
+    // ----------------------------------------------------------------------------------
+    //
     // ---------------------------------------- BUTTON 1
-    //                                          Not Used
+    //                                          Preset: ShootSpeaker Long Distance
+    m_buttonBox
+        .button_1()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_2m)));
 
     // ---------------------------------------- BUTTON 2
-    //                                          Not Used
+    //                                          Preset:  Amp
+    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
 
     // ---------------------------------------- BUTTON 3
-    //                                          Triggers shooting to stored preset settings
+    //                                          Preset: ShootSpeaker 0m
+    m_buttonBox
+        .button_3()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
 
     // ---------------------------------------- BUTTON 4
-    //                                          Activate DriveToNote Intaking (Documentation Order?
-    m_buttonBox
-        .button_4()
-        .toggleOnTrue(
-            new DriveToNoteCommand(m_drivebase)
-                .deadlineWith(
-                    new SequentialCommandGroup(
-                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
-                        new IntakeCommand(m_intake)
-                            .andThen(new IntakeAdjustmentCommand(m_intake))
-                            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
+    //                                          Set Arm to Intake Preset
+    m_buttonBox.button_4().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup));
 
     // ---------------------------------------- BUTTON 5
-    //                                          Not Used
+    //                                          Set Arm to Intake Shoot0m
+    m_buttonBox
+        .button_5()
+        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSpeaker_0m));
 
     // ---------------------------------------- BUTTON 6
-    //                                          Not Used
+    //                                          Set Arm to Stow Preset
+    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // ---------------------------------------- BUTTON 7
     //                                          Activate DriveToNote Intaking (Ned's Order)
@@ -216,18 +192,43 @@ public class RobotContainer {
                 .deadlineWith(new DriveToNoteCommand(m_drivebase)));
 
     // ---------------------------------------- BUTTON 8
-    //                                          Basic Shooting from The Speaker
+    //                                          Activate DriveToNote Intaking (Documentation Order?)
     m_buttonBox
         .button_8()
         .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSpeaker_0m, () -> 0.5)
-                .andThen(new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootSpeaker_0m)));
+            new DriveToNoteCommand(m_drivebase)
+                .deadlineWith(
+                    new SequentialCommandGroup(
+                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                        new IntakeCommand(m_intake)
+                            .andThen(new IntakeAdjustmentCommand(m_intake))
+                            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
     m_buttonBox
         .button_9()
         .onTrue(new InstantCommand(() -> m_armExt.reset())); // Start Zeroing of the arm
+
+    // ---------------------------------------- OTHER TRIGGERS --------------------------
+    // ----------------------------------------------------------------------------------
+    // ---------------------------------------- Rumble when all subsystems at setpoint
+    // Trigger readyToShoot =
+    //     new Trigger(
+    //         () ->
+    //             !m_intake.isEmpty()
+    //                 && m_shooter.isAtSpeed()
+    //                 && m_armRot.atSetpoint()
+    //                 && m_armExt.atSetpoint());
+    // m_xboxController.a().and(readyToShoot).onTrue(getAutonomousCommand());
+    // readyToShoot.whileTrue(
+    //     Commands.startEnd(
+    //         () -> {
+    //           m_xboxController.getHID().setRumble(RumbleType.kLeftRumble, 0.5);
+    //         },
+    //         () -> {
+    //           m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+    //         }));
   }
 
   private void configureDefaultCommands() {
