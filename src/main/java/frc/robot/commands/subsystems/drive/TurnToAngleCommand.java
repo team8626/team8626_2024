@@ -27,10 +27,10 @@ public class TurnToAngleCommand extends Command {
   private boolean m_finish;
 
   public TurnToAngleCommand(
-      SwerveSubsystem drive, Supplier<Pose2d> desiredRotSupplier, boolean finish) {
+      SwerveSubsystem drive, Supplier<Pose2d> desiredPoseSupplier, boolean finish) {
     m_drive = drive;
 
-    m_desiredPoseSupplier = desiredRotSupplier;
+    m_desiredPoseSupplier = desiredPoseSupplier;
 
     m_finish = finish;
 
