@@ -25,4 +25,15 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
 
     setName("Drive To Pose Trajectory and PID Command");
   }
+
+  public DriveToPoseTrajPIDCommand(
+    SwerveSubsystem drive, Pose2d desiredPose, boolean lockPose) {
+
+  addCommands(
+      new DriveToPosePPCommand(drive, desiredPose),
+      new TurnToAngleCommand(drive, () -> desiredPose, true),
+      new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
+
+  setName("Drive To Pose Trajectory and PID Command");
+}
 }
