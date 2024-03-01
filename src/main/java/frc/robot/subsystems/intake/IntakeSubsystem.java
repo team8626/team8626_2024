@@ -54,7 +54,8 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   public void stop() {
-    setSpeed(IntakeConstants.kSpeed_Idle);
+    m_motor1.set(0);
+    m_motor2.set(0);
     m_enabled = false;
   }
 
