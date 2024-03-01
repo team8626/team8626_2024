@@ -16,7 +16,7 @@ public class RotConstants {
   public static final double kRotationEncoderPositionPIDMaxInput =
       kRotationEncoderPositionFactorDeg; // degrees
 
-  public static final double kRotP = 0.06;
+  public static final double kRotP = 0.023;
   public static final double kRotI = 0.00;
   public static final double kRotD = 0.00;
   public static final double kRotFF = 0.00;
