@@ -41,12 +41,13 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    // Force intake and adjust preloaded NOTE
-    new IntakeCommand(m_robotContainer.m_intake)
-        .andThen(new IntakeAdjustmentCommand(m_robotContainer.m_intake))
-        .withTimeout(1);
+    m_autonomousCommand =
+        // Force intake and adjust preloaded NOTE
+        new IntakeCommand(m_robotContainer.m_intake)
+            .andThen(new IntakeAdjustmentCommand(m_robotContainer.m_intake))
+            .withTimeout(1)
+            .andThen(m_robotContainer.getAutonomousCommand());
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
