@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,12 +19,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.DriveToNoteCommand;
+import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
-import frc.robot.commands.subsystems.shooter.ShooterCommand;
+import frc.robot.commands.subsystems.shooter.SpinShootStowCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
@@ -114,13 +116,20 @@ public class RobotContainer {
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
     // ---------------------------------------- Triggers shooting to stored preset settings
+    // m_xboxController
+    //     .rightBumper()
+    //     .toggleOnTrue(
+    //         new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
+    //             .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+    //             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
     m_xboxController
         .rightBumper()
         .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
-                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
-
+            new SequentialCommandGroup(
+                new SpinShootStowCommand(
+                    m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get()),
+                new RumbleCommand(
+                    m_xboxController.getHID(), 1, 3, 0.25, 0.25, RumbleType.kBothRumble)));
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
     //
