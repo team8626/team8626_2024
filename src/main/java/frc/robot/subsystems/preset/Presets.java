@@ -4,7 +4,7 @@ public class Presets {
   public enum Preset {
     kStart("START", 180, 0, 0, 0),
     kStow("STOW", 180, 0, 0, 0),
-    kFloorPickup("FLOOR PICKUP", 200, 11, 500, 500),
+    kFloorPickup("FLOOR PICKUP", 202, 11, 500, 500),
     kShootSpeaker_0m("SPEAKER_0M", 198, 10, 4000, 5200),
     kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4500, 4500),
     kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
+import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 
@@ -38,7 +40,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_autonomousCommand =
+        // Force intake and adjust preloaded NOTE
+        new IntakeCommand(m_robotContainer.m_intake)
+            .andThen(new IntakeAdjustmentCommand(m_robotContainer.m_intake))
+            .withTimeout(1)
+            .andThen(m_robotContainer.getAutonomousCommand());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
