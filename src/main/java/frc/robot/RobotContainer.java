@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -302,10 +301,17 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
             () -> -m_xboxController.getRawAxis(4));
 
+    // m_drivebase.setDefaultCommand(
+    //     !RobotBase.isSimulation()
+    //         ? driveFieldOrientedAnglularVelocity
+    //         : driveFieldOrientedDirectAngleSim);
+
     m_drivebase.setDefaultCommand(
-        !RobotBase.isSimulation()
-            ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedDirectAngleSim);
+        m_drivebase.driveCommand(
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> -m_xboxController.getRightX()));
+
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
     // driveFieldOrientedDirectAngleSim);
 

@@ -91,7 +91,8 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
 
-    swerveDrive.getGyro().setInverted(true);
+    // TODO: Should this be here? @nedf123
+    swerveDrive.getGyro().setInverted(false);
     setupPathPlanner();
   }
 
