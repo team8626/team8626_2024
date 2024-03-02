@@ -20,6 +20,7 @@ import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
@@ -119,6 +120,12 @@ public class RobotContainer {
             new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+
+    // ---------------------------------------- Back
+    //                                          Eject
+    m_xboxController
+        .back()
+        .toggleOnTrue(new EjectIntakeCommand(m_intake)); 
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------

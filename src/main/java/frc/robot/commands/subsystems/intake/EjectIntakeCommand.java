@@ -5,6 +5,7 @@
 package frc.robot.commands.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class EjectIntakeCommand extends Command {
@@ -19,7 +20,7 @@ IntakeSubsystem m_intake;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.start(1);
+    m_intake.start(IntakeConstants.kSpeed_Discard);
   }
 
   // Called once the command ends or is interrupted.
