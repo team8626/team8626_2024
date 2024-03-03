@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -21,6 +20,8 @@ import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
+import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
@@ -121,6 +122,38 @@ public class RobotContainer {
                 .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
+    // ---------------------------------------- Y
+    //                                          Eject
+    m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+
+    // ---------------------------------------- POV
+    //                                              Robot angle
+    m_xboxController
+        .povUp()
+        .onTrue(
+            new TurnToAngleCommand(
+                m_drivebase, () -> new Pose2d(new Translation2d(), new Rotation2d(0)), true));
+    m_xboxController
+        .povLeft()
+        .onTrue(
+            new TurnToAngleCommand(
+                m_drivebase,
+                () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI / 2)),
+                true));
+    m_xboxController
+        .povDown()
+        .onTrue(
+            new TurnToAngleCommand(
+                m_drivebase, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)), true));
+    m_xboxController
+        .povRight()
+        .onTrue(
+            new TurnToAngleCommand(
+                m_drivebase,
+                () -> new Pose2d(new Translation2d(), new Rotation2d(-Math.PI / 2)),
+                true));
+
+    m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
     //
@@ -168,6 +201,15 @@ public class RobotContainer {
     // m_testController.rightBumper().toggleOnTrue(m_shooter.startCmd());
 
     // ---------------------------------------- BUTTON BOX ------------------------------
+    //
+    //           +-----------------+
+    //           |  1  |  4  |  7  |
+    //           |-----+-----+-----|
+    //           |  2  |  5  |  8  |
+    //           |-----+-----+-----|
+    //           |  3  |  6  |  9  |
+    //           +-----------------+
+    //
     // ----------------------------------------------------------------------------------
     //
     // ---------------------------------------- BUTTON 1
@@ -194,7 +236,7 @@ public class RobotContainer {
     //                                          Set Arm to Intake Shoot0m
     m_buttonBox
         .button_5()
-        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSpeaker_0m));
+        .toggleOnTrue(new DriveToPoseTrajPIDCommand(m_drivebase, new Pose2d(), isSlowDrive));
 
     // ---------------------------------------- BUTTON 6
     //                                          Set Arm to Stow Preset
@@ -210,20 +252,20 @@ public class RobotContainer {
                     new IntakeCommand(m_intake)
                         .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
-                .deadlineWith(new DriveToNoteCommand(m_drivebase)));
+                .deadlineWith(new DriveToNoteCommand(m_drivebase, m_intake)));
 
     // ---------------------------------------- BUTTON 8
     //                                          Activate DriveToNote Intaking (Documentation Order?)
     m_buttonBox
         .button_8()
         .toggleOnTrue(
-            new DriveToNoteCommand(m_drivebase)
+            new IntakeCommand(m_intake)
                 .deadlineWith(
                     new SequentialCommandGroup(
                         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
-                        new IntakeCommand(m_intake)
-                            .andThen(new IntakeAdjustmentCommand(m_intake))
-                            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))));
+                        new DriveToNoteCommand(m_drivebase, m_intake)))
+                .andThen(new IntakeAdjustmentCommand(m_intake))
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
@@ -302,10 +344,17 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
             () -> -m_xboxController.getRawAxis(4));
 
+    // m_drivebase.setDefaultCommand(
+    //     !RobotBase.isSimulation()
+    //         ? driveFieldOrientedAnglularVelocity
+    //         : driveFieldOrientedDirectAngleSim);
+
     m_drivebase.setDefaultCommand(
-        !RobotBase.isSimulation()
-            ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedDirectAngleSim);
+        m_drivebase.driveCommand(
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> -m_xboxController.getRightX() * rotationSpeedFactor));
+
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
     // driveFieldOrientedDirectAngleSim);
 

@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import org.photonvision.PhotonCamera;
 
 public class DriveToNoteCommand extends Command {
 
   private final SwerveSubsystem m_drive;
+  private final IntakeSubsystem m_Intake;
 
   private double m_rotPValue = 0.0555;
   private double m_rotIValue = 0;
@@ -27,8 +29,9 @@ public class DriveToNoteCommand extends Command {
 
   private PhotonCamera m_ODCamera = new PhotonCamera("Arducam_OD003");
 
-  public DriveToNoteCommand(SwerveSubsystem drive) {
+  public DriveToNoteCommand(SwerveSubsystem drive, IntakeSubsystem intake) {
     m_drive = drive;
+    m_Intake = intake;
 
     addRequirements(m_drive);
 
@@ -55,9 +58,12 @@ public class DriveToNoteCommand extends Command {
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
     m_rotPID.setTolerance(0, 0);
-    if (m_ODCamera.getLatestResult().hasTargets()) {
+    try {
       m_rotPID.reset(m_ODCamera.getLatestResult().getBestTarget().getYaw());
+    } catch (NullPointerException e) {
+      System.out.println();
     }
+    ;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,10 +76,13 @@ public class DriveToNoteCommand extends Command {
 
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
-    if (m_ODCamera.getLatestResult().hasTargets()) {
+    try {
       double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
       m_drive.drive(new ChassisSpeeds(1, 0, m_rotPID.calculate(currentNoteYaw, 0)));
+    } catch (NullPointerException e) {
+      System.out.println();
     }
+    ;
   }
 
   // Called once the command ends or is interrupted.
@@ -86,6 +95,6 @@ public class DriveToNoteCommand extends Command {
   @Override
   public boolean isFinished() {
     // return m_rotPID.atSetpoint() || !m_ODCamera.getLatestResult().hasTargets();
-    return false;
+    return !m_Intake.isEmpty();
   }
 }
