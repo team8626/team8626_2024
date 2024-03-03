@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -21,10 +22,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -43,9 +46,13 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
 
-  /** Publisher for robot pose (AdvantageScxope) */
-  StructPublisher<Pose2d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+  public Pose2d currentDTP = new Pose2d();
+
+  /** Vision object */
+  private Vision m_vision = new Vision(this);
+  /** Publisher for robot pose (AdvantageScope) */
+  StructPublisher<Pose3d> m_publisher =
+      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -84,6 +91,8 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
 
+    // TODO: Should this be here? @nedf123
+    swerveDrive.getGyro().setInverted(false);
     setupPathPlanner();
   }
 
@@ -300,7 +309,20 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+
+    // Correct pose estimate with vision measurements
+    var visionEst = m_vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+        est -> {
+          var estPose = est.estimatedPose.toPose2d();
+          // Change our trust in the measurement based on the tags we can see
+          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+
+          swerveDrive.addVisionMeasurement(
+              est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
+  }
 
   @Override
   public void simulationPeriodic() {}
@@ -376,7 +398,22 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
-    return getPose().getRotation();
+    // Just switched this to try original return Friday 10:00 AM
+    return swerveDrive.getPose().getRotation();
+    // return swerveDrive.getYaw();
+  }
+
+  public Rotation2d getOdometryHeading() {
+    // TRY THIS ASWELL
+    return swerveDrive.getOdometryHeading();
+  }
+  // Converts the angle from a range of -180:180 to 0:360
+  public static double convertAngle(double angle) {
+    if (angle < 0 && angle >= -180) {
+      return -angle;
+    } else {
+      return 360 - angle;
+    }
   }
 
   /**
@@ -471,14 +508,17 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 
   @Override
   public void initDashboard() {
-    // Publish Pose2D for AdvantageScope
-    m_publisher.set(getPose());
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
   }
 
   @Override
   public void updateDashboard() {
-    // Publish Pose2D for AdvantageScope
-    m_publisher.set(getPose());
+    // Publish Pose3D for AdvantageScope
+    m_publisher.set(new Pose3d(getPose()));
+    SmartDashboard.putNumber("New Heading", getHeading().getDegrees());
   }
 
   @Override

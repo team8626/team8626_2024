@@ -30,6 +30,18 @@ public final class Constants {
     public static final PIDFConfig angleAutoPID = new PIDFConfig(0.4, 0, 0.01);
 
     public static final double MAX_ACCELERATION = 2;
+
+    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI / 4;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI / 4;
+
+    public static final double kDriveXPosSetpointTolerance = 0;
+    public static final double kDriveXVelSetpointTolerance = 0;
+    public static final double kDriveYPosSetpointTolerance = 0;
+    public static final double kDriveYVelSetpointTolerance = 0;
+    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(6);
+    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(2);
   }
 
   public static final class Drivebase {
@@ -45,5 +57,12 @@ public final class Constants {
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT = 6;
+    public static final int kXboxControllerPort = 0;
+    public static final int kTestControllerPort = 1;
+    public static final int kButtonBoxPort = 2;
+
+    public static final double kSlowDriveSpeedFactor = 0.75;
+    public static final double kSlowRotationSpeedFactor = 0.75;
+    public static final int kIncrementalRotationSpeed = 1;
   }
 }

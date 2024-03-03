@@ -122,7 +122,7 @@ public class LEDSubsystem extends SubsystemBase {
             LEDConstants.breathDuration,
             Timer.getFPGATimestamp());
         break;
-        
+
       case INTAKING:
       case SHOOTING:
         flow(LEDConstants.kSectionMain, m_currentColor[0], 0.5);
