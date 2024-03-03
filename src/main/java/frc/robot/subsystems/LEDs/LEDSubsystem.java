@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LEDs.LEDConstants.LEDSection;
+import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedErrorMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDConstants.errorSections;
@@ -23,33 +25,37 @@ public class LEDSubsystem extends SubsystemBase {
   private static AddressableLEDBuffer m_buffer;
 
   static LedMode m_mode = LedMode.OFF;
-  LedErrorMode m_error_mode = LedErrorMode.NO_ERROR;
+  static LedErrorMode m_error_mode = LedErrorMode.NO_ERROR;
+  static LedAmbienceMode m_ambience_mode = LedAmbienceMode.OFF;
+
   static Color m_currentColor[] = {Color.kHotPink, Color.kPink};
 
   public LEDSubsystem() {
 
     m_LEDs = new AddressableLED(LEDConstants.kLEDPort);
-    m_buffer = new AddressableLEDBuffer(LEDConstants.kLEDLength);
-    m_LEDs.setLength(LEDConstants.kLEDLength);
+    m_buffer = new AddressableLEDBuffer(LEDConstants.kLEDStripLength);
+    m_LEDs.setLength(LEDConstants.kLEDStripLength);
     m_LEDs.setData(m_buffer);
     m_LEDs.start();
 
     setMode(LedMode.NOT_CONNECTED);
-    // setErrorMode(LedErrorMode.ERROR_CRITICAL);
-
-    // m_buffer.setLED(10, Color.kRed);
-    // m_error_mode = LedErrorMode.ERROR_CRITICAL;
+    setAmbienceMode(LedAmbienceMode.OFF);
+    setErrorMode(LedErrorMode.NO_ERROR);
   }
 
   public static void setMode(LedMode newMode) {
     m_mode = newMode;
-    updateLeds();
+    updateMainLeds();
   }
 
   public void setErrorMode(LedErrorMode newErrorCode) {
     m_error_mode = newErrorCode;
-    m_LEDs.setData(m_buffer);
     updateErrorLeds();
+  }
+
+  public void setAmbienceMode(LedAmbienceMode newAmbienceCode) {
+    m_ambience_mode = newAmbienceCode;
+    updateAmbienceLeds();
   }
 
   /**
@@ -57,12 +63,10 @@ public class LEDSubsystem extends SubsystemBase {
    *
    * @param color
    */
-  public void setColor(Color color) {
-    // AddressableLEDBuffer buffer = new AddressableLEDBuffer(kLEDBufferLength);
-    for (int i = 0; i < LEDConstants.kLEDLength; i++) {
+  private void setColor(LEDSection section, Color color) {
+    for (int i = section.startId(); i <= section.endId(); i++) {
       m_buffer.setLED(i, color);
     }
-    // m_LEDs.setData(m_buffer);
   }
 
   /**
@@ -70,15 +74,9 @@ public class LEDSubsystem extends SubsystemBase {
    *
    * @param color
    */
-  public void error(Color color) {
-    boolean on = ((Timer.getFPGATimestamp() % 2) / 2) > 0.5;
-    for (int i = 0; i < LEDConstants.kErrorLightIndex.length; i++) {
-      for (int j = 0; j < LEDConstants.kErrorLightIndex[i].length; j++) {
-        int ledIndex = LEDConstants.kErrorLightIndex[i][j];
-        if (on) m_buffer.setLED(ledIndex, color);
-        else m_buffer.setLED(ledIndex, Color.kBlack);
-        // m_LEDs.setData(m_buffer);
-      }
+  private void error(Color color) {
+    for (errorSections section : errorSections.values()) {
+      error(section, color);
     }
   }
 
@@ -90,14 +88,10 @@ public class LEDSubsystem extends SubsystemBase {
    */
   public void error(errorSections section, Color color) {
     boolean on = ((Timer.getFPGATimestamp() % 2) / 2) > 0.5;
-
-    if (section.getValue() < LEDConstants.kErrorLightIndex.length) {
-      for (int j = 0; j < LEDConstants.kErrorLightIndex[section.getValue()].length; j++) {
-        int ledIndex = LEDConstants.kErrorLightIndex[section.getValue()][j];
-        if (on) m_buffer.setLED(ledIndex, color);
-        else m_buffer.setLED(ledIndex, Color.kBlack);
-        // m_LEDs.setData(m_buffer);
-      }
+    for (int j = 0; j < section.getIndexes().length; j++) {
+      int ledIndex = section.getIndexes()[j];
+      if (on) m_buffer.setLED(ledIndex, color);
+      else m_buffer.setLED(ledIndex, Color.kBlack);
     }
   }
 
@@ -107,53 +101,54 @@ public class LEDSubsystem extends SubsystemBase {
    * @param sections
    * @param color
    */
-  public void error(errorSections[] sections, Color color) {
-    boolean on = ((Timer.getFPGATimestamp() % 2) / 2) > 0.5;
-
+  private void error(errorSections[] sections, Color color) {
     for (int i = 0; i < sections.length; i++) {
-      int section = sections[i].getValue();
-      if (section < LEDConstants.kErrorLightIndex.length) {
-        for (int j = 0; j < LEDConstants.kErrorLightIndex[section].length; j++) {
-          int ledIndex = LEDConstants.kErrorLightIndex[section][j];
-          if (on) m_buffer.setLED(ledIndex, color);
-          else m_buffer.setLED(ledIndex, Color.kBlack);
-          // m_LEDs.setData(m_buffer);
-        }
-      }
+      this.error(sections[i], color);
     }
   }
 
   /** Update LEDs based on current set state */
-  private static void updateLeds() {
+  private static void updateMainLeds() {
     switch (m_mode) {
       case NOT_CONNECTED:
-        // wave(m_currentColor[0], m_currentColor[1], 25, 2.0);
-        // blink(Color.kLightPink, 0.5);
-        // flow(m_currentColor[0], 2.0);
-        pulse(m_currentColor[0], 0.5, 2.0);
+        pulse(LEDConstants.kSectionMain, m_currentColor[0], 0.5, 2.0);
         break;
+
       case DISABLED:
         breath(
+            LEDConstants.kSectionMain,
             m_currentColor[0],
             m_currentColor[1],
             LEDConstants.breathDuration,
             Timer.getFPGATimestamp());
         break;
+
       case INTAKING:
       case SHOOTING:
-        flow(m_currentColor[0], 0.5);
-        break;
-      case TEST:
-        rainbow(LEDConstants.waveSlowCycleLength, LEDConstants.waveSlowDuration);
+        flow(LEDConstants.kSectionMain, m_currentColor[0], 0.5);
         break;
 
       case FOLLOWNOTE:
-        flow(Color.kOrange, 1);
+        flow(LEDConstants.kSectionMain, Color.kOrange, 1);
         break;
 
       case DEFAULT:
       default:
-        wave(m_currentColor[0], m_currentColor[1], 25, 2.0);
+        wave(LEDConstants.kSectionMain, m_currentColor[0], m_currentColor[1], 25, 2.0);
+        break;
+    }
+  }
+
+  /** Update LEDs based on current set state */
+  private static void updateAmbienceLeds() {
+    switch (m_ambience_mode) {
+      case OFF:
+        solid(LEDConstants.kSectionAmbience, Color.kBlack);
+        break;
+
+      case RAINBOW:
+      default:
+        rainbow(LEDConstants.kSectionAmbience, 25, 2.0);
         break;
     }
   }
@@ -178,41 +173,42 @@ public class LEDSubsystem extends SubsystemBase {
         this.error(errorSections.BACK_RIGHT, Color.kYellowGreen);
         break;
 
+      case NO_ERROR:
       default:
         // Do Nothing
         break;
     }
   }
 
-  private static void solid(Color c1) {
-    for (int i = 0; i < LEDConstants.kLEDLength; i++) {
+  private static void solid(LEDSection section, Color c1) {
+    for (int i = section.startId(); i <= section.endId(); i++) {
       m_buffer.setLED(i, c1);
-      // m_LEDs.setData(m_buffer);
     }
   }
 
-  private static void blink(Color c1, double duration) {
+  private static void blink(LEDSection section, Color c1, double duration) {
     boolean on = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
-    solid(on ? c1 : Color.kBlack);
+    solid(section, on ? c1 : Color.kBlack);
   }
 
-  private static void flow(Color c1, double duration) {
+  private static void flow(LEDSection section, Color c1, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
     double ratio = (Math.sin(x) + 1.0) / 2.0;
     double red = (c1.red * (1 - ratio));
     double green = (c1.green * (1 - ratio));
     double blue = (c1.blue * (1 - ratio));
-    solid(new Color(red, green, blue));
+    solid(section, new Color(red, green, blue));
   }
 
-  private static void breath(Color c1, Color c2, double duration, double timestamp) {
+  private static void breath(
+      LEDSection section, Color c1, Color c2, double duration, double timestamp) {
     double x =
         ((timestamp % LEDConstants.breathDuration) / LEDConstants.breathDuration) * 2.0 * Math.PI;
     double ratio = (Math.sin(x) + 1.0) / 2.0;
     double red = (c1.red * (1 - ratio)) + (c2.red * ratio);
     double green = (c1.green * (1 - ratio)) + (c2.green * ratio);
     double blue = (c1.blue * (1 - ratio)) + (c2.blue * ratio);
-    solid(new Color(red, green, blue));
+    solid(section, new Color(red, green, blue));
   }
 
   /**
@@ -222,7 +218,7 @@ public class LEDSubsystem extends SubsystemBase {
    * @param d1 Duration of the pulsing cycle (in seconds)
    * @param cycles Number of Pulses in each cycle
    */
-  private static void pulse(Color c1, double d1, double cycles) {
+  private static void pulse(LEDSection section, Color c1, double d1, double cycles) {
     boolean on = ((Timer.getFPGATimestamp() % (d1 * 2 * cycles)) / (d1 * 2 * cycles)) > 0.5;
     double red = 0, green = 0, blue = 0;
 
@@ -235,13 +231,15 @@ public class LEDSubsystem extends SubsystemBase {
       green = (c1.green * (1 - ratio));
       blue = (c1.blue * (1 - ratio));
     }
-    solid(new Color(red, green, blue));
+    solid(section, new Color(red, green, blue));
   }
 
-  private static void wave(Color c1, Color c2, double cycleLength, double duration) {
+  private static void wave(
+      LEDSection section, Color c1, Color c2, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
     double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = 0; i < LEDConstants.kLEDLength; i++) {
+
+    for (int i = section.startId(); i <= section.endId(); i++) {
       x += xDiffPerLed;
       // if (i >= LEDConstants.kLEDLength){
       double ratio = (Math.pow(Math.sin(x), LEDConstants.waveExponent) + 1.0) / 2.0;
@@ -256,14 +254,13 @@ public class LEDSubsystem extends SubsystemBase {
       double blue = (c1.blue * (1 - ratio)) + (c2.blue * ratio);
       m_buffer.setLED(i, new Color(red, green, blue));
       // m_LEDs.setData(m_buffer);
-      // }
     }
   }
 
-  private static void rainbow(double cycleLength, double duration) {
+  private static void rainbow(LEDSection section, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() / duration) % 1.0)) * 180.0;
     double xDiffPerLed = 180.0 / cycleLength;
-    for (int i = 0; i < LEDConstants.kLEDLength; i++) {
+    for (int i = section.startId(); i <= section.endId(); i++) {
       x += xDiffPerLed;
       x %= 180.0;
       m_buffer.setHSV(i, (int) x, 255, 255);
@@ -276,29 +273,22 @@ public class LEDSubsystem extends SubsystemBase {
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       if (ally.get() == Alliance.Red) {
-        m_currentColor = new Color[] {Color.kRed, Color.kBlack};
+        m_currentColor = new Color[] {Color.kRed, Color.kDarkRed};
       }
       if (ally.get() == Alliance.Blue) {
-        m_currentColor = new Color[] {Color.kNavy, Color.kBlack};
+        m_currentColor = new Color[] {Color.kBlue, Color.kAqua};
       }
     } else {
       m_currentColor = new Color[] {Color.kHotPink, Color.kPink};
       setMode(LedMode.NOT_CONNECTED);
     }
 
-    // if (!DriverStation.isDSAttached()) {
-    //   m_currentColor = new Color[] {Color.kHotPink, Color.kPink};
-    //   setMode(LedMode.NOT_CONNECTED);
-    // } else if (!DriverStation.isFMSAttached()) {
-    //   m_currentColor = new Color[] {Color.kHotPink, Color.kPink};
-    //   setMode(LedMode.NOT_CONNECTED);
-    // }
-
     if (DriverStation.isEStopped()) {
       setErrorMode(LedErrorMode.ERROR_ESTOP);
     }
 
-    updateLeds();
+    updateMainLeds();
+    updateAmbienceLeds();
     updateErrorLeds();
 
     m_LEDs.setData(m_buffer);

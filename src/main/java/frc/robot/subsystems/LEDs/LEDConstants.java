@@ -1,32 +1,33 @@
 package frc.robot.subsystems.LEDs;
 
 public class LEDConstants {
-  public static final int kLEDLength = 75;
+  public static final int kLEDStripLength = 131;
   public static final int kLEDPort = 9;
 
-  public static final int[][] kErrorLightIndex = {
-    {0, 1, 2, 3, 4, 5}, {20, 21, 22, 23, 24}, {45, 46, 47, 48, 49}, {70, 71, 72, 73, 74}
-  };
+  // public static final int[][] kErrorLightIndex = {
+  //   {0, 1, 2, 3, 4}, {20, 21, 22, 23, 24}, {45, 46, 47, 48, 49}, {70, 71, 72, 73, 74}
+  // };
+
+  record LEDSection(int startId, int endId) {}
+
+  public static final LEDSection kSectionMain = new LEDSection(0, 74);
+  public static final LEDSection kSectionAmbience = new LEDSection(75, 130);
 
   public static enum LedMode {
     NOT_CONNECTED,
     DISABLED,
     DEFAULT,
-    TEST,
-    // CONNECTED,
-    // AUTO_FINISHED,
-    // AUTONOMOUS,
-    // CLIMBING,
-    // HANGING,
     SHOOTING,
-    // CONTAINING,
+    FOLLOWNOTE,
     INTAKING,
     BLUE_ALLIANCE,
     RED_ALLIANCE,
-    // LOW_BATTERY_ALERT,
-    // DISABLED,
-    OFF,
-    FOLLOWNOTE
+    OFF
+  }
+
+  public static enum LedAmbienceMode {
+    RAINBOW,
+    OFF
   }
 
   public static enum LedErrorMode {
@@ -40,19 +41,25 @@ public class LEDConstants {
   }
 
   public static enum errorSections {
-    FRONT_LEFT(0),
-    FRONT_RIGHT(1),
-    BACK_LEFT(2),
-    BACK_RIGHT(3);
+    FRONT_RIGHT(0, new int[] {0, 1, 2, 3, 4}),
+    BACK_RIGHT(1, new int[] {20, 21, 22, 23, 24}),
+    BACK_LEFT(2, new int[] {45, 46, 47, 48, 49}),
+    FRONT_LEFT(3, new int[] {70, 71, 72, 73, 74});
 
     private final int id;
+    private final int[] indexes;
 
-    errorSections(int id) {
+    errorSections(int id, int[] indexes) {
       this.id = id;
+      this.indexes = indexes;
     }
 
     public int getValue() {
       return id;
+    }
+
+    public int[] getIndexes() {
+      return indexes;
     }
   }
 
