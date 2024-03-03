@@ -40,8 +40,8 @@ public final class Constants {
     public static final double kDriveXVelSetpointTolerance = 0;
     public static final double kDriveYPosSetpointTolerance = 0;
     public static final double kDriveYVelSetpointTolerance = 0;
-    public static final double kDriveRotPosSetpointTolerance = 0;
-    public static final double kDriveRotVelSetpointTolerance = 0;
+    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(6);
+    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(2);
   }
 
   public static final class Drivebase {
@@ -61,8 +61,8 @@ public final class Constants {
     public static final int kTestControllerPort = 1;
     public static final int kButtonBoxPort = 2;
 
-    public static final double kSlowDriveSpeedFactor = 0.5;
-    public static final double kSlowRotationSpeedFactor = 0.5;
+    public static final double kSlowDriveSpeedFactor = 0.75;
+    public static final double kSlowRotationSpeedFactor = 0.75;
     public static final int kIncrementalRotationSpeed = 1;
   }
 }
