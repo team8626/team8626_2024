@@ -29,6 +29,7 @@ public class EjectIntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_intake.stop();
+    m_timer.reset();
   }
 
   @Override
