@@ -24,7 +24,7 @@ import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
-import frc.robot.commands.subsystems.shooter.ShooterCommand;
+import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
@@ -115,11 +115,17 @@ public class RobotContainer {
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
     // ---------------------------------------- Triggers shooting to stored preset settings
+    // m_xboxController
+    //     .rightBumper()
+    //     .toggleOnTrue(
+    //         new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
+    //             .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+    //             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
     m_xboxController
         .rightBumper()
         .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
-                .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
+            new SpinAndShootCommand(
+                    m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     // ---------------------------------------- Y
@@ -154,6 +160,7 @@ public class RobotContainer {
                 true));
 
     m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
     //
@@ -162,10 +169,10 @@ public class RobotContainer {
     //                                          X/Y Extension
     m_testController
         .y()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 30))));
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 5))));
     m_testController
         .a()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() + 30))));
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() + 5))));
     m_testController
         .b()
         .onTrue(new InstantCommand(() -> m_armExt.setLengthInches((m_armExt.getExtInches() + 1))));
@@ -236,7 +243,7 @@ public class RobotContainer {
     //                                          Set Arm to Intake Shoot0m
     m_buttonBox
         .button_5()
-        .toggleOnTrue(new DriveToPoseTrajPIDCommand(m_drivebase, new Pose2d(), isSlowDrive));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootInsidePerimeter)));
 
     // ---------------------------------------- BUTTON 6
     //                                          Set Arm to Stow Preset
