@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -25,14 +26,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
-import swervelib.math.SwerveMath;
+import swervelib.SwerveDriveTest;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -46,9 +50,9 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Maximum speed of the robot in meters per second, used to limit acceleration. */
   public double maximumSpeed = Units.feetToMeters(14.5);
 
+  /** Vision Suppport - Team 8626 */
   public Pose2d currentDTP = new Pose2d();
 
-  /** Vision object */
   private Vision m_vision = new Vision(this);
   /** Publisher for robot pose (AdvantageScope) */
   StructPublisher<Pose3d> m_publisher =
@@ -63,15 +67,15 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
-    double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
+    // double angleConversionFactor = SwerveMath.calculateDegreesPerSteeringRotation(12.8);
     // Motor conversion factor is (PI * WHEEL DIAMETER IN METERS) / (GEAR RATIO * ENCODER
     // RESOLUTION).
     //  In this case the wheel diameter is 4 inches, which must be converted to meters to get
     // meters/second.
     //  The gear ratio is 6.75 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
-    double driveConversionFactor =
-        SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
+    // double driveConversionFactor =
+    //     SwerveMath.calculateMetersPerRotation(Units.inchesToMeters(4), 6.75);
     // System.out.println("\"conversionFactor\": {");
     // System.out.println("\t\"angle\": " + angleConversionFactor + ",");
     // System.out.println("\t\"drive\": " + driveConversionFactor);
@@ -90,9 +94,10 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     }
     swerveDrive.setHeadingCorrection(
         false); // Heading correction should only be used while controlling the robot via angle.
-
-    // TODO: Should this be here? @nedf123
-    swerveDrive.getGyro().setInverted(false);
+    swerveDrive.setCosineCompensator(
+        !SwerveDriveTelemetry
+            .isSimulation); // Disables cosine compensation for simulations since it causes
+    // discrepancies not seen in real life.
     setupPathPlanner();
   }
 
@@ -144,22 +149,37 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   }
 
   /**
+   * Aim the robot at the target returned by PhotonVision.
+   *
+   * @param camera {@link PhotonCamera} to communicate with.
+   * @return A {@link Command} which will run the alignment.
+   */
+  public Command aimAtTarget(PhotonCamera camera) {
+    return run(
+        () -> {
+          PhotonPipelineResult result = camera.getLatestResult();
+          if (result.hasTargets()) {
+            drive(
+                getTargetSpeeds(
+                    0,
+                    0,
+                    Rotation2d.fromDegrees(
+                        result
+                            .getBestTarget()
+                            .getYaw()))); // Not sure if this will work, more math may be required.
+          }
+        });
+  }
+
+  /**
    * Get the path follower with events.
    *
    * @param pathName PathPlanner path name.
-   * @param setOdomToStart Set the odometry position to the start of the path.
    * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
    */
-  public Command getAutonomousCommand(String pathName, boolean setOdomToStart) {
-    // Load the path you want to follow using its name in the GUI
-    PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-    if (setOdomToStart) {
-      resetOdometry(new Pose2d(path.getPoint(0).position, getHeading()));
-    }
-
+  public Command getAutonomousCommand(String pathName) {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
-    return AutoBuilder.followPath(path);
+    return new PathPlannerAuto(pathName);
   }
 
   /**
@@ -242,6 +262,26 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
                   swerveDrive.getOdometryHeading().getRadians(),
                   swerveDrive.getMaximumVelocity()));
         });
+  }
+
+  /**
+   * Command to characterize the robot drive motors using SysId
+   *
+   * @return SysId Drive Command
+   */
+  public Command sysIdDriveMotorCommand() {
+    return SwerveDriveTest.generateSysIdCommand(
+        SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, 12), 3.0, 5.0, 3.0);
+  }
+
+  /**
+   * Command to characterize the robot angle motors using SysId
+   *
+   * @return SysId Angle Command
+   */
+  public Command sysIdAngleMotorCommand() {
+    return SwerveDriveTest.generateSysIdCommand(
+        SwerveDriveTest.setAngleSysIdRoutine(new Config(), this, swerveDrive), 3.0, 5.0, 3.0);
   }
 
   /**
@@ -398,22 +438,12 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @return The yaw angle
    */
   public Rotation2d getHeading() {
-    // Just switched this to try original return Friday 10:00 AM
-    return swerveDrive.getPose().getRotation();
-    // return swerveDrive.getYaw();
+    return getPose().getRotation();
   }
 
   public Rotation2d getOdometryHeading() {
     // TRY THIS ASWELL
     return swerveDrive.getOdometryHeading();
-  }
-  // Converts the angle from a range of -180:180 to 0:360
-  public static double convertAngle(double angle) {
-    if (angle < 0 && angle >= -180) {
-      return -angle;
-    } else {
-      return 360 - angle;
-    }
   }
 
   /**
@@ -424,7 +454,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @param yInput Y joystick input for the robot to move in the Y direction.
    * @param headingX X joystick which controls the angle of the robot.
    * @param headingY Y joystick which controls the angle of the robot.
-   * @return {@link ChassisSpeeds} which can be sent to th Swerve Drive.
+   * @return {@link ChassisSpeeds} which can be sent to the Swerve Drive.
    */
   public ChassisSpeeds getTargetSpeeds(
       double xInput, double yInput, double headingX, double headingY) {
@@ -441,7 +471,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    * @param xInput X joystick input for the robot to move in the X direction.
    * @param yInput Y joystick input for the robot to move in the Y direction.
    * @param angle The angle in as a {@link Rotation2d}.
-   * @return {@link ChassisSpeeds} which can be sent to th Swerve Drive.
+   * @return {@link ChassisSpeeds} which can be sent to the Swerve Drive.
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle) {
     xInput = Math.pow(xInput, 3);
@@ -508,8 +538,6 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 
   @Override
   public void initDashboard() {
-    // Publish Pose3D for AdvantageScope
-    m_publisher.set(new Pose3d(getPose()));
     // Publish Pose3D for AdvantageScope
     m_publisher.set(new Pose3d(getPose()));
   }
