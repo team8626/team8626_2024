@@ -117,6 +117,11 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   // m_pidController_Bottom.setIZone(iZone);
   // }
 
+  public void setRPM(Preset newPreset) {
+    setRPM(newPreset.getBottomRPM(), newPreset.getTopRPM());
+    ;
+  }
+
   public void setRPM(double speed_Bottom, double speed_Top) {
     m_desiredRPM_Bottom = speed_Bottom;
     m_desiredRPM_Top = speed_Top;

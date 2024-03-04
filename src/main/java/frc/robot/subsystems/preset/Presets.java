@@ -3,8 +3,9 @@ package frc.robot.subsystems.preset;
 public class Presets {
   public enum Preset {
     kStart("START", 180, 0, 0, 0),
-    kStow("STOW", 180, 0, 0, 0),
-    kFloorPickup("FLOOR PICKUP", 202, 11, 500, 500),
+    kStow("STOW", 200, 0, 0, 0),
+    kFloorPickup("FLOOR PICKUP", 203, 11, 500, 500),
+    kShootInsidePerimeter("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
     kShootSpeaker_0m("SPEAKER_0M", 198, 10, 4000, 5200),
     kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4500, 4500),
     kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
