@@ -83,6 +83,8 @@ public class RumbleCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_controller.setRumble(m_rumbleType, 0);
+    m_timer.stop();
+    m_timer.reset();
   }
 
   // Returns true when the command should end.
