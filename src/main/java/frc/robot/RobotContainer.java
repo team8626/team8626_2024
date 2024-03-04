@@ -296,6 +296,9 @@ public class RobotContainer {
     //           m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
     //         }));
 
+    new Trigger(() -> m_intake.isFull())
+        .debounce(0.5)
+        .onTrue(new RumbleCommand(m_xboxController.getHID(), 1, 0.5, RumbleType.kBothRumble));
   }
 
   private void configureDefaultCommands() {
