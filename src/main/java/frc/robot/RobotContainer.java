@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.DriveToNoteCommand;
+import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
@@ -29,6 +30,7 @@ import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
@@ -117,13 +119,18 @@ public class RobotContainer {
                         .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
+    m_xboxController
+        .leftTrigger()
+        .toggleOnTrue(
+            new IntakeCommand(m_intake)
+                .deadlineWith(
+                    new SequentialCommandGroup(
+                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                        new RotateThenDriveToNote(m_drivebase, m_intake)))
+                .andThen(new IntakeAdjustmentCommand(m_intake))
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+
     // ---------------------------------------- Triggers shooting to stored preset settings
-    // m_xboxController
-    //     .rightBumper()
-    //     .toggleOnTrue(
-    //         new SetArmCommand(m_armRot, m_armExt, () -> m_presetStorage.get(), () -> 0.5)
-    //             .andThen(new ShooterCommand(m_intake, m_shooter, () -> m_presetStorage.get()))
-    //             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
     m_xboxController
         .rightBumper()
         .toggleOnTrue(
@@ -163,6 +170,10 @@ public class RobotContainer {
                 true));
 
     m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kShootPodium.getPose(), false));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -172,10 +183,10 @@ public class RobotContainer {
     //                                          X/Y Extension
     m_testController
         .y()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 5))));
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 2.5))));
     m_testController
         .a()
-        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() + 5))));
+        .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() + 2.5))));
     m_testController
         .b()
         .onTrue(new InstantCommand(() -> m_armExt.setLengthInches((m_armExt.getExtInches() + 1))));
@@ -208,7 +219,24 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(() -> m_climber.setPower(1.0)))
         .onFalse(new InstantCommand(() -> m_climber.setPower(0)));
 
-    // m_testController.rightBumper().toggleOnTrue(m_shooter.startCmd());
+    m_testController
+        .povUp()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbPreset)
+                .alongWith(
+                    new InstantCommand(() -> m_leds.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
+
+    m_testController
+        .povLeft()
+        .onTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbReady)
+                .alongWith(
+                    new InstantCommand(
+                        () -> m_leds.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
+
+    m_testController
+        .povDown()
+        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbEnd));
 
     // ---------------------------------------- BUTTON BOX ------------------------------
     //
@@ -239,14 +267,16 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
 
     // ---------------------------------------- BUTTON 4
-    //                                          Set Arm to Intake Preset
-    m_buttonBox.button_4().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup));
+    //
+    m_buttonBox
+        .button_4()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
 
     // ---------------------------------------- BUTTON 5
     //                                          Set Arm to Intake Shoot0m
     m_buttonBox
         .button_5()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootInsidePerimeter)));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)));
 
     // ---------------------------------------- BUTTON 6
     //                                          Set Arm to Stow Preset
@@ -257,12 +287,33 @@ public class RobotContainer {
     m_buttonBox
         .button_7()
         .toggleOnTrue(
-            new SequentialCommandGroup(
-                    new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer))
+                .andThen(
+                    new SpinAndShootCommand(
+                            m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
+                        .doNotStopFlyWheels()
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
+                .andThen(
                     new IntakeCommand(m_intake)
+                        .deadlineWith(
+                            new SequentialCommandGroup(
+                                new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                                new DriveToNoteCommand(m_drivebase, m_intake)))
                         .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
-                .deadlineWith(new DriveToNoteCommand(m_drivebase, m_intake)));
+                // .andThen(
+                //     new TurnToAngleCommand(
+                //         m_drivebase,
+                //         () -> new Pose2d(new Translation2d(), new Rotation2d(0)),
+                //         true))
+                .andThen(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)))
+                .andThen(
+                    new DriveToPoseTrajPIDCommand(
+                        m_drivebase, Preset.kShootPodium.getPose(), false))
+                .andThen(
+                    new SpinAndShootCommand(
+                            m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
     // ---------------------------------------- BUTTON 8
     //                                          Activate DriveToNote Intaking (Documentation Order?)
@@ -273,7 +324,7 @@ public class RobotContainer {
                 .deadlineWith(
                     new SequentialCommandGroup(
                         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
-                        new DriveToNoteCommand(m_drivebase, m_intake)))
+                        new RotateThenDriveToNote(m_drivebase, m_intake)))
                 .andThen(new IntakeAdjustmentCommand(m_intake))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
@@ -286,22 +337,6 @@ public class RobotContainer {
     // ---------------------------------------- OTHER TRIGGERS --------------------------
     // ----------------------------------------------------------------------------------
     // ---------------------------------------- Rumble when all subsystems at setpoint
-    // Trigger readyToShoot =
-    //     new Trigger(
-    //         () ->
-    //             !m_intake.isEmpty()
-    //                 && m_shooter.isAtSpeed()
-    //                 && m_armRot.atSetpoint()
-    //                 && m_armExt.atSetpoint());
-    // m_xboxController.a().and(readyToShoot).onTrue(getAutonomousCommand());
-    // readyToShoot.whileTrue(
-    //     Commands.startEnd(
-    //         () -> {
-    //           m_xboxController.getHID().setRumble(RumbleType.kLeftRumble, 0.5);
-    //         },
-    //         () -> {
-    //           m_xboxController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
-    //         }));
 
     new Trigger(() -> m_intake.isFull())
         .debounce(0.1)

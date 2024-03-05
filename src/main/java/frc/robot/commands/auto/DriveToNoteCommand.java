@@ -78,7 +78,7 @@ public class DriveToNoteCommand extends Command {
 
     try {
       double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
-      m_drive.drive(new ChassisSpeeds(1, 0, m_rotPID.calculate(currentNoteYaw, 0)));
+      m_drive.drive(new ChassisSpeeds(3, 0, m_rotPID.calculate(currentNoteYaw, 0)));
     } catch (NullPointerException e) {
       System.out.println();
     }
@@ -89,11 +89,13 @@ public class DriveToNoteCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     LEDSubsystem.setMode((LedMode.DEFAULT));
+    m_drive.drive(new ChassisSpeeds(0, 0, 0));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     // return m_rotPID.atSetpoint() || !m_ODCamera.getLatestResult().hasTargets();
     return !m_Intake.isEmpty();
   }

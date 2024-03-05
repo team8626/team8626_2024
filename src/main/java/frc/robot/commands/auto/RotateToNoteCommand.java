@@ -20,7 +20,7 @@ public class RotateToNoteCommand extends Command {
 
   private double m_rotPValue = 0.0555;
   private double m_rotIValue = 0;
-  private double m_rotDValue = 0;
+  private double m_rotDValue = 0.025;
 
   private final ProfiledPIDController m_rotPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
@@ -54,10 +54,13 @@ public class RotateToNoteCommand extends Command {
 
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
-    m_rotPID.setTolerance(0, 0);
-    if (m_ODCamera.getLatestResult().hasTargets()) {
+    m_rotPID.setTolerance(3, 1);
+    try {
       m_rotPID.reset(m_ODCamera.getLatestResult().getBestTarget().getYaw());
+    } catch (NullPointerException e) {
+      System.out.println(e);
     }
+    ;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -70,10 +73,13 @@ public class RotateToNoteCommand extends Command {
 
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
-    if (m_ODCamera.getLatestResult().hasTargets()) {
-      double currentYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
-      m_drive.drive(new ChassisSpeeds(0, 0, m_rotPID.calculate(currentYaw, 0)));
+    try {
+      double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
+      m_drive.drive(new ChassisSpeeds(0, 0, m_rotPID.calculate(currentNoteYaw, 0)));
+    } catch (NullPointerException e) {
+      System.out.println();
     }
+    ;
   }
 
   // Called once the command ends or is interrupted.
@@ -85,7 +91,7 @@ public class RotateToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return m_rotPID.atSetpoint() || !m_ODCamera.getLatestResult().hasTargets();
-    return false;
+
+    return m_rotPID.atSetpoint();
   }
 }
