@@ -163,6 +163,9 @@ public class RobotContainer {
                 true));
 
     m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    m_xboxController
+        .x()
+        .onTrue(new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kShootPodium.getPose(), true));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -239,8 +242,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
 
     // ---------------------------------------- BUTTON 4
-    //                                          Set Arm to Intake Preset
-    m_buttonBox.button_4().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup));
+    //
+    m_buttonBox
+        .button_4()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
 
     // ---------------------------------------- BUTTON 5
     //                                          Set Arm to Intake Shoot0m

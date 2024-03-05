@@ -18,7 +18,7 @@ public class Presets {
     kShootInsidePerimeter("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
 
     kShootPodium(
-        "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(23.3)));
+        "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3)));
 
     private double m_rot;
     private double m_ext;

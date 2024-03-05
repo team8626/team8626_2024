@@ -40,8 +40,8 @@ public final class Constants {
     public static final double kDriveXVelSetpointTolerance = 0;
     public static final double kDriveYPosSetpointTolerance = 0;
     public static final double kDriveYVelSetpointTolerance = 0;
-    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(6);
-    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(2);
+    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(3);
+    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(1.5);
   }
 
   public static final class Drivebase {
