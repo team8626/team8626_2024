@@ -6,15 +6,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class Presets {
   public enum Preset {
     kStart("START", 180, 0),
-    kStow("STOW", 200, 0),
-    kFloorPickup("FLOOR PICKUP", 203, 11),
-    kStartClimb("START_CLIMB", 90, 10),
+    kStow("STOW", 198, 0),
+    kFloorPickup("FLOOR PICKUP", 202, 11),
+    kClimbPreset("CLIMB PRESET", 110, 6),
+    kClimbReady("CLIMB READY", 130, 3),
+    kClimbEnd("CLIMB FINISH", 180, 0),
 
     kShootSpeaker_0m("SPEAKER_0M", 198, 10, 4000, 5200),
     kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4500, 4500),
     kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
     kShootAmp("AMP", 80, 10, 3000, 3000),
-    kLongPass("PASS", 170, 0, 5500, 5500),
+    kLongPass("PASS", 190, 0, 5500, 5500),
     kShootInsidePerimeter("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
 
     kShootPodium(
