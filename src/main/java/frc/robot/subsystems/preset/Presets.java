@@ -17,7 +17,7 @@ public class Presets {
     kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
     kShootAmp("AMP", 80, 10, 3000, 3000),
     kLongPass("PASS", 190, 0, 5500, 5500),
-    kShootInsidePerimeter("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
+    kShootSubwoofer("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
 
     kShootPodium(
         "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3)));
