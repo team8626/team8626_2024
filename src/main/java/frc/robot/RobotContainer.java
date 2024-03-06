@@ -327,8 +327,8 @@ public class RobotContainer {
 
     autoSpinRadiusTrigger = autoSpinRadiusTrigger.debounce(1);
 
-    autoSpinRadiusTrigger.onTrue(m_shooter.setRPMCommand(m_presetStorage.get()));
-    autoSpinRadiusTrigger.onFalse(m_shooter.setRPMCommand(0, 0));
+    autoSpinRadiusTrigger.onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
+    autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
   }
 
   private void configureDefaultCommands() {
@@ -340,7 +340,7 @@ public class RobotContainer {
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       invert = -1;
     } else {
-      invert = -1;
+      invert = 1;
     }
 
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =

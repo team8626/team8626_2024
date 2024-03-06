@@ -21,6 +21,7 @@ import frc.robot.subsystems.LEDs.LEDConstants;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.preset.Presets.Preset;
 import frc.robot.subsystems.shooter.ShooterConstants.ShooterStates.ShooterStatus;
+import java.util.function.Supplier;
 
 public class ShooterSubsystem extends SubsystemBase implements ImplementDashboard {
   private CANSparkMax m_motor_Bottom;
@@ -174,10 +175,10 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     }
   }
 
-  public Command setRPMCommand(Preset preset) {
+  public Command setRPMCommand(Supplier<Preset> preset) {
     return new InstantCommand(
         () -> {
-          setRPM(preset.getBottomRPM(), preset.getTopRPM());
+          setRPM(preset.get().getBottomRPM(), preset.get().getTopRPM());
           start();
           LEDSubsystem.setMode(LEDConstants.LedMode.PRESHOOTING);
         });
