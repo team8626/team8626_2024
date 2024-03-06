@@ -41,7 +41,7 @@ public class TurnToAngleCommand extends Command {
     SmartDashboard.putNumber(
         "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 5));
     SmartDashboard.putNumber(
-        "Drive Rotation I Value", SmartDashboard.getNumber("Drive Rotation I Value", 0.5));
+        "Drive Rotation I Value", SmartDashboard.getNumber("Drive Rotation I Value", 0.7));
     SmartDashboard.putNumber(
         "Drive Rotation D Value", SmartDashboard.getNumber("Drive Rotation D Value", 0.25));
 
