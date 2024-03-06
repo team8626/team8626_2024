@@ -17,6 +17,7 @@ public class LEDConstants {
     NOT_CONNECTED,
     DISABLED,
     DEFAULT,
+    PRESHOOTING,
     SHOOTING,
     FOLLOWNOTE,
     INTAKING,
