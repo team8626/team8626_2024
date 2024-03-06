@@ -20,6 +20,7 @@ public class LEDConstants {
     SHOOTING,
     FOLLOWNOTE,
     INTAKING,
+    AMPLIFICATION,
     BLUE_ALLIANCE,
     RED_ALLIANCE,
     OFF

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.LEDs.LEDConstants.LEDSection;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
@@ -48,12 +49,12 @@ public class LEDSubsystem extends SubsystemBase {
     updateMainLeds();
   }
 
-  public void setErrorMode(LedErrorMode newErrorCode) {
+  public static void setErrorMode(LedErrorMode newErrorCode) {
     m_error_mode = newErrorCode;
     updateErrorLeds();
   }
 
-  public void setAmbienceMode(LedAmbienceMode newAmbienceCode) {
+  public static void setAmbienceMode(LedAmbienceMode newAmbienceCode) {
     m_ambience_mode = newAmbienceCode;
     updateAmbienceLeds();
   }
@@ -74,7 +75,7 @@ public class LEDSubsystem extends SubsystemBase {
    *
    * @param color
    */
-  private void error(Color color) {
+  private static void error(Color color) {
     for (errorSections section : errorSections.values()) {
       error(section, color);
     }
@@ -86,7 +87,7 @@ public class LEDSubsystem extends SubsystemBase {
    * @param section
    * @param color
    */
-  public void error(errorSections section, Color color) {
+  public static void error(errorSections section, Color color) {
     boolean on = ((Timer.getFPGATimestamp() % 2) / 2) > 0.5;
     for (int j = 0; j < section.getIndexes().length; j++) {
       int ledIndex = section.getIndexes()[j];
@@ -132,6 +133,10 @@ public class LEDSubsystem extends SubsystemBase {
         flow(LEDConstants.kSectionMain, Color.kOrange, 1);
         break;
 
+      case AMPLIFICATION:
+        blink(LEDConstants.kSectionMain, Color.kLime, .25);
+        break;
+
       case DEFAULT:
       default:
         wave(LEDConstants.kSectionMain, m_currentColor[0], m_currentColor[1], 25, 2.0);
@@ -154,23 +159,23 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   /** Update ErrorLEDs based on current set state */
-  private void updateErrorLeds() {
+  private static void updateErrorLeds() {
 
     switch (m_error_mode) {
       case ERROR_CRITICAL:
-        this.error(Color.kYellowGreen);
+        error(Color.kYellowGreen);
         break;
       case ERROR_DRIVE_FL:
-        this.error(errorSections.FRONT_LEFT, Color.kYellowGreen);
+        error(errorSections.FRONT_LEFT, Color.kYellowGreen);
         break;
       case ERROR_DRIVE_FR:
-        this.error(errorSections.FRONT_RIGHT, Color.kYellowGreen);
+        error(errorSections.FRONT_RIGHT, Color.kYellowGreen);
         break;
       case ERROR_DRIVE_BL:
-        this.error(errorSections.BACK_LEFT, Color.kYellowGreen);
+        error(errorSections.BACK_LEFT, Color.kYellowGreen);
         break;
       case ERROR_DRIVE_BR:
-        this.error(errorSections.BACK_RIGHT, Color.kYellowGreen);
+        error(errorSections.BACK_RIGHT, Color.kYellowGreen);
         break;
 
       case NO_ERROR:
@@ -292,5 +297,10 @@ public class LEDSubsystem extends SubsystemBase {
     updateErrorLeds();
 
     m_LEDs.setData(m_buffer);
+  }
+
+  public Command setModeCommand(LedMode newMode) {
+    return startEnd(() -> setMode(newMode), () -> setMode(LedMode.DEFAULT))
+        .withName("[LEDManager] SetMode");
   }
 }
