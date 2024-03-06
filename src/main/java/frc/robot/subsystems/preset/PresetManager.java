@@ -14,7 +14,7 @@ public class PresetManager implements ImplementDashboard {
   private Preset m_preset;
 
   public PresetManager() {
-    m_preset = Preset.kStow;
+    m_preset = Preset.kShootSubwoofer;
   }
 
   public void set(Preset newPreset) {

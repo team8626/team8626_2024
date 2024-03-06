@@ -29,6 +29,7 @@ public class SpinAndShootCommand extends Command {
   private Supplier<Preset> m_preset;
 
   private Timer m_timer = new Timer();
+  private boolean m_stopShooter;
 
   public SpinAndShootCommand(
       IntakeSubsystem intake,
@@ -41,8 +42,14 @@ public class SpinAndShootCommand extends Command {
     m_armRot = armRot;
     m_armExt = armExt;
     m_preset = preset;
+    m_stopShooter = true;
 
     addRequirements(shooter, intake, armRot, armExt);
+  }
+
+  public SpinAndShootCommand doNotStopFlyWheels() {
+    this.m_stopShooter = false;
+    return this;
   }
 
   // Called when the command is initially scheduled.
@@ -71,7 +78,9 @@ public class SpinAndShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stop();
+    if (m_stopShooter) {
+      m_shooter.stop();
+    }
     m_intake.stop();
     m_timer.stop();
     LEDSubsystem.setMode(LedMode.DEFAULT);
@@ -86,7 +95,7 @@ public class SpinAndShootCommand extends Command {
       m_timer.start();
 
       // TODO: Can we mnake it shorter than 1s?
-      if (m_timer.hasElapsed(0.25)) {
+      if (m_timer.hasElapsed(0.25) || m_stopShooter) {
         retval = true;
       }
     }
