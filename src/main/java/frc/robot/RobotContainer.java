@@ -313,9 +313,6 @@ public class RobotContainer {
     new Trigger(() -> m_intake.isFull())
         .debounce(0.1)
         .onTrue(new RumbleCommand(m_xboxController.getHID(), 1, 0.5, RumbleType.kBothRumble));
-
-    new Trigger(() -> m_drivebase.getPose().getX() < 3)
-        .onTrue(new RumbleCommand(m_xboxController.getHID(), 0.5, 5, RumbleType.kBothRumble));
   }
 
   private void configureDefaultCommands() {
