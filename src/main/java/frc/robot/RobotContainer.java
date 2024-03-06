@@ -8,6 +8,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.DriveToNoteCommand;
 import frc.robot.commands.auto.RotateThenDriveToNote;
+import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
@@ -31,6 +34,7 @@ import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
+import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
@@ -109,7 +113,8 @@ public class RobotContainer {
     // ----------------------------------------------------------------------------------
     //
 
-    // ---------------------------------------- Triggers Intake (set arm + start intaking))
+    // ---------------------------------------- Left Bumper
+    //                                          Intake (set arm + start intaking))
     m_xboxController
         .leftBumper()
         .toggleOnTrue(
@@ -130,7 +135,8 @@ public class RobotContainer {
                 .andThen(new IntakeAdjustmentCommand(m_intake))
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
-    // ---------------------------------------- Triggers shooting to stored preset settings
+    // ---------------------------------------- Right Bumper
+    //                                          Shooting to stored preset settings
     m_xboxController
         .rightBumper()
         .toggleOnTrue(
@@ -138,12 +144,11 @@ public class RobotContainer {
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
-    // ---------------------------------------- Y
-    //                                          Eject
-    m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+    // ---------------------------------------- Right Trigger Toggle Slow Mode
+    m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
 
     // ---------------------------------------- POV
-    //                                              Robot angle
+    //                                          Robot angle
     m_xboxController
         .povUp()
         .onTrue(
@@ -169,11 +174,16 @@ public class RobotContainer {
                 () -> new Pose2d(new Translation2d(), new Rotation2d(-Math.PI / 2)),
                 true));
 
-    m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    // ---------------------------------------- X
+    //                                          Robot angle
     m_xboxController
         .x()
         .toggleOnTrue(
             new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kShootPodium.getPose(), false));
+
+    // ---------------------------------------- Y
+    //                                          Eject
+    m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -206,7 +216,7 @@ public class RobotContainer {
         .rightBumper()
         .toggleOnTrue(
             new StartEndCommand(
-                () -> m_shooter.start(Preset.kShootSpeaker_0m), () -> m_shooter.stop()));
+                () -> m_shooter.start(m_presetStorage.get()), () -> m_shooter.stop()));
 
     // ---------------------------------------- Climb
     m_testController
@@ -224,7 +234,8 @@ public class RobotContainer {
         .toggleOnTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbPreset)
                 .alongWith(
-                    new InstantCommand(() -> m_leds.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
 
     m_testController
         .povLeft()
@@ -232,7 +243,7 @@ public class RobotContainer {
             new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbReady)
                 .alongWith(
                     new InstantCommand(
-                        () -> m_leds.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
 
     m_testController
         .povDown()
@@ -249,84 +260,45 @@ public class RobotContainer {
     //           +-----------------+
     //
     // ----------------------------------------------------------------------------------
-    //
+
     // ---------------------------------------- BUTTON 1
-    //                                          Preset: ShootSpeaker Long Distance
-    m_buttonBox
-        .button_1()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_2m)));
+    //                                          Preset: Amp
+    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
 
     // ---------------------------------------- BUTTON 2
-    //                                          Preset:  Amp
-    m_buttonBox.button_2().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
-
-    // ---------------------------------------- BUTTON 3
-    //                                          Preset: ShootSpeaker 0m
+    //                                          Preset:  Subwoofer
     m_buttonBox
-        .button_3()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSpeaker_0m)));
-
-    // ---------------------------------------- BUTTON 4
-    //
-    m_buttonBox
-        .button_4()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
-
-    // ---------------------------------------- BUTTON 5
-    //                                          Set Arm to Intake Shoot0m
-    m_buttonBox
-        .button_5()
+        .button_2()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)));
 
+    // ---------------------------------------- BUTTON 3
+    //                                          Preset:  Podium
+    m_buttonBox
+        .button_3()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
+
+
+    // ---------------------------------------- BUTTON 4
+    //                                          Request for Amplification to Human Player
+    m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
+
+    // ---------------------------------------- BUTTON 5
+    //                                          Preset: Under Stage
+    m_buttonBox
+        .button_5()
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootStage)));
+
     // ---------------------------------------- BUTTON 6
-    //                                          Set Arm to Stow Preset
-    m_buttonBox.button_6().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
+    //                                          Preset: Long Pass
+    m_buttonBox.button_6().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kLongPass)));
 
     // ---------------------------------------- BUTTON 7
-    //                                          Activate DriveToNote Intaking (Ned's Order)
-    m_buttonBox
-        .button_7()
-        .toggleOnTrue(
-            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer))
-                .andThen(
-                    new SpinAndShootCommand(
-                            m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                        .doNotStopFlyWheels()
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
-                .andThen(
-                    new IntakeCommand(m_intake)
-                        .deadlineWith(
-                            new SequentialCommandGroup(
-                                new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
-                                new DriveToNoteCommand(m_drivebase, m_intake)))
-                        .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)))
-                // .andThen(
-                //     new TurnToAngleCommand(
-                //         m_drivebase,
-                //         () -> new Pose2d(new Translation2d(), new Rotation2d(0)),
-                //         true))
-                .andThen(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)))
-                .andThen(
-                    new DriveToPoseTrajPIDCommand(
-                        m_drivebase, Preset.kShootPodium.getPose(), false))
-                .andThen(
-                    new SpinAndShootCommand(
-                            m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+    //                                          Set Arm to Stow Preset
+    m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // ---------------------------------------- BUTTON 8
-    //                                          Activate DriveToNote Intaking (Documentation Order?)
-    m_buttonBox
-        .button_8()
-        .toggleOnTrue(
-            new IntakeCommand(m_intake)
-                .deadlineWith(
-                    new SequentialCommandGroup(
-                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
-                        new RotateThenDriveToNote(m_drivebase, m_intake)))
-                .andThen(new IntakeAdjustmentCommand(m_intake))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+    //                                          Rotate to NOTE
+    m_buttonBox.button_8().toggleOnTrue(new RotateToNoteCommand(m_drivebase));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
@@ -341,19 +313,32 @@ public class RobotContainer {
     new Trigger(() -> m_intake.isFull())
         .debounce(0.1)
         .onTrue(new RumbleCommand(m_xboxController.getHID(), 1, 0.5, RumbleType.kBothRumble));
+
+    new Trigger(() -> m_drivebase.getPose().getX() < 3)
+        .onTrue(new RumbleCommand(m_xboxController.getHID(), 0.5, 5, RumbleType.kBothRumble));
   }
 
   private void configureDefaultCommands() {
+
+     // The origin is always blue. When our alliance is red, X and Y need to be inverted
+    var alliance = DriverStation.getAlliance();
+    final int invert;
+
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+        invert = -1;
+    } else {
+        invert = -1;
+    }
 
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =
     //     new AbsoluteDriveAdv(
     //         m_drivebase,
     //         () ->
     //             MathUtil.applyDeadband(
-    //                 -m_xboxController.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
+    //                 -m_xboxController.getLeftY() * invert, OperatorConstants.LEFT_Y_DEADBAND),
     //         () ->
     //             MathUtil.applyDeadband(
-    //                 m_xboxController.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
+    //                 m_xboxController.getLeftX() * invert, OperatorConstants.LEFT_X_DEADBAND),
     //         () ->
     //             MathUtil.applyDeadband(
     //                 -m_xboxController.getRightX(), OperatorConstants.RIGHT_X_DEADBAND),
@@ -369,8 +354,8 @@ public class RobotContainer {
     // right stick controls the desired angle NOT angular rotation
     Command driveFieldOrientedDirectAngle =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1),
             () -> m_xboxController.getRightX(),
             () -> m_xboxController.getRightY());
 
@@ -381,16 +366,16 @@ public class RobotContainer {
     // right stick controls the angular velocity of the robot
     driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1) * driveSpeedFactor,
             () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1),
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1),
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1),
             () -> -m_xboxController.getRawAxis(4));
 
     // m_drivebase.setDefaultCommand(
@@ -400,8 +385,8 @@ public class RobotContainer {
 
     m_drivebase.setDefaultCommand(
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY(), 0.1) * driveSpeedFactor,
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX(), 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1) * driveSpeedFactor,
+            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1) * driveSpeedFactor,
             () -> -m_xboxController.getRightX() * rotationSpeedFactor));
 
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
