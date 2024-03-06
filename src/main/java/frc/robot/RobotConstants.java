@@ -40,6 +40,8 @@ public class RobotConstants {
   public static double kArmRotationYawOffsetDeg = 0;
   public static double kArmExtensionOffMeters = Units.inchesToMeters(-3);
 
+  public static double kAutoSpinRadius = 2;
+
   public static class Vision {
     // april tag camera constants
     public static final String kATCameraName = "Arducam_AT002";
