@@ -8,7 +8,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -277,7 +276,6 @@ public class RobotContainer {
         .button_3()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
 
-
     // ---------------------------------------- BUTTON 4
     //                                          Request for Amplification to Human Player
     m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
@@ -317,14 +315,14 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
 
-     // The origin is always blue. When our alliance is red, X and Y need to be inverted
+    // The origin is always blue. When our alliance is red, X and Y need to be inverted
     var alliance = DriverStation.getAlliance();
     final int invert;
 
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-        invert = -1;
+      invert = -1;
     } else {
-        invert = -1;
+      invert = -1;
     }
 
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =
@@ -363,8 +361,12 @@ public class RobotContainer {
     // right stick controls the angular velocity of the robot
     driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1) * driveSpeedFactor,
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1) * driveSpeedFactor,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
+                    * driveSpeedFactor,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
+                    * driveSpeedFactor,
             () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
 
     driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
@@ -382,8 +384,12 @@ public class RobotContainer {
 
     m_drivebase.setDefaultCommand(
         m_drivebase.driveCommand(
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1) * driveSpeedFactor,
-            () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1) * driveSpeedFactor,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
+                    * driveSpeedFactor,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
+                    * driveSpeedFactor,
             () -> -m_xboxController.getRightX() * rotationSpeedFactor));
 
     //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :

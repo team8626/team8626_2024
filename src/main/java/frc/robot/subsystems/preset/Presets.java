@@ -6,9 +6,9 @@ import frc.utils.AllianceFlipUtil;
 
 public class Presets {
   public enum Preset {
-    /** NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES.
-     *        Getting a Preset pose using  {@link #getPose()}
-     *        will return Pose based on the current alliance.
+    /**
+     * NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES. Getting a Preset pose using {@link
+     * #getPose()} will return Pose based on the current alliance.
      */
     kStart("START", 180, 0),
     kStow("STOW", 198, 0),
@@ -77,9 +77,9 @@ public class Presets {
       return m_bottomRPM;
     }
 
-    /** NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES.
-     *        Getting a Preset pose using  {@link #getPose()}
-     *        will return Pose based on the current alliance.
+    /**
+     * NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES. Getting a Preset pose using {@link
+     * #getPose()} will return Pose based on the current alliance.
      */
     public Pose2d getPose() {
       return AllianceFlipUtil.apply(m_robotPose);
