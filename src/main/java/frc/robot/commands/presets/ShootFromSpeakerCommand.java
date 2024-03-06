@@ -24,7 +24,7 @@ public class ShootFromSpeakerCommand extends SequentialCommandGroup {
       IntakeSubsystem intake,
       ShooterSubsystem shooter) {
     addCommands(
-        new SetArmCommand(armRot, armExt, () -> Preset.kShootSpeaker_0m),
-        new ShooterCommand(intake, shooter, () -> Preset.kShootSpeaker_0m));
+        new SetArmCommand(armRot, armExt, () -> Preset.kShootSubwoofer),
+        new ShooterCommand(intake, shooter, () -> Preset.kShootSubwoofer));
   }
 }

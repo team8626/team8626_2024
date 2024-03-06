@@ -2,9 +2,14 @@ package frc.robot.subsystems.preset;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.utils.AllianceFlipUtil;
 
 public class Presets {
   public enum Preset {
+    /** NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES.
+     *        Getting a Preset pose using  {@link #getPose()}
+     *        will return Pose based on the current alliance.
+     */
     kStart("START", 180, 0),
     kStow("STOW", 198, 0),
     kFloorPickup("FLOOR PICKUP", 202, 11),
@@ -12,15 +17,14 @@ public class Presets {
     kClimbReady("CLIMB READY", 130, 3),
     kClimbEnd("CLIMB FINISH", 180, 0),
 
-    kShootSpeaker_0m("SPEAKER_0M", 198, 10, 4000, 5200),
-    kShootSpeaker_2m("SPEAKER_2M", 187, 0, 4500, 4500),
-    kShootSpeaker_3m("SPEAKER_3M", 187, 0, 4000, 4000),
     kShootAmp("AMP", 80, 10, 3000, 3000),
-    kLongPass("PASS", 190, 0, 5500, 5500),
-    kShootSubwoofer("SUBWOOFER INSIDE", 201, 0, 2200, 4700),
+    kShootSubwoofer("SUBWOOFER", 201, 0, 2200, 4700),
 
     kShootPodium(
-        "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3)));
+        "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
+    kShootStage(
+        "STAGE BLUE", 163.5, 0, 5500, 5500, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.54))),
+    kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 
     private double m_rot;
     private double m_ext;
@@ -73,8 +77,12 @@ public class Presets {
       return m_bottomRPM;
     }
 
+    /** NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES.
+     *        Getting a Preset pose using  {@link #getPose()}
+     *        will return Pose based on the current alliance.
+     */
     public Pose2d getPose() {
-      return m_robotPose;
+      return AllianceFlipUtil.apply(m_robotPose);
     }
 
     public String getString() {

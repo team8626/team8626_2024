@@ -28,8 +28,8 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private RelativeEncoder m_encoder_Bottom;
   private RelativeEncoder m_encoder_Top;
 
-  private double m_desiredRPM_Bottom = Preset.kShootSpeaker_0m.getBottomRPM();
-  private double m_desiredRPM_Top = Preset.kShootSpeaker_0m.getTopRPM();
+  private double m_desiredRPM_Bottom = Preset.kShootSubwoofer.getBottomRPM();
+  private double m_desiredRPM_Top = Preset.kShootSubwoofer.getTopRPM();
   private double m_currentRPM_Bottom = 0;
   private double m_currentRPM_Top = 0;
 
