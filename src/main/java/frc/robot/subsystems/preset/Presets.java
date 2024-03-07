@@ -2,6 +2,7 @@ package frc.robot.subsystems.preset;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.FieldConstants;
 import frc.utils.AllianceFlipUtil;
 
 public class Presets {
@@ -17,13 +18,19 @@ public class Presets {
     kClimbReady("CLIMB READY", 130, 3),
     kClimbEnd("CLIMB FINISH", 180, 0),
 
-    kShootAmp("AMP", 80, 10, 3000, 3000),
-    kShootSubwoofer("SUBWOOFER", 201, 0, 2200, 4700),
-
+    kShootAmp(
+        "AMP",
+        80,
+        10,
+        3000,
+        3000,
+        new Pose2d(FieldConstants.ampCenter.getX(), 7.82, Rotation2d.fromDegrees(-90))),
+    kShootSubwoofer(
+        "SUBWOOFER", 201, 0, 2200, 4700, new Pose2d(1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
     kShootPodium(
         "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
-        "STAGE BLUE", 163.5, 0, 5500, 5500, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.54))),
+        "STAGE BLUE", 163.5, 0, 4500, 5400, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.54))),
     kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 
     private double m_rot;
@@ -34,31 +41,21 @@ public class Presets {
     private String m_string;
 
     Preset(String Name, double Rot_Deg, double Ext_In) {
-      this.m_rot = Rot_Deg;
-      this.m_ext = Ext_In;
-      this.m_topRPM = 0;
-      this.m_bottomRPM = 0;
-      this.m_robotPose = null;
-      this.m_string = Name;
+      this(Name, Rot_Deg, Ext_In, 0, 0);
     }
 
     Preset(String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM) {
-      this.m_rot = Rot_Deg;
-      this.m_ext = Ext_In;
-      this.m_topRPM = TopRPM;
-      this.m_bottomRPM = BottomRPM;
-      this.m_robotPose = null;
-      this.m_string = Name;
+      this(Name, Rot_Deg, Ext_In, 0, 0, new Pose2d());
     }
 
     Preset(
         String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM, Pose2d robotPose) {
+      this.m_string = Name;
       this.m_rot = Rot_Deg;
       this.m_ext = Ext_In;
       this.m_topRPM = TopRPM;
       this.m_bottomRPM = BottomRPM;
       this.m_robotPose = robotPose;
-      this.m_string = Name;
     }
 
     public double getRotDegrees() {
