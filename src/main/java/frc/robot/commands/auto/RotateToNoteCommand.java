@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import org.photonvision.PhotonCamera;
 
 public class RotateToNoteCommand extends Command {
 
   private final SwerveSubsystem m_drive;
-
-  private double m_rotPValue = 0.0555;
-  private double m_rotIValue = 0;
-  private double m_rotDValue = 0.025;
+  // P 3.125
+  private double m_rotPValue = 3.125;
+  private double m_rotIValue = 1.15;
+  private double m_rotDValue = 0.2;
+  private double m_integratorRangeValue = 5;
 
   private final ProfiledPIDController m_rotPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
@@ -32,6 +34,21 @@ public class RotateToNoteCommand extends Command {
 
     addRequirements(m_drive);
 
+    SmartDashboard.putNumber(
+        "Commands/rotateToNote/Drive Rotation P Value",
+        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation P Value", m_rotPValue));
+    SmartDashboard.putNumber(
+        "Commands/rotateToNote/Drive Rotation I Value",
+        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation I Value", m_rotPValue));
+    SmartDashboard.putNumber(
+        "Commands/rotateToNote/Drive Rotation D Value",
+        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation D Value", m_rotPValue));
+
+    SmartDashboard.putNumber(
+        "Commands/rotateToNote/Integrator Range Value",
+        SmartDashboard.getNumber(
+            "Commands/rotateToNote/Integrator Range Value", m_integratorRangeValue));
+
     setName("Drive To NOTE PID Command");
   }
 
@@ -41,22 +58,23 @@ public class RotateToNoteCommand extends Command {
 
     LEDSubsystem.setMode((LedMode.FOLLOWNOTE));
 
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation P Value", m_rotPValue);
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation I Value", m_rotIValue);
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation D Value", m_rotDValue);
-
-    double rotationMaxVelocity = Math.PI;
-    double rotationMaxAcceleration = Math.PI * 2;
+    m_rotPValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation P Value", 0);
+    m_rotIValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation I Value", 0);
+    m_rotDValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation D Value", 0);
+    m_integratorRangeValue =
+        SmartDashboard.getNumber("Commands/rotateToNote/Integrator Range Value", 0);
 
     m_rotPID.setConstraints(
         new TrapezoidProfile.Constraints(
-            Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
+            Constants.Auton.kMaxAngularSpeedRadiansPerSecond * 4,
+            Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared * 4));
 
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
+    m_rotPID.setIZone(m_integratorRangeValue);
 
-    m_rotPID.setTolerance(3, 1);
+    m_rotPID.setTolerance(Math.toRadians(0.5), Math.toRadians(0.2));
     try {
-      m_rotPID.reset(m_ODCamera.getLatestResult().getBestTarget().getYaw());
+      m_rotPID.reset(Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw()));
     } catch (NullPointerException e) {
       System.out.println(e);
     }
@@ -67,15 +85,12 @@ public class RotateToNoteCommand extends Command {
   @Override
   public void execute() {
 
-    m_rotPValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation P Value", 0.055);
-    m_rotIValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation I Value", 0);
-    m_rotDValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation D Value", 0);
-
-    m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
-
     try {
-      double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
+      double currentNoteYaw = Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw());
+      SmartDashboard.putNumber("Yaw of Note", currentNoteYaw);
       m_drive.drive(new ChassisSpeeds(0, 0, m_rotPID.calculate(currentNoteYaw, 0)));
+      SmartDashboard.putNumber(
+          "Commands/rotateToNote/Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
     } catch (NullPointerException e) {
       System.out.println();
     }
@@ -92,6 +107,7 @@ public class RotateToNoteCommand extends Command {
   @Override
   public boolean isFinished() {
 
-    return m_rotPID.atSetpoint();
+    // return m_rotPID.atSetpoint();
+    return false;
   }
 }

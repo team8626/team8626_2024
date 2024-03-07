@@ -12,12 +12,16 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.LEDs.LEDConstants;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.preset.Presets.Preset;
 import frc.robot.subsystems.shooter.ShooterConstants.ShooterStates.ShooterStatus;
+import java.util.function.Supplier;
 
 public class ShooterSubsystem extends SubsystemBase implements ImplementDashboard {
   private CANSparkMax m_motor_Bottom;
@@ -170,6 +174,26 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
       m_status = ShooterStatus.IDLE;
     }
   }
+
+  public Command setRPMCommand(Supplier<Preset> preset) {
+    return new InstantCommand(
+        () -> {
+          setRPM(preset.get().getBottomRPM(), preset.get().getTopRPM());
+          start();
+          LEDSubsystem.setMode(LEDConstants.LedMode.PRESHOOTING);
+        });
+  }
+  ;
+
+  public Command setRPMCommand(double bottomRPM, double topRPM) {
+    return new InstantCommand(
+        () -> {
+          setRPM(bottomRPM, topRPM);
+          start();
+          LEDSubsystem.setMode(LEDConstants.LedMode.PRESHOOTING);
+        });
+  }
+  ;
 
   @Override
   public void periodic() {

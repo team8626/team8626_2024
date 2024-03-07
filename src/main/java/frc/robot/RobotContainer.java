@@ -312,6 +312,24 @@ public class RobotContainer {
     new Trigger(() -> m_intake.isFull())
         .debounce(0.1)
         .onTrue(new RumbleCommand(m_xboxController.getHID(), 1, 0.5, RumbleType.kBothRumble));
+
+    // Shooter Auto Spin Trigger
+    Trigger autoSpinRadiusTrigger =
+        new Trigger(
+            () -> {
+              Pose2d currentPose = m_drivebase.getPose();
+              Pose2d presetPose = m_presetStorage.get().getPose();
+
+              return (RobotConstants.kAutoSpinRadius
+                  > Math.hypot(
+                      presetPose.getX() - currentPose.getX(),
+                      presetPose.getY() - currentPose.getY()));
+            });
+
+    autoSpinRadiusTrigger = autoSpinRadiusTrigger.debounce(1);
+
+    autoSpinRadiusTrigger.onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
+    autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
   }
 
   private void configureDefaultCommands() {

@@ -26,7 +26,13 @@ public class Presets {
         3000,
         new Pose2d(FieldConstants.ampCenter.getX(), 7.82, Rotation2d.fromDegrees(-90))),
     kShootSubwoofer(
-        "SUBWOOFER", 201, 0, 2200, 4700, new Pose2d(1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
+        "SUBWOOFER",
+        201,
+        0,
+        2200,
+        4700,
+        new Pose2d(
+            1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
     kShootPodium(
         "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
