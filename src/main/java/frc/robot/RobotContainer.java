@@ -321,16 +321,15 @@ public class RobotContainer {
               Pose2d currentPose = m_drivebase.getPose();
               Pose2d presetPose = m_presetStorage.get().getPose();
 
-              return m_intake.isFull()
-                  && (RobotConstants.kAutoSpinRadius
+              return (RobotConstants.kAutoSpinRadius
                       > Math.hypot(
                           presetPose.getX() - currentPose.getX(),
                           presetPose.getY() - currentPose.getY()));
             });
-
+        
     autoSpinRadiusTrigger = autoSpinRadiusTrigger.debounce(1);
 
-    autoSpinRadiusTrigger.onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
+    autoSpinRadiusTrigger.and(() -> m_intake.isFull()).onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
     autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
   }
 
