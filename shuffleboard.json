@@ -1330,6 +1330,36 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "6,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///photonvision/Arducam_AT002/hasTarget",
+              "_title": "photonvision/Arducam_AT002/hasTarget",
+              "_glyph": 80,
+              "_showGlyph": true,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "3,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///photonvision/Arducam_OD003/hasTarget",
+              "_title": "photonvision/Arducam_OD003/hasTarget",
+              "_glyph": 117,
+              "_showGlyph": true,
+              "Colors/Color when true": "#FF5F1FFF",
+              "Colors/Color when false": "#F2F2F2FF"
+            }
           }
         }
       }
@@ -1366,9 +1396,9 @@
     }
   ],
   "windowGeometry": {
-    "x": 0.0,
-    "y": 25.0,
+    "x": 18.0,
+    "y": 307.0,
     "width": 1648.0,
-    "height": 828.0
+    "height": 738.0
   }
 }
