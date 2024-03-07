@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -178,7 +179,7 @@ public class RobotContainer {
     m_xboxController
         .x()
         .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kShootPodium.getPose(), false));
+            new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false));
 
     // ---------------------------------------- Y
     //                                          Eject
@@ -188,8 +189,8 @@ public class RobotContainer {
     // ----------------------------------------------------------------------------------
     //
     // ---------------------------------------- Set to Angle Testing (Test Controller)
-    //                                          A/B Rotation
-    //                                          X/Y Extension
+    //                                          A/X Rotation
+    //                                          X/B Extension
     m_testController
         .y()
         .onTrue(new InstantCommand(() -> m_armRot.setAngleDeg((m_armRot.getRotDegrees() - 2.5))));
@@ -322,7 +323,7 @@ public class RobotContainer {
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       invert = -1;
     } else {
-      invert = -1;
+      invert = 1;
     }
 
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =
@@ -359,17 +360,17 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the angular velocity of the robot
-    driveFieldOrientedAnglularVelocity =
-        m_drivebase.driveCommand(
-            () ->
-                MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
-                    * driveSpeedFactor,
-            () ->
-                MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
-                    * driveSpeedFactor,
-            () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
+    // driveFieldOrientedAnglularVelocity =
+    //     m_drivebase.driveCommand(
+    //         () ->
+    //             MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
+    //                 * driveSpeedFactor,
+    //         () ->
+    //             MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
+    //                 * driveSpeedFactor,
+    //         () -> -m_xboxController.getRawAxis(4) * rotationSpeedFactor);
 
-    driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
+    // driveFieldOrientedAnglularVelocity.setName("Drive Field Oriented Anglular Velocity Command");
 
     Command driveFieldOrientedDirectAngleSim =
         m_drivebase.simDriveCommand(
@@ -377,12 +378,7 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1),
             () -> -m_xboxController.getRawAxis(4));
 
-    // m_drivebase.setDefaultCommand(
-    //     !RobotBase.isSimulation()
-    //         ? driveFieldOrientedAnglularVelocity
-    //         : driveFieldOrientedDirectAngleSim);
-
-    m_drivebase.setDefaultCommand(
+    Command driveFieldOrientedAnglularVelocity =
         m_drivebase.driveCommand(
             () ->
                 MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
@@ -390,10 +386,12 @@ public class RobotContainer {
             () ->
                 MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
                     * driveSpeedFactor,
-            () -> -m_xboxController.getRightX() * rotationSpeedFactor));
+            () -> -m_xboxController.getRightX() * rotationSpeedFactor);
 
-    //  !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle :
-    // driveFieldOrientedDirectAngleSim);
+    m_drivebase.setDefaultCommand(
+        !RobotBase.isSimulation()
+            ? driveFieldOrientedAnglularVelocity
+            : driveFieldOrientedDirectAngleSim);
 
     // Manual Arm Control on test controller
     // X-> Rotation
