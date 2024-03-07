@@ -179,7 +179,8 @@ public class RobotContainer {
     m_xboxController
         .x()
         .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false));
+            new DriveToPoseTrajPIDCommand(
+                m_drivebase, () -> m_presetStorage.get().getPose(), false));
 
     // ---------------------------------------- Y
     //                                          Eject
@@ -321,14 +322,14 @@ public class RobotContainer {
               Pose2d presetPose = m_presetStorage.get().getPose();
 
               return (RobotConstants.kAutoSpinRadius
-                  > Math.hypot(
-                      presetPose.getX() - currentPose.getX(),
-                      presetPose.getY() - currentPose.getY()));
+                      > Math.hypot(
+                          presetPose.getX() - currentPose.getX(),
+                          presetPose.getY() - currentPose.getY()));
             });
-
+        
     autoSpinRadiusTrigger = autoSpinRadiusTrigger.debounce(1);
 
-    autoSpinRadiusTrigger.onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
+    autoSpinRadiusTrigger.and(() -> m_intake.isFull()).onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
     autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
   }
 
