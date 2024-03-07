@@ -24,7 +24,8 @@ public class LEDConstants {
     AMPLIFICATION,
     BLUE_ALLIANCE,
     RED_ALLIANCE,
-    OFF
+    OFF, IMB, CLIMB
+ 
   }
 
   public static enum LedAmbienceMode {
