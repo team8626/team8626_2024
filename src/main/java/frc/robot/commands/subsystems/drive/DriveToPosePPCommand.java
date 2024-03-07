@@ -27,7 +27,7 @@ public class DriveToPosePPCommand extends ParallelCommandGroup {
     setName("Drive To Pose Path Planner Command");
     addCommands(
         new SequentialCommandGroup(
-            new InstantCommand(() -> drive.currentDTP = desiredPose.get()),
-            drive.driveToPose(drive.currentDTP)));
+            new InstantCommand(() -> drive.setCurrentDTP(desiredPose.get())),
+            drive.driveToPose(drive.getCurrentDTP())));
   }
 }

@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public double maximumSpeed = Units.feetToMeters(14.5);
 
   /** Vision Suppport - Team 8626 */
-  public Pose2d currentDTP = new Pose2d();
+  private Pose2d currentDTP = new Pose2d();
 
   private Vision m_vision = new Vision(this);
   /** Publisher for robot pose (AdvantageScope) */
@@ -534,6 +534,14 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public void addFakeVisionReading() {
     swerveDrive.addVisionMeasurement(
         new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+  public void setCurrentDTP(Pose2d newDTP) {
+    currentDTP = newDTP;
+  }
+
+  public Pose2d getCurrentDTP() {
+    return currentDTP;
   }
 
   @Override
