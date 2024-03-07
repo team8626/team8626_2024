@@ -179,7 +179,8 @@ public class RobotContainer {
     m_xboxController
         .x()
         .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false));
+            new DriveToPoseTrajPIDCommand(
+                m_drivebase, () -> m_presetStorage.get().getPose(), false));
 
     // ---------------------------------------- Y
     //                                          Eject
