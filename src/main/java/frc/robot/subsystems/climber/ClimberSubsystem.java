@@ -20,6 +20,8 @@ public class ClimberSubsystem extends SubsystemBase implements ImplementDashboar
 
   private boolean m_enabled = false;
 
+  private boolean m_isClimberActive = false;
+
   /** Creates a new ArmExtensionSubsystem. */
   public ClimberSubsystem() {
     // Reset & Initialize Controllers
@@ -44,6 +46,14 @@ public class ClimberSubsystem extends SubsystemBase implements ImplementDashboar
       m_enabled = false;
     }
     m_motorLeft.set(VictorSPXControlMode.PercentOutput, newPower);
+  }
+
+  public void toggleClimberActive() {
+    m_isClimberActive = !m_isClimberActive;
+  }
+
+  public boolean isClimberActive() {
+    return m_isClimberActive;
   }
 
   @Override

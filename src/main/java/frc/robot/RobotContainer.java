@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.RotateThenDriveToNote;
@@ -35,6 +36,7 @@ import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
+import frc.robot.subsystems.LEDs.LEDConstants;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
@@ -48,6 +50,7 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
 
@@ -220,18 +223,23 @@ public class RobotContainer {
                 () -> m_shooter.start(m_presetStorage.get()), () -> m_shooter.stop()));
 
     // ---------------------------------------- Climb
+    BooleanSupplier isClimberActive = () -> m_climber.isClimberActive();
+
     m_testController
         .leftTrigger()
+        .and(isClimberActive)
         .whileTrue(new InstantCommand(() -> m_climber.setPower(-1.0)))
         .onFalse(new InstantCommand(() -> m_climber.setPower(0)));
 
     m_testController
         .rightTrigger()
+        .and(isClimberActive)
         .whileTrue(new InstantCommand(() -> m_climber.setPower(1.0)))
         .onFalse(new InstantCommand(() -> m_climber.setPower(0)));
 
     m_testController
         .povUp()
+        .and(isClimberActive)
         .toggleOnTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbPreset)
                 .alongWith(
@@ -240,6 +248,7 @@ public class RobotContainer {
 
     m_testController
         .povLeft()
+        .and(isClimberActive)
         .onTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbReady)
                 .alongWith(
@@ -248,6 +257,7 @@ public class RobotContainer {
 
     m_testController
         .povDown()
+        .and(isClimberActive)
         .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbEnd));
 
     // ---------------------------------------- BUTTON BOX ------------------------------
@@ -297,8 +307,20 @@ public class RobotContainer {
     m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // ---------------------------------------- BUTTON 8
-    //                                          Rotate to NOTE
-    m_buttonBox.button_8().toggleOnTrue(new RotateToNoteCommand(m_drivebase));
+    //                                          Enable Climbing Controls
+    m_buttonBox.button_8().onTrue(new StartEndCommand(
+        () -> {
+            m_climber.toggleClimberActive();
+            LEDSubsystem.setMode(LEDConstants.LedMode.CLIMB);
+            LEDSubsystem.setAmbienceMode(LEDConstants.LedAmbienceMode.RAINBOW);
+        },
+        () -> {
+            m_climber.toggleClimberActive();
+            LEDSubsystem.setMode(LEDConstants.LedMode.DEFAULT);
+            LEDSubsystem.setAmbienceMode(LEDConstants.LedAmbienceMode.OFF);
+    }));
+
+ 
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
@@ -428,6 +450,10 @@ public class RobotContainer {
     rotationSpeedFactor = isSlowDrive ? 1 : Constants.OperatorConstants.kSlowRotationSpeedFactor;
 
     isSlowDrive = !isSlowDrive;
+  }
+
+  public void toggleClimberActive() {
+
   }
 
   public Command getAutonomousCommand() {

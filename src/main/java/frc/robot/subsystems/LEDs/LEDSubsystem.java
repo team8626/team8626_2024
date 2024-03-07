@@ -141,6 +141,9 @@ public class LEDSubsystem extends SubsystemBase {
         blink(LEDConstants.kSectionMain, Color.kLime, .25);
         break;
 
+      case CLIMB:
+        blink(LEDConstants.kSectionMain, m_currentColor[0], .75);
+
       case DEFAULT:
       default:
         wave(LEDConstants.kSectionMain, m_currentColor[0], m_currentColor[1], 25, 2.0);
