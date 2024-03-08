@@ -33,10 +33,9 @@ public class Presets {
         4700,
         new Pose2d(
             1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
-    kShootPodium(
-        "PODIUM BLUE", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
+    kShootPodium("PODIUM", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
-        "STAGE BLUE", 163.5, 0, 4500, 5400, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.54))),
+        "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5))),
     kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 
     private double m_rot;
