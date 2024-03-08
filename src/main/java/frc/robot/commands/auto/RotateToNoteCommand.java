@@ -94,7 +94,8 @@ public class RotateToNoteCommand extends Command {
       double currentNoteYaw = Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw());
       // SmartDashboard.putNumber("Commands/RotateToNoteCommand/Yaw of Note", currentNoteYaw);
       m_drive.drive(new ChassisSpeeds(0, 0, m_rotPID.calculate(currentNoteYaw, 0)));
-      // SmartDashboard.putNumber("Commands/RotateToNoteCommand/Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
+      // SmartDashboard.putNumber("Commands/RotateToNoteCommand/Degree Error",
+      // Math.toDegrees(m_rotPID.getPositionError()));
     } catch (NullPointerException e) {
       System.out.println();
     }
