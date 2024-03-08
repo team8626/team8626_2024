@@ -46,9 +46,9 @@ public class DriveToNoteCommand extends Command {
 
     LEDSubsystem.setMode((LedMode.FOLLOWNOTE));
 
-    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation P Value", m_rotPValue);
-    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation I Value", m_rotIValue);
-    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation D Value", m_rotDValue);
+    // SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation P Value", m_rotPValue);
+    // SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation I Value", m_rotIValue);
+    // SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation D Value", m_rotDValue);
 
     m_rotPID.setConstraints(
         new TrapezoidProfile.Constraints(
