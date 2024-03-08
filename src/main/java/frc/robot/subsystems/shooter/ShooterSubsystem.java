@@ -32,10 +32,10 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private RelativeEncoder m_encoder_Bottom;
   private RelativeEncoder m_encoder_Top;
 
-  private double m_desiredRPM_Bottom = Preset.kShootSubwoofer.getBottomRPM();
-  private double m_desiredRPM_Top = Preset.kShootSubwoofer.getTopRPM();
-  private double m_currentRPM_Bottom = 0;
-  private double m_currentRPM_Top = 0;
+  private int m_desiredRPM_Bottom = Preset.kShootSubwoofer.getBottomRPM();
+  private int m_desiredRPM_Top = Preset.kShootSubwoofer.getTopRPM();
+  private int m_currentRPM_Bottom = 0;
+  private int m_currentRPM_Top = 0;
 
   private boolean m_enabled = false;
   private boolean m_isAtSpeed = false;
@@ -123,18 +123,21 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
   public void setRPM(Preset newPreset) {
     setRPM(newPreset.getBottomRPM(), newPreset.getTopRPM());
-    ;
+    System.out.printf(
+        "[SHOOTER] New Speed %d/%d\n", newPreset.getTopRPM(), newPreset.getBottomRPM());
   }
 
-  public void setRPM(double speed_Bottom, double speed_Top) {
+  public void setRPM(int speed_Bottom, int speed_Top) {
     m_desiredRPM_Bottom = speed_Bottom;
     m_desiredRPM_Top = speed_Top;
+
+    System.out.printf("[SHOOTER] RPM Set %d/%d\n", m_desiredRPM_Top, m_desiredRPM_Bottom);
 
     // Force Dashboard Update
     initDashboard();
   }
 
-  public void setRPM(double speed) {
+  public void setRPM(int speed) {
     m_desiredRPM_Bottom = speed;
     m_desiredRPM_Top = speed;
 
@@ -185,7 +188,7 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   }
   ;
 
-  public Command setRPMCommand(double bottomRPM, double topRPM) {
+  public Command setRPMCommand(int bottomRPM, int topRPM) {
     return new InstantCommand(
         () -> {
           setRPM(bottomRPM, topRPM);
@@ -209,8 +212,8 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
         m_pidController_Bottom.setReference(0, CANSparkMax.ControlType.kDutyCycle);
         m_pidController_Top.setReference(0, CANSparkMax.ControlType.kDutyCycle);
       }
-      m_currentRPM_Bottom = m_encoder_Bottom.getVelocity();
-      m_currentRPM_Top = m_encoder_Top.getVelocity();
+      m_currentRPM_Bottom = (int) m_encoder_Bottom.getVelocity();
+      m_currentRPM_Top = (int) m_encoder_Top.getVelocity();
 
     } else if (Robot.isSimulation()) {
       if (m_enabled) {
@@ -247,65 +250,68 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
   @Override
   public void updateDashboard() {
-    double newRPM_Bottom =
-        SmartDashboard.getNumber("Shooter/DesiredRPM_Bottom", m_desiredRPM_Bottom);
-    double newRPM_Top = SmartDashboard.getNumber("Shooter/DesiredRPM_Top", m_desiredRPM_Top);
+    // TODO: Removed, was preventing update of RPM
+    //
 
-    if (newRPM_Bottom != m_desiredRPM_Bottom) {
-      m_desiredRPM_Bottom = newRPM_Bottom;
-    }
-    if (newRPM_Top != m_desiredRPM_Top) {
-      m_desiredRPM_Top = newRPM_Top;
-    }
+    // int newRPM_Bottom =
+    //     (int) SmartDashboard.getNumber("Shooter/DesiredRPM_Bottom", m_desiredRPM_Bottom);
+    // int newRPM_Top = (int) SmartDashboard.getNumber("Shooter/DesiredRPM_Top", m_desiredRPM_Top);
 
-    double p_top = SmartDashboard.getNumber("Shooter/P Gain Top", m_kP_top);
-    double i_top = SmartDashboard.getNumber("Shooter/I Gain Top", m_kI_top);
-    double d_top = SmartDashboard.getNumber("Shooter/D Gain Top", m_kD_top);
-    double ff_top = SmartDashboard.getNumber("Shooter/Feed Forward Top", m_kFF_top);
-    double p_bottom = SmartDashboard.getNumber("Shooter/P Gain Bottom", m_kP_bottom);
-    double i_bottom = SmartDashboard.getNumber("Shooter/I Gain Bottom", m_kI_bottom);
-    double d_bottom = SmartDashboard.getNumber("Shooter/D Gain Bottom", m_kD_bottom);
-    double ff_bottom = SmartDashboard.getNumber("Shooter/Feed Forward Bottom", m_kFF_bottom);
+    // if (newRPM_Bottom != m_desiredRPM_Bottom) {
+    //   m_desiredRPM_Bottom = newRPM_Bottom;
+    // }
+    // if (newRPM_Top != m_desiredRPM_Top) {
+    //   m_desiredRPM_Top = newRPM_Top;
+    // }
+
+    // double p_top = SmartDashboard.getNumber("Shooter/P Gain Top", m_kP_top);
+    // double i_top = SmartDashboard.getNumber("Shooter/I Gain Top", m_kI_top);
+    // double d_top = SmartDashboard.getNumber("Shooter/D Gain Top", m_kD_top);
+    // double ff_top = SmartDashboard.getNumber("Shooter/Feed Forward Top", m_kFF_top);
+    // double p_bottom = SmartDashboard.getNumber("Shooter/P Gain Bottom", m_kP_bottom);
+    // double i_bottom = SmartDashboard.getNumber("Shooter/I Gain Bottom", m_kI_bottom);
+    // double d_bottom = SmartDashboard.getNumber("Shooter/D Gain Bottom", m_kD_bottom);
+    // double ff_bottom = SmartDashboard.getNumber("Shooter/Feed Forward Bottom", m_kFF_bottom);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
-    if ((p_top != m_kP_top)) {
-      System.out.printf("[SHOOTER] Updating Top P to %f, was %f\n", m_kP_top, p_top);
+    // if ((p_top != m_kP_top)) {
+    //   System.out.printf("[SHOOTER] Updating Top P to %f, was %f\n", m_kP_top, p_top);
 
-      m_pidController_Top.setP(p_top);
-      m_kP_top = p_top;
-    }
-    if ((i_top != m_kI_top)) {
-      System.out.printf("[SHOOTER] Updating Top I to %f, was %f\n", m_kI_top, i_top);
-      m_pidController_Top.setI(i_top);
-      m_kI_top = i_top;
-    }
-    if ((d_top != m_kD_top)) {
-      m_pidController_Top.setD(d_top);
-      m_kD_top = d_top;
-    }
-    if ((ff_top != m_kFF_top)) {
-      m_pidController_Top.setFF(ff_top);
-      m_kFF_top = ff_top;
-    }
+    //   m_pidController_Top.setP(p_top);
+    //   m_kP_top = p_top;
+    // }
+    // if ((i_top != m_kI_top)) {
+    //   System.out.printf("[SHOOTER] Updating Top I to %f, was %f\n", m_kI_top, i_top);
+    //   m_pidController_Top.setI(i_top);
+    //   m_kI_top = i_top;
+    // }
+    // if ((d_top != m_kD_top)) {
+    //   m_pidController_Top.setD(d_top);
+    //   m_kD_top = d_top;
+    // }
+    // if ((ff_top != m_kFF_top)) {
+    //   m_pidController_Top.setFF(ff_top);
+    //   m_kFF_top = ff_top;
+    // }
 
-    if ((p_bottom != m_kP_bottom)) {
-      m_pidController_Bottom.setP(p_bottom);
-      m_kP_bottom = p_bottom;
-    }
-    if ((i_bottom != m_kI_bottom)) {
-      m_pidController_Bottom.setI(i_bottom);
-      m_kI_bottom = i_bottom;
-    }
+    // if ((p_bottom != m_kP_bottom)) {
+    //   m_pidController_Bottom.setP(p_bottom);
+    //   m_kP_bottom = p_bottom;
+    // }
+    // if ((i_bottom != m_kI_bottom)) {
+    //   m_pidController_Bottom.setI(i_bottom);
+    //   m_kI_bottom = i_bottom;
+    // }
 
-    if ((d_bottom != m_kD_bottom)) {
-      m_pidController_Bottom.setD(d_bottom);
-      m_kD_bottom = d_bottom;
-    }
+    // if ((d_bottom != m_kD_bottom)) {
+    //   m_pidController_Bottom.setD(d_bottom);
+    //   m_kD_bottom = d_bottom;
+    // }
 
-    if ((ff_bottom != m_kFF_bottom)) {
-      m_pidController_Bottom.setFF(ff_bottom);
-      m_kFF_bottom = ff_bottom;
-    }
+    // if ((ff_bottom != m_kFF_bottom)) {
+    //   m_pidController_Bottom.setFF(ff_bottom);
+    //   m_kFF_bottom = ff_bottom;
+    // }
 
     SmartDashboard.putString("Shooter/Status", m_status.getString());
     SmartDashboard.putBoolean("Shooter/ENABLED", m_enabled);
