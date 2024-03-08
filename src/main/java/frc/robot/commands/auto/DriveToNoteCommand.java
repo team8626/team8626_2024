@@ -12,17 +12,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import org.photonvision.PhotonCamera;
 
 public class DriveToNoteCommand extends Command {
 
   private final SwerveSubsystem m_drive;
-  private final IntakeSubsystem m_Intake;
+  private final IntakeSubsystem m_intake;
 
-  private double m_rotPValue = 0.0555;
-  private double m_rotIValue = 0;
-  private double m_rotDValue = 0;
+  private double m_rotPValue = 3.125;
+  private double m_rotIValue = 1.15;
+  private double m_rotDValue = 0.2;
+  private double m_integratorRangeValue = 5;
 
   private final ProfiledPIDController m_rotPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
@@ -31,11 +33,11 @@ public class DriveToNoteCommand extends Command {
 
   public DriveToNoteCommand(SwerveSubsystem drive, IntakeSubsystem intake) {
     m_drive = drive;
-    m_Intake = intake;
+    m_intake = intake;
 
     addRequirements(m_drive);
 
-    setName("Drive To NOTE PID Command");
+    setName("DriveToNoteCommand");
   }
 
   // Called when the command is initially scheduled.
@@ -44,24 +46,23 @@ public class DriveToNoteCommand extends Command {
 
     LEDSubsystem.setMode((LedMode.FOLLOWNOTE));
 
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation P Value", m_rotPValue);
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation I Value", m_rotIValue);
-    SmartDashboard.putNumber("Commands/rotateToNote/Drive Rotation D Value", m_rotDValue);
-
-    double rotationMaxVelocity = Math.PI;
-    double rotationMaxAcceleration = Math.PI * 2;
+    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation P Value", m_rotPValue);
+    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation I Value", m_rotIValue);
+    SmartDashboard.putNumber("Commands/DriveToNoteCommand/Drive Rotation D Value", m_rotDValue);
 
     m_rotPID.setConstraints(
         new TrapezoidProfile.Constraints(
-            Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
+            Constants.Auton.kMaxAngularSpeedRadiansPerSecond * 4,
+            Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared * 4));
 
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
+    m_rotPID.setIZone(m_integratorRangeValue);
 
-    m_rotPID.setTolerance(0, 0);
+    m_rotPID.setTolerance(Math.toRadians(0.5), Math.toRadians(0.2));
     try {
-      m_rotPID.reset(m_ODCamera.getLatestResult().getBestTarget().getYaw());
+      m_rotPID.reset(Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw()));
     } catch (NullPointerException e) {
-      System.out.println();
+      System.out.println(e);
     }
     ;
   }
@@ -69,12 +70,6 @@ public class DriveToNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    m_rotPValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation P Value", 0.055);
-    m_rotIValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation I Value", 0);
-    m_rotDValue = SmartDashboard.getNumber("Commands/driveToNote/Drive Rotation D Value", 0);
-
-    m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
 
     try {
       double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
@@ -95,8 +90,7 @@ public class DriveToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
     // return m_rotPID.atSetpoint() || !m_ODCamera.getLatestResult().hasTargets();
-    return !m_Intake.isEmpty();
+    return !m_intake.isEmpty();
   }
 }

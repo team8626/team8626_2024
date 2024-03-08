@@ -7,7 +7,6 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
@@ -34,22 +33,25 @@ public class RotateToNoteCommand extends Command {
 
     addRequirements(m_drive);
 
-    SmartDashboard.putNumber(
-        "Commands/rotateToNote/Drive Rotation P Value",
-        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation P Value", m_rotPValue));
-    SmartDashboard.putNumber(
-        "Commands/rotateToNote/Drive Rotation I Value",
-        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation I Value", m_rotPValue));
-    SmartDashboard.putNumber(
-        "Commands/rotateToNote/Drive Rotation D Value",
-        SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation D Value", m_rotPValue));
+    // SmartDashboard.putNumber(
+    //     "Commands/RotateToNoteCommand/Drive Rotation P Value",
+    //     SmartDashboard.getNumber(
+    //         "Commands/RotateToNoteCommand/Drive Rotation P Value", m_rotPValue));
+    // SmartDashboard.putNumber(
+    //     "Commands/RotateToNoteCommand/Drive Rotation I Value",
+    //     SmartDashboard.getNumber(
+    //         "Commands/RotateToNoteCommand/Drive Rotation I Value", m_rotPValue));
+    // SmartDashboard.putNumber(
+    //     "Commands/RotateToNoteCommand/Drive Rotation D Value",
+    //     SmartDashboard.getNumber(
+    //         "Commands/RotateToNoteCommand/Drive Rotation D Value", m_rotPValue));
 
-    SmartDashboard.putNumber(
-        "Commands/rotateToNote/Integrator Range Value",
-        SmartDashboard.getNumber(
-            "Commands/rotateToNote/Integrator Range Value", m_integratorRangeValue));
+    // SmartDashboard.putNumber(
+    //     "Commands/RotateToNoteCommand/Integrator Range Value",
+    //     SmartDashboard.getNumber(
+    //         "Commands/RotateToNoteCommand/Integrator Range Value", m_integratorRangeValue));
 
-    setName("Drive To NOTE PID Command");
+    setName("RotateToNoteCommand");
   }
 
   // Called when the command is initially scheduled.
@@ -58,11 +60,14 @@ public class RotateToNoteCommand extends Command {
 
     LEDSubsystem.setMode((LedMode.FOLLOWNOTE));
 
-    m_rotPValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation P Value", 0);
-    m_rotIValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation I Value", 0);
-    m_rotDValue = SmartDashboard.getNumber("Commands/rotateToNote/Drive Rotation D Value", 0);
-    m_integratorRangeValue =
-        SmartDashboard.getNumber("Commands/rotateToNote/Integrator Range Value", 0);
+    // m_rotPValue =
+    //     SmartDashboard.getNumber("Commands/RotateToNoteCommand/Drive Rotation P Value", 0);
+    // m_rotIValue =
+    //     SmartDashboard.getNumber("Commands/RotateToNoteCommand/Drive Rotation I Value", 0);
+    // m_rotDValue =
+    //     SmartDashboard.getNumber("Commands/RotateToNoteCommand/Drive Rotation D Value", 0);
+    // m_integratorRangeValue =
+    //     SmartDashboard.getNumber("Commands/RotateToNoteCommand/Integrator Range Value", 0);
 
     m_rotPID.setConstraints(
         new TrapezoidProfile.Constraints(
@@ -87,10 +92,9 @@ public class RotateToNoteCommand extends Command {
 
     try {
       double currentNoteYaw = Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw());
-      SmartDashboard.putNumber("Yaw of Note", currentNoteYaw);
+      // SmartDashboard.putNumber("Commands/RotateToNoteCommand/Yaw of Note", currentNoteYaw);
       m_drive.drive(new ChassisSpeeds(0, 0, m_rotPID.calculate(currentNoteYaw, 0)));
-      SmartDashboard.putNumber(
-          "Commands/rotateToNote/Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
+      // SmartDashboard.putNumber("Commands/RotateToNoteCommand/Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
     } catch (NullPointerException e) {
       System.out.println();
     }
@@ -106,8 +110,6 @@ public class RotateToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    // return m_rotPID.atSetpoint();
-    return false;
+    return m_rotPID.atSetpoint();
   }
 }
