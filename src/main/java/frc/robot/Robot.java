@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -40,7 +42,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-
     m_autonomousCommand =
         // Force intake and adjust preloaded NOTE
         new IntakeCommand(m_robotContainer.m_intake)
@@ -62,6 +63,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    // The origin is always blue. When our alliance is red, X and Y need to be inverted
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+      m_robotContainer.invert = -1;
+    } else {
+      m_robotContainer.invert = 1;
+    }
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

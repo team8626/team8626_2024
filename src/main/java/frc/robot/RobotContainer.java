@@ -8,8 +8,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -81,6 +79,7 @@ public class RobotContainer {
   private boolean isSlowDrive = false;
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
+  public int invert;
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
@@ -336,17 +335,6 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-
-    // The origin is always blue. When our alliance is red, X and Y need to be inverted
-    var alliance = DriverStation.getAlliance();
-    final int invert;
-
-    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-      invert = -1;
-    } else {
-      invert = 1;
-    }
-
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =
     //     new AbsoluteDriveAdv(
     //         m_drivebase,
