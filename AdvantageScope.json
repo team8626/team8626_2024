@@ -1,0 +1,62 @@
+{
+  "version": "3.0.2",
+  "layout": [
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        }
+      },
+      "title": "Line Graph"
+    },
+    {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Robot",
+            "key": "NT:/SmartDashboard/Field/Robot",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
+          },
+          {
+            "type": "Ghost",
+            "key": "NT:SmartDashboard/Preset/Pose2d",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
+          }
+        ]
+      ],
+      "options": {
+        "game": "2024 Field",
+        "unitDistance": "meters",
+        "unitRotation": "degrees",
+        "origin": "right",
+        "size": 0.75,
+        "allianceBumpers": "auto",
+        "allianceOrigin": "blue",
+        "orientation": "blue left, red right"
+      },
+      "configHidden": false,
+      "title": "Odometry"
+    }
+  ]
+}
