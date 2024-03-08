@@ -20,8 +20,8 @@ public class ShooterCommand extends Command {
 
   private IntakeSubsystem m_intake;
 
-  private double m_speedTop;
-  private double m_speedBottom;
+  private int m_speedTop;
+  private int m_speedBottom;
 
   private Timer m_timer = new Timer();
 

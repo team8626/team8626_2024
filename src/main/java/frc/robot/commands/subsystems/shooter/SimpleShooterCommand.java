@@ -14,8 +14,8 @@ public class SimpleShooterCommand extends Command {
   /** Creates a new SimpleShooterCommand. */
   private ShooterSubsystem m_shooter;
 
-  private double m_speedTop;
-  private double m_speedBottom;
+  private int m_speedTop;
+  private int m_speedBottom;
 
   public SimpleShooterCommand(Preset preset, ShooterSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
