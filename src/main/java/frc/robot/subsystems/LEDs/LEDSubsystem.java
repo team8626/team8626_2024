@@ -133,6 +133,10 @@ public class LEDSubsystem extends SubsystemBase {
         flow(LEDConstants.kSectionMain, m_currentColor[0], 0.5);
         break;
 
+      case DRIVETOPOSE:
+        rainbow(LEDConstants.kSectionMain, 25, 2.0);
+        break;
+
       case FOLLOWNOTE:
         flow(LEDConstants.kSectionMain, Color.kOrange, 1);
         break;

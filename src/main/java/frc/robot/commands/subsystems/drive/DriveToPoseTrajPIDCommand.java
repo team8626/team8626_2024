@@ -7,6 +7,8 @@ package frc.robot.commands.subsystems.drive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
+import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.Supplier;
 
@@ -19,8 +21,10 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
       SwerveSubsystem drive, Supplier<Pose2d> desiredPose, boolean lockPose) {
 
     addCommands(
+        new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
         new TurnToAngleCommand(drive, desiredPose, true),
+        new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 
     setName("Drive To Pose Trajectory and PID Command");
@@ -29,8 +33,10 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
   public DriveToPoseTrajPIDCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean lockPose) {
 
     addCommands(
+        new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
         new TurnToAngleCommand(drive, () -> desiredPose, true),
+        new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 
     setName("Drive To Pose Trajectory and PID Command");

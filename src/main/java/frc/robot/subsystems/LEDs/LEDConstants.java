@@ -1,7 +1,7 @@
 package frc.robot.subsystems.LEDs;
 
 public class LEDConstants {
-  public static final int kLEDStripLength = 131;
+  public static final int kLEDStripLength = 141;
   public static final int kLEDPort = 9;
 
   // public static final int[][] kErrorLightIndex = {
@@ -11,7 +11,7 @@ public class LEDConstants {
   record LEDSection(int startId, int endId) {}
 
   public static final LEDSection kSectionMain = new LEDSection(0, 74);
-  public static final LEDSection kSectionAmbience = new LEDSection(75, 130);
+  public static final LEDSection kSectionAmbience = new LEDSection(75, 140);
 
   public static enum LedMode {
     NOT_CONNECTED,
@@ -20,6 +20,7 @@ public class LEDConstants {
     PRESHOOTING,
     SHOOTING,
     FOLLOWNOTE,
+    DRIVETOPOSE,
     INTAKING,
     AMPLIFICATION,
     BLUE_ALLIANCE,
