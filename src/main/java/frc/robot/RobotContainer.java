@@ -462,6 +462,8 @@ public class RobotContainer {
       case TRAJECTORY_DTP:
         return new DriveToPoseTrajPIDCommand(
             m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
+      case SHOOT_IN_PLACE:
+        return new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
       case TRAJECTORY:
         return m_autoChooser.getSelected();
     }
