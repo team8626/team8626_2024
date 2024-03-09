@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.7,
-      "y": 6.514967325362892
+      "y": 6.7
     },
     "rotation": 60.0
   },
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Speaker1 to Centerline Destruction"
+            "pathName": "Speaker1 Pirate"
           }
         },
         {
