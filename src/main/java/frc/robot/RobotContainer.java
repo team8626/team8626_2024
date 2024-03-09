@@ -46,7 +46,7 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
-import java.util.HashMap;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class RobotContainer {
@@ -178,12 +178,9 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
-    Supplier<Command> m_presetDTPSupplier = () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
-    m_xboxController
-        .x()
-        .toggleOnTrue(
-            new DeferredCommand(m_presetDTPSupplier, null));
-
+    Supplier<Command> m_presetDTPSupplier =
+        () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
 
     // ---------------------------------------- Y
     //                                          Eject
