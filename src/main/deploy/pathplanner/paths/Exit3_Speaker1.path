@@ -3,29 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 4.1
+        "x": 0.7,
+        "y": 4.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8050199202250259,
-        "y": 2.8634553241328704
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.75,
-        "y": 4.35
-      },
-      "prevControl": {
-        "x": 1.1730888788725728,
-        "y": 3.608423485349258
-      },
-      "nextControl": {
-        "x": 0.60355518396222,
-        "y": 4.60668374114526
+        "x": 1.105019920225026,
+        "y": 3.163455324132871
       },
       "isLocked": false,
       "linkedName": null
@@ -46,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 120.0,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -60.0,
       "rotateFast": true
     }
   ],
@@ -56,29 +40,6 @@
     {
       "name": "Event1",
       "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 3.0
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "SetupForSpeaker"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Event2",
-      "waypointRelativePos": 1.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -90,13 +51,13 @@
                   {
                     "type": "wait",
                     "data": {
-                      "waitTime": 3.0
+                      "waitTime": 5.0
                     }
                   },
                   {
                     "type": "named",
                     "data": {
-                      "name": "AutoShooter"
+                      "name": "Speaker"
                     }
                   }
                 ]
@@ -116,8 +77,8 @@
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 180.0
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -127,7 +88,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -179.9425714830433,
+    "rotation": 122.47406390643518,
     "velocity": 0
   },
   "useDefaultConstraints": true
