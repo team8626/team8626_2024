@@ -129,8 +129,11 @@ public class LEDSubsystem extends SubsystemBase {
         break;
 
       case INTAKING:
+        flow(LEDConstants.kSectionMain, Color.kPurple, 0.5);
+        break;
+
       case SHOOTING:
-        flow(LEDConstants.kSectionMain, m_currentColor[0], 0.5);
+        flow(LEDConstants.kSectionMain, Color.kGreen, 0.5);
         break;
 
       case DRIVETOPOSE:
