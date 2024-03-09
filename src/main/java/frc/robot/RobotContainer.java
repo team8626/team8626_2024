@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -46,6 +47,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -175,33 +177,13 @@ public class RobotContainer {
 
     // ---------------------------------------- X
     //                                          Drive to Pose
-    // m_xboxController
-    //     .x()
-    //     .toggleOnTrue(
-    //         new DriveToPoseTrajPIDCommand(
-    //             m_drivebase, () -> m_presetStorage.get().getPose(), false));
 
-    HashMap<String, Command> m_map = new HashMap<String, Command>();
+    Supplier<Command> m_presetDTPSupplier = () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new DeferredCommand(m_presetDTPSupplier, null));
 
-    m_map.put("START", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStart.getPose(), false));
-    m_map.put("STOW", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "FLOOR PICKUP", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "CLIMB PRESET", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "CLIMB READY", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "CLIMB FINISH", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put("AMP", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "SUBWOOFER", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put("PODIUM", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put("STAGE", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-    m_map.put(
-        "LONG PASS", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
-
-    m_xboxController.x().toggleOnTrue(m_map.get(m_presetStorage.get().getString()));
 
     // ---------------------------------------- Y
     //                                          Eject
