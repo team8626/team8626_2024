@@ -29,8 +29,8 @@ public class Presets {
         "SUBWOOFER",
         201,
         0,
-        2200,
-        4700,
+        3000,
+        5000,
         new Pose2d(
             1.3, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
     kShootPodium("PODIUM", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
