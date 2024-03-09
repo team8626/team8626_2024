@@ -77,7 +77,7 @@ public class RotateToNoteCommand extends Command {
     m_rotPID.setPID(m_rotPValue, m_rotIValue, m_rotDValue);
     m_rotPID.setIZone(m_integratorRangeValue);
 
-    m_rotPID.setTolerance(Math.toRadians(0.5), Math.toRadians(0.2));
+    m_rotPID.setTolerance(Math.toRadians(2), Math.toRadians(0.2));
     try {
       m_rotPID.reset(Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw()));
     } catch (NullPointerException e) {

@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6224950104794882,
+      "y": 4.5288255167588405
+    },
+    "rotation": -58.96606865231939
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centerline 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centerline 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForStage"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

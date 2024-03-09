@@ -71,7 +71,7 @@ public class DriveToNoteCommand extends Command {
   public void execute() {
 
     try {
-      double currentNoteYaw = m_ODCamera.getLatestResult().getBestTarget().getYaw();
+      double currentNoteYaw = Math.toRadians(m_ODCamera.getLatestResult().getBestTarget().getYaw());
       m_drive.drive(new ChassisSpeeds(3, 0, m_rotPID.calculate(currentNoteYaw, 0)));
     } catch (NullPointerException e) {
       System.out.println();
