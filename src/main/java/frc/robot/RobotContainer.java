@@ -24,7 +24,6 @@ import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
-import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
@@ -431,8 +430,8 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+        return new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
 
       case PRINT:
         return Commands.print("Print Auto Command");
