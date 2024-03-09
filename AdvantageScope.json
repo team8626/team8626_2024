@@ -27,7 +27,7 @@
       "title": "Line Graph"
     },
     {
-      "type": 5,
+      "type": 6,
       "fields": [],
       "listFields": [
         [
@@ -36,12 +36,57 @@
             "key": "NT:/SmartDashboard/Field/Robot",
             "sourceTypeIndex": 0,
             "sourceType": 5
-          },
+          }
+        ],
+        [
+          {
+            "type": "Yellow Ghost",
+            "key": "NT:SmartDashboard/Preset/Pose2d",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
+          }
+        ]
+      ],
+      "options": {
+        "field": "2024 Field",
+        "alliance": "blue",
+        "robot": "2024 KitBot",
+        "unitDistance": "meters",
+        "unitRotation": "degrees",
+        "cameraIndex": -1,
+        "fov": 50
+      },
+      "configHidden": false,
+      "title": "3D Field"
+    },
+    {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
           {
             "type": "Ghost",
             "key": "NT:SmartDashboard/Preset/Pose2d",
             "sourceTypeIndex": 1,
             "sourceType": "Pose2d"
+          },
+          {
+            "type": "Robot",
+            "key": "NT:/SmartDashboard/Field/Robot",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
+          },
+          {
+            "type": "Arrow (Center)",
+            "key": "NT:/SmartDashboard/Field/XModules",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
+          },
+          {
+            "type": "Trajectory",
+            "key": "NT:/PathPlanner/activePath",
+            "sourceTypeIndex": 0,
+            "sourceType": 5
           }
         ]
       ],
@@ -57,6 +102,73 @@
       },
       "configHidden": false,
       "title": "Odometry"
+    },
+    {
+      "type": 4,
+      "fields": [
+        null,
+        null,
+        null
+      ],
+      "selectionType": "full",
+      "selectionRangeMin": 0,
+      "selectionRangeMax": 10,
+      "measurementType": "independent",
+      "measurementSampling": "fixed",
+      "measurementSamplingPeriod": 20,
+      "histogramMin": 0,
+      "histogramMax": 10,
+      "histogramStep": 1,
+      "title": "Statistics"
+    },
+    {
+      "type": 10,
+      "fields": [
+        null,
+        null,
+        null
+      ],
+      "listFields": [],
+      "options": {},
+      "configHidden": false,
+      "title": "Mechanism"
+    },
+    {
+      "type": 2,
+      "fields": [],
+      "title": "Table"
+    },
+    {
+      "type": 7,
+      "fields": [],
+      "listFields": [],
+      "options": {},
+      "configHidden": false,
+      "title": "Video"
+    },
+    {
+      "type": 3,
+      "field": null,
+      "title": "Console"
+    },
+    {
+      "type": 9,
+      "fields": [
+        null,
+        null,
+        null
+      ],
+      "listFields": [],
+      "options": {
+        "maxSpeed": 4.5,
+        "rotationUnits": "radians",
+        "arrangement": "0,1,2,3",
+        "sizeLeftRight": 0.65,
+        "sizeFrontBack": 0.65,
+        "forwardDirection": "up"
+      },
+      "configHidden": false,
+      "title": "Swerve"
     }
   ]
 }

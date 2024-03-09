@@ -34,6 +34,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -62,7 +63,7 @@ public class Vision implements ImplementDashboard {
   SwerveSubsystem drive;
 
   StructPublisher<Pose2d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("NotePose", Pose2d.struct).publish();
+      NetworkTableInstance.getDefault().getStructTopic("tag", Pose2d.struct).publish();
 
   // Simulation
   private PhotonCameraSim cameraSim;
@@ -200,7 +201,8 @@ public class Vision implements ImplementDashboard {
   public void initDashboard() {}
 
   @Override
-  public void updateDashboard() {}
+  public void updateDashboard() {
+  }
 
   @Override
   public DashboardUses getDashboardUses() {
