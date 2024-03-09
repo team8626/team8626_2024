@@ -22,22 +22,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutoIntake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SetupForSpeaker"
-                      }
-                    }
-                  ]
+                  "name": "AutoIntake"
                 }
               },
               {
@@ -52,6 +39,12 @@
         {
           "type": "named",
           "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootForSpeaker"
           }
         },
@@ -60,22 +53,9 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutoIntake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SetupForSpeaker"
-                      }
-                    }
-                  ]
+                  "name": "AutoIntake"
                 }
               },
               {
@@ -85,6 +65,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetupForStage"
           }
         },
         {
