@@ -27,6 +27,7 @@ import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
+import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
