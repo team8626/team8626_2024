@@ -46,6 +46,7 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
+import java.util.HashMap;
 
 public class RobotContainer {
 
@@ -175,11 +176,33 @@ public class RobotContainer {
 
     // ---------------------------------------- X
     //                                          Drive to Pose
-    m_xboxController
-        .x()
-        .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(
-                m_drivebase, () -> m_presetStorage.get().getPose(), false));
+    // m_xboxController
+    //     .x()
+    //     .toggleOnTrue(
+    //         new DriveToPoseTrajPIDCommand(
+    //             m_drivebase, () -> m_presetStorage.get().getPose(), false));
+
+    HashMap<String, Command> m_map = new HashMap<String, Command>();
+
+    m_map.put("START", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStart.getPose(), false));
+    m_map.put("STOW", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "FLOOR PICKUP", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "CLIMB PRESET", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "CLIMB READY", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "CLIMB FINISH", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put("AMP", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "SUBWOOFER", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put("PODIUM", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put("STAGE", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+    m_map.put(
+        "LONG PASS", new DriveToPoseTrajPIDCommand(m_drivebase, Preset.kStow.getPose(), false));
+
+    m_xboxController.x().toggleOnTrue(m_map.get(m_presetStorage.get().getString()));
 
     // ---------------------------------------- Y
     //                                          Eject
