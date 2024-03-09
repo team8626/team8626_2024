@@ -92,7 +92,7 @@ public class RobotContainer {
   private double rotationSpeedFactor = 1;
   public int invert;
 
-  public final HashMap<String, Command> eventMap = new HashMap<>();
+  public final HashMap<String, Command> commandMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
 
   private class RotateSlowCommand extends RunCommand {
@@ -111,7 +111,8 @@ public class RobotContainer {
   Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
-    configureEventMap();
+
+    configureCommandMap();
     configureBindings();
     configureDefaultCommands();
 
@@ -123,16 +124,37 @@ public class RobotContainer {
             m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_climber, m_presetStorage);
   }
 
-  private void configureEventMap() {
-    eventMap.put("AutoIntake", new IntakeCommand(m_intake));
-    eventMap.put(
-        "SetupForSpeaker", new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
-    eventMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
-    eventMap.put(
+  private void configureCommandMap() {
+    commandMap.put(
+        "AutoIntake", new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)));
+
+    commandMap.put(
+        "SetupForSpeaker",
+        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootSubwoofer))));
+
+    commandMap.put(
+        "SetupForStage",
+        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootStage)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootStage))));
+
+    commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
+
+    commandMap.put(
         "Shooter",
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
-    NamedCommands.registerCommands(eventMap);
+
+    commandMap.put(
+        "ShootForSpeaker",
+        new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
+
+    commandMap.put(
+        "ShootForStage",
+        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootStage));
+
+    NamedCommands.registerCommands(commandMap);
   }
 
   private void configureBindings() {
