@@ -75,6 +75,9 @@ public class RobotContainer {
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public PresetManager m_presetStorage = new PresetManager();
 
+  Supplier<Command> m_presetDTPSupplier =
+      () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
@@ -202,8 +205,6 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
-    Supplier<Command> m_presetDTPSupplier =
-        () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
     m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
 
     // ---------------------------------------- Y
@@ -461,8 +462,7 @@ public class RobotContainer {
         return Commands.none();
 
       case TRAJECTORY_DTP:
-        return new DriveToPoseTrajPIDCommand(
-            m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
+        return new DeferredCommand(m_presetDTPSupplier, Set.of());
       case SHOOT_IN_PLACE:
         return new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
