@@ -76,6 +76,10 @@ public class RobotContainer {
   public PresetManager m_presetStorage = new PresetManager();
 
   Supplier<Command> m_presetDTPSupplier =
+      () ->
+          new DriveToPoseTrajPIDCommand(m_drivebase, () -> m_presetStorage.get().getPose(), false);
+
+  Supplier<Command> m_presetAutoDTPSupplier =
       () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
 
   private final CommandXboxController m_xboxController =
@@ -228,7 +232,6 @@ public class RobotContainer {
     //                                          Drive to Pose
 
     m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
-
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
@@ -318,6 +321,7 @@ public class RobotContainer {
     m_buttonBox
         .button_2()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)));
+
 
     // ---------------------------------------- BUTTON 3
     //                                          Preset:  Podium
@@ -484,7 +488,12 @@ public class RobotContainer {
         return Commands.none();
 
       case TRAJECTORY_DTP:
-        return new DeferredCommand(m_presetDTPSupplier, Set.of());
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)),
+            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()),
+            new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)),
+            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()));
+
       case SHOOT_IN_PLACE:
         return new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
