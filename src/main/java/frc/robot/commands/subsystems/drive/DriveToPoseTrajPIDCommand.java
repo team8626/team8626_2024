@@ -6,6 +6,7 @@ package frc.robot.commands.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
@@ -33,6 +34,7 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
   public DriveToPoseTrajPIDCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean lockPose) {
 
     addCommands(
+        new PrintCommand("(" + desiredPose.getX() + ", " + desiredPose.getY() + ")"),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
         new TranslateToPositionCommand(drive, desiredPose, true),
