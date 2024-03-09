@@ -14,8 +14,8 @@ public class Presets {
     kStart("START", 180, 0),
     kStow("STOW", 198, 0),
     kFloorPickup("FLOOR PICKUP", 202, 11),
-    kClimbPreset("CLIMB PRESET", 110, 6),
-    kClimbReady("CLIMB READY", 130, 3),
+    kClimbPreset("CLIMB PRESET", 110, 8),
+    kClimbReady("CLIMB READY", 130, 5),
     kClimbEnd("CLIMB FINISH", 180, 0),
 
     kShootAmp(
@@ -32,7 +32,7 @@ public class Presets {
         2200,
         4700,
         new Pose2d(
-            1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
+            1.3, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
     kShootPodium("PODIUM", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
         "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5))),
