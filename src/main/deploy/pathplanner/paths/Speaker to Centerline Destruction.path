@@ -107,7 +107,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "Intake",
       "waypointRelativePos": 3.1,
       "command": {
         "type": "parallel",
@@ -117,6 +117,23 @@
               "type": "named",
               "data": {
                 "name": "AutoIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "prepshot",
+      "waypointRelativePos": 4.35,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetupForSpeaker"
               }
             }
           ]
