@@ -37,7 +37,9 @@ public class Dashboard extends SubsystemBase {
     PRINT,
     DO_NOTHING,
     EXIT,
-    TRAJECTORY_DTP
+    TRAJECTORY_DTP,
+    TRAJECTORY,
+    SHOOT_IN_PLACE
   };
 
   public static interface ImplementDashboard {
@@ -63,6 +65,8 @@ public class Dashboard extends SubsystemBase {
     m_autoChooser.addOption("DO NOTHING", AutoOptions.DO_NOTHING);
     m_autoChooser.addOption("EXIT STARTING ZONE", AutoOptions.EXIT);
     m_autoChooser.addOption("TRAJECTORY DTP", AutoOptions.TRAJECTORY_DTP);
+    m_autoChooser.addOption("TRAJECTORY", AutoOptions.TRAJECTORY);
+    m_autoChooser.addOption("SHOOT_IN_PLACE", AutoOptions.SHOOT_IN_PLACE);
 
     SmartDashboard.putData("Autonomous Selection", m_autoChooser);
   }
