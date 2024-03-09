@@ -79,7 +79,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     // We want these in degrees and degrees per second
     m_rotationEncoder.setPositionConversionFactor(RotConstants.kRotationEncoderPositionFactorDeg);
     m_rotationEncoder.setVelocityConversionFactor(RotConstants.kRotationEncoderVelocityFactorDeg);
-    m_rotationEncoder.setZeroOffset(m_rotationEncoder.getZeroOffset() + 180);
+    // m_rotationEncoder.setZeroOffset(m_rotationEncoder.getZeroOffset() + 180);
     m_rotationEncoder.setInverted(false);
 
     // Set the PID gains for the motor.
