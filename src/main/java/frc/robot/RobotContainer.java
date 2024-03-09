@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,9 +28,7 @@ import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
-import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
-import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
@@ -53,6 +52,8 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -200,11 +201,10 @@ public class RobotContainer {
 
     // ---------------------------------------- X
     //                                          Drive to Pose
-    m_xboxController
-        .x()
-        .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(
-                m_drivebase, () -> m_presetStorage.get().getPose(), false));
+
+    Supplier<Command> m_presetDTPSupplier =
+        () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
 
     // ---------------------------------------- Y
     //                                          Eject
@@ -451,8 +451,8 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+        return new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -464,7 +464,8 @@ public class RobotContainer {
         return new DriveToPoseTrajPIDCommand(
             m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
       case SHOOT_IN_PLACE:
-        return new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
+        return new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
       case TRAJECTORY:
         return m_autoChooser.getSelected();
     }
