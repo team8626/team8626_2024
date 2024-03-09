@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shooter"
+            "name": "ShootForSpeaker"
           }
         },
         {
@@ -37,6 +37,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Note1-Speaker1"
@@ -45,7 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shooter"
+            "name": "ShootForSpeaker"
           }
         }
       ]

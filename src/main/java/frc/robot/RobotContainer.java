@@ -130,7 +130,11 @@ public class RobotContainer {
 
   private void configureCommandMap() {
     commandMap.put(
-        "AutoIntake", new IntakeCommand(m_intake).andThen(new IntakeAdjustmentCommand(m_intake)));
+        "AutoIntake", new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+                .andThen(
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
     commandMap.put(
         "SetupForSpeaker",
