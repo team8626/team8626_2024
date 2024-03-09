@@ -22,9 +22,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoIntake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetupForSpeaker"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -39,12 +52,6 @@
         {
           "type": "named",
           "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ShootForSpeaker"
           }
         },
@@ -53,9 +60,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoIntake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetupForSpeaker"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -65,12 +85,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetupForSpeaker"
           }
         },
         {
