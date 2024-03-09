@@ -35,6 +35,7 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
+        new TranslateToPositionCommand(drive, desiredPose, true),
         new TurnToAngleCommand(drive, () -> desiredPose, true),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
