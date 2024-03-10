@@ -22,8 +22,8 @@ public class Presets {
         "AMP",
         80,
         10,
-        3000,
-        0,
+        1000,
+        1000,
         new Pose2d(FieldConstants.ampCenter.getX(), 7.95, Rotation2d.fromDegrees(-90))),
     kShootSubwoofer(
         "SUBWOOFER",
