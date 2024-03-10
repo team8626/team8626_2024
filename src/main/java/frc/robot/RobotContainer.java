@@ -112,6 +112,18 @@ public class RobotContainer {
     }
   }
 
+  public class ImaginaryBoundary {
+    public double m_width;
+    public double m_height;
+    public double m_activationZone;
+
+    public ImaginaryBoundary(double width, double height, double activationZone) {
+      m_width = width;
+      m_height = height;
+      m_activationZone = activationZone;
+    }
+  }
+
   Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
