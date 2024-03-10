@@ -1,0 +1,130 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker2-Note2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note2-Speaker2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker2-Note3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note3-Speaker2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker2-Note1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note1-Speaker2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
