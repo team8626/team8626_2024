@@ -16,7 +16,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer.ImaginaryBoundary;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -127,26 +126,44 @@ public class ImaginaryBoundaryDriveCommand extends Command {
         break;
     }
   }
+
   public static AprilTagFieldLayout getBoundaryTagLayout() {
     List<AprilTag> aprilTags = new ArrayList<AprilTag>();
     AprilTagFieldLayout Field2024 = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
-    //Middle Speaker Tag
-    aprilTags.add(new AprilTag(4, new Pose3d(0,3.048, Units.inchesToMeters(57.13), new Rotation3d(0,0,0))));
-    //Amp Tag
-    aprilTags.add(new AprilTag(5, new Pose3d(Units.inchesToMeters(72.5),6.096, Units.inchesToMeters(53.38), new Rotation3d(0,0, 270))  ));
-    //TODO: Opposite from Speaker, enter source ID
-    aprilTags.add(new AprilTag(1, new Pose3d(7.315,3.048, Units.inchesToMeters(57.13), new Rotation3d(0,0,180))));
-    //TODO: opposite from Amp, Choose an ID
-    aprilTags.add(new AprilTag(0, new Pose3d(Units.inchesToMeters(72.5),0, Units.inchesToMeters(53.38), new Rotation3d(0,0, 90))));
+    // Middle Speaker Tag
+    aprilTags.add(
+        new AprilTag(
+            4, new Pose3d(0, 3.048, Units.inchesToMeters(57.13), new Rotation3d(0, 0, 0))));
+    // Amp Tag
+    aprilTags.add(
+        new AprilTag(
+            5,
+            new Pose3d(
+                Units.inchesToMeters(72.5),
+                6.096,
+                Units.inchesToMeters(53.38),
+                new Rotation3d(0, 0, 270))));
+    // TODO: Opposite from Speaker, enter source ID
+    aprilTags.add(
+        new AprilTag(
+            1, new Pose3d(7.315, 3.048, Units.inchesToMeters(57.13), new Rotation3d(0, 0, 180))));
+    // TODO: opposite from Amp, Choose an ID
+    aprilTags.add(
+        new AprilTag(
+            0,
+            new Pose3d(
+                Units.inchesToMeters(72.5),
+                0,
+                Units.inchesToMeters(53.38),
+                new Rotation3d(0, 0, 90))));
 
-    //TODO: Add More Tags once stuff is found
+    // TODO: Add More Tags once stuff is found
     // aprilTags.add(new AprilTag(0, new Pose3d()));
     // aprilTags.add(new AprilTag(0, new Pose3d()));
     // aprilTags.add(new AprilTag(0, new Pose3d()));
     // aprilTags.add(new AprilTag(0, new Pose3d()));
     // aprilTags.add(new AprilTag(0, new Pose3d()));
-    
-    
+
     return new AprilTagFieldLayout(aprilTags, Units.feetToMeters(24), Units.feetToMeters(20));
   }
 }
