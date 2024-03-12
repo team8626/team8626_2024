@@ -68,7 +68,7 @@ public class Dashboard extends SubsystemBase {
     m_autoChooser.addOption("TRAJECTORY", AutoOptions.TRAJECTORY);
     m_autoChooser.addOption("SHOOT_IN_PLACE", AutoOptions.SHOOT_IN_PLACE);
 
-        m_autoChooser.setDefaultOption("TRAJECTORY", AutoOptions.TRAJECTORY);
+    m_autoChooser.setDefaultOption("TRAJECTORY", AutoOptions.TRAJECTORY);
 
     SmartDashboard.putData("Autonomous Selection", m_autoChooser);
   }

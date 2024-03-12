@@ -95,12 +95,10 @@ public class RobotContainer {
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
-  public final HashMap<String, Command> eventMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
   public int invert;
 
   public final HashMap<String, Command> commandMap = new HashMap<>();
-  public final SendableChooser<Command> m_autoChooser;
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
