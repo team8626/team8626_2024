@@ -8,34 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker2-Note2.path
         "x": 1.9,
         "y": 5.55
-========
-        "x": 2.176264007837845,
-        "y": 6.201362842672933
->>>>>>>> main:src/main/deploy/pathplanner/paths/Exit2.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker2-Note2.path
         "x": 2.7,
         "y": 5.55
       },
       "prevControl": {
         "x": 2.2,
         "y": 5.55
-========
-        "x": 5.487742123632396,
-        "y": 6.0
-      },
-      "prevControl": {
-        "x": 4.290873126347347,
-        "y": 6.6910126377672405
->>>>>>>> main:src/main/deploy/pathplanner/paths/Exit2.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,11 +51,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker2-Note2.path
     "rotation": 0.0,
-========
-    "rotation": 0.2788857517954175,
->>>>>>>> main:src/main/deploy/pathplanner/paths/Exit2.path
     "velocity": 0
   },
   "useDefaultConstraints": false
