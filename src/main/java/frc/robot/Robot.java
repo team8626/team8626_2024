@@ -30,10 +30,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-    LEDSubsystem.setMode(LedMode.DRIVETOPOSE);
-    m_robotContainer.m_climber.setPower(0);
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -82,9 +79,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {
-    m_robotContainer.m_climber.setPower(0);
-  }
+  public void teleopExit() {}
 
   @Override
   public void testInit() {
