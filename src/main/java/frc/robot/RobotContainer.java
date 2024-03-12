@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,9 +28,7 @@ import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
-import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
-import frc.robot.commands.subsystems.drive.DriveToPoseCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
@@ -53,6 +52,8 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.function.Supplier;
 
 public class RobotContainer {
 
@@ -74,6 +75,13 @@ public class RobotContainer {
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public PresetManager m_presetStorage = new PresetManager();
 
+  Supplier<Command> m_presetDTPSupplier =
+      () ->
+          new DriveToPoseTrajPIDCommand(m_drivebase, () -> m_presetStorage.get().getPose(), false);
+
+  Supplier<Command> m_presetAutoDTPSupplier =
+      () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
@@ -87,9 +95,10 @@ public class RobotContainer {
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
-  public final HashMap<String, Command> eventMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
   public int invert;
+
+  public final HashMap<String, Command> commandMap = new HashMap<>();
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
@@ -107,7 +116,8 @@ public class RobotContainer {
   Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
-    configureEventMap();
+
+    configureCommandMap();
     configureBindings();
     configureDefaultCommands();
 
@@ -119,16 +129,42 @@ public class RobotContainer {
             m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_climber, m_presetStorage);
   }
 
-  private void configureEventMap() {
-    eventMap.put("AutoIntake", new IntakeCommand(m_intake));
-    eventMap.put(
-        "SetupForSpeaker", new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
-    eventMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
-    eventMap.put(
+  private void configureCommandMap() {
+    commandMap.put(
+        "AutoIntake",
+        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+            .andThen(
+                new IntakeCommand(m_intake)
+                    .andThen(new IntakeAdjustmentCommand(m_intake))
+                    .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+
+    commandMap.put(
+        "SetupForSpeaker",
+        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootSubwoofer))));
+
+    commandMap.put(
+        "SetupForStage",
+        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootStage)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootStage))));
+
+    commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
+
+    commandMap.put(
         "Shooter",
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
-    NamedCommands.registerCommands(eventMap);
+
+    commandMap.put(
+        "ShootForSpeaker",
+        new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
+
+    commandMap.put(
+        "ShootForStage",
+        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootStage));
+
+    NamedCommands.registerCommands(commandMap);
   }
 
   private void configureBindings() {
@@ -200,12 +236,8 @@ public class RobotContainer {
 
     // ---------------------------------------- X
     //                                          Drive to Pose
-    m_xboxController
-        .x()
-        .toggleOnTrue(
-            new DriveToPoseTrajPIDCommand(
-                m_drivebase, () -> m_presetStorage.get().getPose(), false));
 
+    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
@@ -451,8 +483,8 @@ public class RobotContainer {
         return Commands.print("Print Auto Command");
 
       case EXIT:
-        return new DriveToPoseCommand(
-            m_drivebase, new Pose2d(0, 0, Rotation2d.fromDegrees(180)), false);
+        return new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -461,10 +493,15 @@ public class RobotContainer {
         return Commands.none();
 
       case TRAJECTORY_DTP:
-        return new DriveToPoseTrajPIDCommand(
-            m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)),
+            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()),
+            new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)),
+            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()));
+
       case SHOOT_IN_PLACE:
-        return new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
+        return new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
       case TRAJECTORY:
         return m_autoChooser.getSelected();
     }

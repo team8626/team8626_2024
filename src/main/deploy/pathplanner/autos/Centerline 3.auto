@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.74,
+      "y": 4.5
+    },
+    "rotation": -60.0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -24,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker2-Note2"
+                  "pathName": "Speaker3-Centerline3"
                 }
               }
             ]
@@ -39,7 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note2-Speaker2"
+            "pathName": "Centerline3-Speaker3"
           }
         },
         {

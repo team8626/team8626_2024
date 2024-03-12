@@ -14,26 +14,26 @@ public class Presets {
     kStart("START", 180, 0),
     kStow("STOW", 198, 0),
     kFloorPickup("FLOOR PICKUP", 202, 11),
-    kClimbPreset("CLIMB PRESET", 110, 6),
-    kClimbReady("CLIMB READY", 130, 3),
+    kClimbPreset("CLIMB PRESET", 110, 10),
+    kClimbReady("CLIMB READY", 110, 7),
     kClimbEnd("CLIMB FINISH", 180, 0),
 
     kShootAmp(
         "AMP",
         80,
         10,
-        3000,
-        3000,
-        new Pose2d(FieldConstants.ampCenter.getX(), 7.82, Rotation2d.fromDegrees(-90))),
+        1000,
+        1000,
+        new Pose2d(FieldConstants.ampCenter.getX(), 7.95, Rotation2d.fromDegrees(-90))),
     kShootSubwoofer(
         "SUBWOOFER",
         201,
         0,
-        2200,
-        4700,
+        3000,
+        5000,
         new Pose2d(
-            1.2, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
-    kShootPodium("PODIUM", 180, 0, 4000, 5200, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
+            1.3, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
+    kShootPodium("PODIUM", 180, 0, 2400, 4700, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
         "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5))),
     kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));

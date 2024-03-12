@@ -1,0 +1,226 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+        "y": 6.514967325362892
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2873703298335193,
+        "y": 8.996397577381122
+========
+        "y": 4.4
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.1617037301410913,
+        "y": 4.299446925233137
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+        "x": 7.642058897543721,
+        "y": 7.568044419147288
+      },
+      "prevControl": {
+        "x": 5.559414330922904,
+        "y": 7.075914752164298
+      },
+      "nextControl": {
+        "x": 8.57610963932765,
+        "y": 7.788760948442145
+========
+        "x": 2.4581886941496176,
+        "y": 4.098887924629141
+      },
+      "prevControl": {
+        "x": 1.6305210562699766,
+        "y": 4.098887924629141
+      },
+      "nextControl": {
+        "x": 3.2823763032875726,
+        "y": 4.098887924629141
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+        "x": 8.232105789153707,
+        "y": 0.7858390417301674
+      },
+      "prevControl": {
+        "x": 7.3274191214842075,
+        "y": 3.889367776497139
+      },
+      "nextControl": {
+        "x": 8.364107449323356,
+        "y": 0.3330071829068522
+========
+        "x": 1.7566810365046728,
+        "y": 4.525327143248319
+      },
+      "prevControl": {
+        "x": 2.031216978350832,
+        "y": 4.525327143248319
+      },
+      "nextControl": {
+        "x": 1.444674937908388,
+        "y": 4.525327143248319
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+        "y": 4.5881669497713995
+      },
+      "prevControl": {
+        "x": 2.3424028665393637,
+        "y": 1.511689489859634
+========
+        "y": 4.4
+      },
+      "prevControl": {
+        "x": 0.7121692113699115,
+        "y": 4.3981258055123105
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+      "waypointRelativePos": 1.7,
+      "rotationDegrees": -132.1898586970604,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.3,
+      "rotationDegrees": -65.79863805139213,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 179.1818473340889,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.85,
+      "rotationDegrees": -76.1123309351613,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+========
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.5,
+      "rotationDegrees": -60.0,
+      "rotateFast": true
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+      "name": "intake",
+      "waypointRelativePos": 1.8,
+========
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+      "name": "setup",
+      "waypointRelativePos": 2.6000000000000005,
+========
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.7,
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+                "name": "SetupForSpeaker"
+========
+                "name": "StopIntake"
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+    "rotation": -58.52935713974347,
+========
+    "rotation": -61.238784508358634,
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+<<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Speaker1 to Centerline Destruction.path
+    "rotation": 60.0,
+========
+    "rotation": -60.98361043506085,
+>>>>>>>> main:src/main/deploy/pathplanner/paths/Exit3_Speaker2f.path
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7,
-      "y": 6.56
+      "x": 0.74,
+      "y": 6.6
     },
     "rotation": 60.0
   },
@@ -14,13 +14,25 @@
         {
           "type": "named",
           "data": {
+            "name": "SetupForSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootForSpeaker"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Exit1"
+            "pathName": "Speaker1 Pirate"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
           }
         }
       ]

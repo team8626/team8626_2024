@@ -62,7 +62,7 @@ public class Vision implements ImplementDashboard {
   SwerveSubsystem drive;
 
   StructPublisher<Pose2d> m_publisher =
-      NetworkTableInstance.getDefault().getStructTopic("NotePose", Pose2d.struct).publish();
+      NetworkTableInstance.getDefault().getStructTopic("tag", Pose2d.struct).publish();
 
   // Simulation
   private PhotonCameraSim cameraSim;

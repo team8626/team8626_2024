@@ -30,9 +30,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-    LEDSubsystem.setMode(LedMode.DISABLED);
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
