@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.AimAndShootCommand;
 import frc.robot.commands.auto.RotateThenDriveToNote;
-import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -353,8 +353,8 @@ public class RobotContainer {
     m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // ---------------------------------------- BUTTON 8
-    //                                          Rotate to NOTE
-    m_buttonBox.button_8().toggleOnTrue(new RotateToNoteCommand(m_drivebase));
+    //                                          Climb
+    m_buttonBox.button_8().toggleOnTrue(new AimAndShootCommand(m_drivebase));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
