@@ -80,8 +80,7 @@ public class RobotContainer {
           new DriveToPoseTrajPIDCommand(m_drivebase, () -> m_presetStorage.get().getPose(), false);
 
   Supplier<Command> m_presetAutoDTPSupplier =
-      () ->
-          new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+      () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
 
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
@@ -264,6 +263,16 @@ public class RobotContainer {
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+
+    // ---------------------------------------- B
+    //                                          Drive to Speaker
+    m_xboxController
+        .b()
+        .toggleOnTrue(
+            new DriveToPoseTrajPIDCommand(
+                m_drivebase,
+                () -> m_drivebase.getPose().nearest(Preset.kShootSubwoofers.getPoses()),
+                false));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------

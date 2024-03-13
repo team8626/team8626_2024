@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.FieldConstants;
 import frc.utils.AllianceFlipUtil;
 import java.util.*;
+
 public class Presets {
   public enum Preset {
     /**
@@ -43,8 +44,11 @@ public class Presets {
         0,
         3000,
         5000,
-        List.of(new Pose2d(0.74, 6.6, Rotation2d.fromDegrees(60)), new Pose2d(1.3, 5.55, Rotation2d.fromDegrees(0)), new Pose2d(0.74, 4.5, Rotation2d.fromDegrees(-60))));
-    
+        List.of(
+            new Pose2d(0.74, 6.6, Rotation2d.fromDegrees(60)),
+            new Pose2d(1.3, 5.55, Rotation2d.fromDegrees(0)),
+            new Pose2d(0.74, 4.5, Rotation2d.fromDegrees(-60))));
+
     private double m_rot;
     private double m_ext;
     private int m_topRPM;
@@ -71,8 +75,14 @@ public class Presets {
       this.m_robotPose = robotPose;
       this.m_robotPoses = null;
     }
+
     Preset(
-        String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM, List<Pose2d> robotPoses) {
+        String Name,
+        double Rot_Deg,
+        double Ext_In,
+        int TopRPM,
+        int BottomRPM,
+        List<Pose2d> robotPoses) {
       this.m_string = Name;
       this.m_rot = Rot_Deg;
       this.m_ext = Ext_In;
@@ -105,9 +115,15 @@ public class Presets {
     public Pose2d getPose() {
       return AllianceFlipUtil.apply(m_robotPose);
     }
-    public Pose2d getPose(int n) {
-      return AllianceFlipUtil.apply(m_robotPoses.get(n-1));
+
+    public List<Pose2d> getPoses() {
+      List<Pose2d> list = new ArrayList<Pose2d>();
+      for (int i = 0; i < 2; i++) {
+        list.add(AllianceFlipUtil.apply(m_robotPoses.get(i)));
+      }
+      return list;
     }
+
     public String getString() {
       return m_string.toUpperCase();
     }
