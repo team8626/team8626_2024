@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.FieldConstants;
 import frc.utils.AllianceFlipUtil;
-
+import java.util.*;
 public class Presets {
   public enum Preset {
     /**
@@ -36,14 +36,22 @@ public class Presets {
     kShootPodium("PODIUM", 180, 0, 2400, 4700, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
     kShootStage(
         "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5))),
-    kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
-
+    kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25))),
+    kShootSubwoofers(
+        "SUBWOOFER",
+        201,
+        0,
+        3000,
+        5000,
+        List.of(new Pose2d(0.74, 6.6, Rotation2d.fromDegrees(60)), new Pose2d(1.3, 5.55, Rotation2d.fromDegrees(0)), new Pose2d(0.74, 4.5, Rotation2d.fromDegrees(-60))));
+    
     private double m_rot;
     private double m_ext;
     private int m_topRPM;
     private int m_bottomRPM;
     private Pose2d m_robotPose;
     private String m_string;
+    private final List<Pose2d> m_robotPoses;
 
     Preset(String Name, double Rot_Deg, double Ext_In) {
       this(Name, Rot_Deg, Ext_In, 0, 0);
@@ -61,6 +69,17 @@ public class Presets {
       this.m_topRPM = TopRPM;
       this.m_bottomRPM = BottomRPM;
       this.m_robotPose = robotPose;
+      this.m_robotPoses = null;
+    }
+    Preset(
+        String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM, List<Pose2d> robotPoses) {
+      this.m_string = Name;
+      this.m_rot = Rot_Deg;
+      this.m_ext = Ext_In;
+      this.m_topRPM = TopRPM;
+      this.m_bottomRPM = BottomRPM;
+      this.m_robotPose = null;
+      this.m_robotPoses = robotPoses;
     }
 
     public double getRotDegrees() {
@@ -86,7 +105,9 @@ public class Presets {
     public Pose2d getPose() {
       return AllianceFlipUtil.apply(m_robotPose);
     }
-
+    public Pose2d getPose(int n) {
+      return AllianceFlipUtil.apply(m_robotPoses.get(n-1));
+    }
     public String getString() {
       return m_string.toUpperCase();
     }
