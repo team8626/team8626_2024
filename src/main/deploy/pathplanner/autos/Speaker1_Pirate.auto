@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ShootForSpeaker"
           }
         },
@@ -27,12 +21,6 @@
           "type": "path",
           "data": {
             "pathName": "Speaker1 Pirate"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootForSpeaker"
           }
         }
       ]
