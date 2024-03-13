@@ -192,7 +192,7 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
     // Create the constraints to use while pathfinding
     PathConstraints constraints =
         new PathConstraints(
-            swerveDrive.getMaximumVelocity(),
+            swerveDrive.getMaximumVelocity() - 1,
             4.0,
             swerveDrive.getMaximumAngularVelocity(),
             Units.degreesToRadians(720));

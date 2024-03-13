@@ -30,6 +30,7 @@ import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.TranslateToPositionCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
@@ -205,7 +206,24 @@ public class RobotContainer {
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
 
     // ---------------------------------------- Right Trigger Toggle Slow Mode
-    m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    // m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new SequentialCommandGroup(
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true),
+                new TranslateToPositionCommand(
+                    m_drivebase,
+                    new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true),
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true)));
 
     // ---------------------------------------- POV
     //                                          Robot angle
@@ -237,7 +255,15 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
-    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    // // m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    // m_xboxController
+    //     .x()
+    //     .toggleOnTrue(
+    //         new DriveToPoseTrajPIDCommand(
+    //             m_drivebase,
+    //             new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+    //             false));
+
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));

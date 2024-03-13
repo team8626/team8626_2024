@@ -36,12 +36,12 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI / 4;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI / 4;
 
-    public static final double kDriveXPosSetpointTolerance = 0.25;
-    public static final double kDriveXVelSetpointTolerance = 0.15;
-    public static final double kDriveYPosSetpointTolerance = 0.25;
-    public static final double kDriveYVelSetpointTolerance = 0.15;
-    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(2);
-    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(2);
+    public static final double kDriveXPosSetpointTolerance = 0.02;
+    public static final double kDriveXVelSetpointTolerance = 0.01;
+    public static final double kDriveYPosSetpointTolerance = 0.02;
+    public static final double kDriveYVelSetpointTolerance = 0.01;
+    public static final double kDriveRotPosSetpointTolerance = Math.toRadians(2.5);
+    public static final double kDriveRotVelSetpointTolerance = Math.toRadians(2.5);
   }
 
   public static final class Drivebase {
