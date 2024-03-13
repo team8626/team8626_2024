@@ -34,6 +34,8 @@ import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
+import frc.robot.commands.subsystems.shooter.ShooterCommand;
+import frc.robot.commands.subsystems.shooter.SimpleShooterCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
@@ -75,13 +77,6 @@ public class RobotContainer {
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public PresetManager m_presetStorage = new PresetManager();
 
-  Supplier<Command> m_presetDTPSupplier =
-      () ->
-          new DriveToPoseTrajPIDCommand(m_drivebase, () -> m_presetStorage.get().getPose(), false);
-
-  Supplier<Command> m_presetAutoDTPSupplier =
-      () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
-
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
@@ -95,10 +90,9 @@ public class RobotContainer {
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
+  public final HashMap<String, Command> commandMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
   public int invert;
-
-  public final HashMap<String, Command> commandMap = new HashMap<>();
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
@@ -116,7 +110,6 @@ public class RobotContainer {
   Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
-
     configureCommandMap();
     configureBindings();
     configureDefaultCommands();
@@ -135,7 +128,7 @@ public class RobotContainer {
         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
             .andThen(
                 new IntakeCommand(m_intake)
-                    .andThen(new IntakeAdjustmentCommand(m_intake))
+                    .andThen(new IntakeAdjustmentCommand(m_intake)) 
                     .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
 
     commandMap.put(
@@ -154,6 +147,11 @@ public class RobotContainer {
         "Shooter",
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
+
+    commandMap.put(
+        "LightShooter",
+        new ShooterCommand(
+             m_intake, m_shooter, () -> Preset.kShootAmp));
 
     commandMap.put(
         "ShootForSpeaker",
@@ -237,7 +235,10 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
+    Supplier<Command> m_presetDTPSupplier =
+        () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
     m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
@@ -493,12 +494,8 @@ public class RobotContainer {
         return Commands.none();
 
       case TRAJECTORY_DTP:
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)),
-            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()),
-            new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)),
-            new DeferredCommand(m_presetAutoDTPSupplier, Set.of()));
-
+        return new DriveToPoseTrajPIDCommand(
+            m_drivebase, () -> new Pose2d(15, 5.5, Rotation2d.fromDegrees(180)), false);
       case SHOOT_IN_PLACE:
         return new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
