@@ -27,7 +27,11 @@ public class TurnToAngleCommand extends Command {
   private boolean m_finish;
 
   public TurnToAngleCommand(
-      SwerveSubsystem drive, Supplier<Pose2d> desiredPoseSupplier, boolean finish) {
+      SwerveSubsystem drive,
+      Supplier<Pose2d> desiredPoseSupplier,
+      double angleTolerance,
+      double omegaTolerance,
+      boolean finish) {
     m_drive = drive;
 
     m_desiredPoseSupplier = desiredPoseSupplier;
@@ -50,6 +54,8 @@ public class TurnToAngleCommand extends Command {
     SmartDashboard.putNumber(
         "Rotation Acceleration Constraint",
         Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
+
+    m_rotPID.setTolerance(angleTolerance, omegaTolerance);
   }
 
   // Called when the command is initially scheduled.
@@ -74,10 +80,6 @@ public class TurnToAngleCommand extends Command {
             Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
 
     m_rotPID.setPID(rotPValue, rotIValue, rotDValue);
-
-    m_rotPID.setTolerance(
-        Constants.Auton.kDriveRotPosSetpointTolerance,
-        Constants.Auton.kDriveRotVelSetpointTolerance);
 
     m_rotPID.reset(m_drive.getOdometryHeading().getRadians());
 
