@@ -30,6 +30,7 @@ import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.TranslateToPositionCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
@@ -80,8 +81,7 @@ public class RobotContainer {
           new DriveToPoseTrajPIDCommand(m_drivebase, () -> m_presetStorage.get().getPose(), false);
 
   Supplier<Command> m_presetAutoDTPSupplier =
-      () ->
-          new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
+      () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
 
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
@@ -208,7 +208,22 @@ public class RobotContainer {
     // ---------------------------------------- Right Trigger Toggle Slow Mode
     // m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
 
-    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new SequentialCommandGroup(
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true),
+                new TranslateToPositionCommand(
+                    m_drivebase,
+                    new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true),
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> new Pose2d(new Translation2d(14.4, 5.5), Rotation2d.fromDegrees(180)),
+                    true)));
 
     // ---------------------------------------- POV
     //                                          Robot angle
@@ -216,37 +231,25 @@ public class RobotContainer {
         .povUp()
         .onTrue(
             new TurnToAngleCommand(
-                m_drivebase,
-                () -> new Pose2d(new Translation2d(), new Rotation2d(0)),
-                Constants.Auton.kDriveRotPosSetpointTolerance,
-                Constants.Auton.kDriveRotVelSetpointTolerance,
-                true));
+                m_drivebase, () -> new Pose2d(new Translation2d(), new Rotation2d(0)), true));
     m_xboxController
         .povLeft()
         .onTrue(
             new TurnToAngleCommand(
                 m_drivebase,
                 () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI / 2)),
-                Constants.Auton.kDriveRotPosSetpointTolerance,
-                Constants.Auton.kDriveRotVelSetpointTolerance,
                 true));
     m_xboxController
         .povDown()
         .onTrue(
             new TurnToAngleCommand(
-                m_drivebase,
-                () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)),
-                Constants.Auton.kDriveRotPosSetpointTolerance,
-                Constants.Auton.kDriveRotVelSetpointTolerance,
-                true));
+                m_drivebase, () -> new Pose2d(new Translation2d(), new Rotation2d(Math.PI)), true));
     m_xboxController
         .povRight()
         .onTrue(
             new TurnToAngleCommand(
                 m_drivebase,
                 () -> new Pose2d(new Translation2d(), new Rotation2d(-Math.PI / 2)),
-                Constants.Auton.kDriveRotPosSetpointTolerance,
-                Constants.Auton.kDriveRotVelSetpointTolerance,
                 true));
 
     // ---------------------------------------- X
