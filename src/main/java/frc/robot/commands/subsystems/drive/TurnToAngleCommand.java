@@ -39,14 +39,11 @@ public class TurnToAngleCommand extends Command {
     setName("Turn To Angle PID Command");
     // 0.005
     SmartDashboard.putNumber(
-        "Drive Rotation P Value",
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation P Value", 5));
+        "Drive Rotation P Value", SmartDashboard.getNumber("Drive Rotation P Value", 5));
     SmartDashboard.putNumber(
-        "Drive Rotation I Value",
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation I Value", 0.7));
+        "Drive Rotation I Value", SmartDashboard.getNumber("Drive Rotation I Value", 0.7));
     SmartDashboard.putNumber(
-        "Drive Rotation D Value",
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation D Value", 0.25));
+        "Drive Rotation D Value", SmartDashboard.getNumber("Drive Rotation D Value", 0.25));
 
     SmartDashboard.putNumber(
         "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
@@ -60,20 +57,16 @@ public class TurnToAngleCommand extends Command {
   public void initialize() {
     rotDesiredPos = m_desiredPoseSupplier.get().getRotation().getRadians();
 
-    double rotPValue =
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation P Value", 0);
-    double rotIValue =
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation I Value", 0);
-    double rotDValue =
-        SmartDashboard.getNumber("Commands/TurnToAngleCommand/Drive Rotation D Value", 0);
+    double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0);
+    double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
+    double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
 
     double rotationMaxVelocity =
         SmartDashboard.getNumber(
-            "Commands/TurnToAngleCommand/Rotation Velocity Constraint",
-            Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
+            "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
     double rotationMaxAcceleration =
         SmartDashboard.getNumber(
-            "Commands/TurnToAngleCommand/Rotation Acceleration Constraint",
+            "Rotation Acceleration Constraint",
             Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
 
     m_rotPID.setConstraints(
@@ -98,9 +91,7 @@ public class TurnToAngleCommand extends Command {
     m_drive.drive(
         new ChassisSpeeds(
             0, 0, m_rotPID.calculate(m_drive.getOdometryHeading().getRadians(), rotDesiredPos)));
-    SmartDashboard.putNumber(
-        "Commands/TurnToAngleCommand/Drive Rotation P Value/Degree Error",
-        Math.toDegrees(m_rotPID.getPositionError()));
+    SmartDashboard.putNumber("Degree Error", Math.toDegrees(m_rotPID.getPositionError()));
   }
 
   // Called once the command ends or is interrupted.
