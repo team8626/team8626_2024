@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.AutoClimbCommand;
 import frc.robot.commands.auto.RotateThenDriveToNote;
-import frc.robot.commands.auto.RotateToNoteCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -380,7 +380,9 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 8
     //                                          Rotate to NOTE
-    m_buttonBox.button_8().toggleOnTrue(new RotateToNoteCommand(m_drivebase));
+    m_buttonBox
+        .button_8()
+        .toggleOnTrue(new AutoClimbCommand(m_drivebase, m_armRot, m_armExt, m_climber));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
