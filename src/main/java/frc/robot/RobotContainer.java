@@ -355,7 +355,9 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
-    m_buttonBox.button_8().toggleOnTrue(new AimAndShootCommand(m_drivebase));
+    m_buttonBox
+        .button_8()
+        .toggleOnTrue(new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
@@ -458,7 +460,7 @@ public class RobotContainer {
     m_drivebase.setDefaultCommand(
         !RobotBase.isSimulation()
             ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedDirectAngleSim);
+            : driveFieldOrientedAnglularVelocity);
 
     // Manual Arm Control on test controller
     // X-> Rotation
