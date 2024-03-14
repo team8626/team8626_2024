@@ -7,6 +7,7 @@ package frc.robot.commands.subsystems.drive;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -98,8 +99,8 @@ public class ImaginaryBoundaryDriveCommand extends Command {
     // TODO: Use different drive function? Field relative?
     switch (m_currentState) {
       case WITHIN_BOUNDARY:
-        double xSlowOutput = m_xInput.getAsDouble() - xSlowPID.calculate(xPos);
-        double ySlowOutput = m_yInput.getAsDouble() - ySlowPID.calculate(yPos);
+        double xSlowOutput = m_xInput.getAsDouble() - MathUtil.clamp(xSlowPID.calculate(xPos), -1, 1);
+        double ySlowOutput = m_yInput.getAsDouble() - MathUtil.clamp(ySlowPID.calculate(yPos), -1, 1);
         double rotSlowOutput = m_rotInput.getAsDouble();
 
         m_drive.drive(new ChassisSpeeds(xSlowOutput, ySlowOutput, rotSlowOutput));
@@ -107,8 +108,8 @@ public class ImaginaryBoundaryDriveCommand extends Command {
 
       case WITHIN_ACTIVATION_ZONE:
         ChassisSpeeds vel = m_drive.getFieldVelocity();
-        double xStopOutput = xStopPID.calculate(vel.vxMetersPerSecond);
-        double yStopOutput = yStopPID.calculate(vel.vyMetersPerSecond);
+        double xStopOutput = MathUtil.clamp(xStopPID.calculate(vel.vxMetersPerSecond), -1, 1);
+        double yStopOutput = MathUtil.clamp(yStopPID.calculate(vel.vyMetersPerSecond), -1, 1);
         double rotStopOutput = m_rotInput.getAsDouble();
         m_drive.drive(new ChassisSpeeds(xStopOutput, yStopOutput, rotStopOutput));
 
