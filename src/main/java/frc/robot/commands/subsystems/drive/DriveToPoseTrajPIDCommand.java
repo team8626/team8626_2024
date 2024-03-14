@@ -42,10 +42,10 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
         new TurnToAngleCommand(
             drive,
             m_desiredPoseSupplier,
-            Constants.Auton.kDriveRotPosSetpointTolerance + 2,
-            Constants.Auton.kDriveRotVelSetpointTolerance + 2,
+            Constants.Auton.kDriveRotPosSetpointTolerance + 10,
+            Constants.Auton.kDriveRotVelSetpointTolerance + 10,
             true),
-        new InstantCommand(() -> drive.driveToPose(finalPPPoseSupplier.get()).schedule()),
+        // new InstantCommand(() -> drive.driveToPose(finalPPPoseSupplier.get()).schedule()),
         new TranslateToPositionCommand(drive, m_desiredPoseSupplier, true),
         new TurnToAngleCommand(
             drive,
@@ -66,7 +66,12 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
         new TranslateToPositionCommand(drive, () -> desiredPose, true),
-        new TurnToAngleCommand(drive, () -> desiredPose, Constants.Auton.kDriveRotPosSetpointTolerance, Constants.Auton.kDriveRotVelSetpointTolerance, true),
+        new TurnToAngleCommand(
+            drive,
+            () -> desiredPose,
+            Constants.Auton.kDriveRotPosSetpointTolerance,
+            Constants.Auton.kDriveRotVelSetpointTolerance,
+            true),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 
