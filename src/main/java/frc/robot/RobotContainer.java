@@ -270,9 +270,7 @@ public class RobotContainer {
         .b()
         .toggleOnTrue(
             new DriveToPoseTrajPIDCommand(
-                m_drivebase,
-                () -> m_drivebase.getPose().nearest(Preset.kShootSubwoofers.getPoses()),
-                false));
+                m_drivebase, () -> m_presetStorage.getNearest(m_drivebase.getPose()), false));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -358,7 +356,7 @@ public class RobotContainer {
     //                                          Preset:  Subwoofer
     m_buttonBox
         .button_2()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofers)));
 
     // ---------------------------------------- BUTTON 3
     //                                          Preset:  Podium
