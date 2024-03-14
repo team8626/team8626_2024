@@ -14,7 +14,7 @@ import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -28,7 +28,7 @@ public class PickupNoteCommand extends SequentialCommandGroup {
       ArmExtensionSubsystem armExt,
       IntakeSubsystem intake) {
     addCommands(
-        new SetArmCommand(armRot, armExt, () -> Preset.kFloorPickup),
+        new SetArmCommand(armRot, armExt, () -> Presets.kFloorPickup),
         new IntakeCommand(intake)
             .deadlineWith(
                 new PoseDisplacementCommand(

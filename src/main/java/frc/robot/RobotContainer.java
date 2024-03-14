@@ -45,7 +45,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.preset.PresetManager;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -73,7 +73,7 @@ public class RobotContainer {
   public final ClimberSubsystem m_climber = new ClimberSubsystem();
 
   public final LEDSubsystem m_leds = new LEDSubsystem();
-  public PresetManager m_presetStorage = new PresetManager();
+  public final PresetManager m_presetStorage = new PresetManager();
 
   Supplier<Command> m_presetDTPSupplier =
       () ->
@@ -132,37 +132,38 @@ public class RobotContainer {
   private void configureCommandMap() {
     commandMap.put(
         "AutoIntake",
-        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
             .andThen(
                 new IntakeCommand(m_intake)
                     .andThen(new IntakeAdjustmentCommand(m_intake))
-                    .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+                    .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
 
     commandMap.put(
         "SetupForSpeaker",
-        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer)
-            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootSubwoofer))));
+        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kShootSubwoofer)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootSubwoofer))));
 
     commandMap.put(
         "SetupForStage",
-        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootStage)
-            .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootStage))));
+        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kShootStage)
+            .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootStage))));
 
     commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
 
     commandMap.put(
         "Shooter",
         new SpinAndShootCommand(
-            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
 
     commandMap.put(
         "ShootForSpeaker",
         new SpinAndShootCommand(
-            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
 
     commandMap.put(
         "ShootForStage",
-        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootStage));
+        new SpinAndShootCommand(
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootStage));
 
     NamedCommands.registerCommands(commandMap);
   }
@@ -178,11 +179,11 @@ public class RobotContainer {
     m_xboxController
         .leftBumper()
         .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
                 .andThen(
                     new IntakeCommand(m_intake)
                         .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
 
     m_xboxController
         .leftTrigger()
@@ -190,10 +191,10 @@ public class RobotContainer {
             new IntakeCommand(m_intake)
                 .deadlineWith(
                     new SequentialCommandGroup(
-                        new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup),
+                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup),
                         new RotateThenDriveToNote(m_drivebase, m_intake)))
                 .andThen(new IntakeAdjustmentCommand(m_intake))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings
@@ -202,7 +203,7 @@ public class RobotContainer {
         .toggleOnTrue(
             new SpinAndShootCommand(
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow)));
+                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
 
     // ---------------------------------------- Right Trigger Toggle Slow Mode
     m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
@@ -289,7 +290,7 @@ public class RobotContainer {
     m_testController
         .povUp()
         .toggleOnTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbPreset)
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbPreset)
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
@@ -297,14 +298,14 @@ public class RobotContainer {
     m_testController
         .povLeft()
         .onTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbReady)
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbReady)
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
 
     m_testController
         .povDown()
-        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbEnd));
+        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbEnd));
 
     // ---------------------------------------- BUTTON BOX ------------------------------
     //
@@ -320,19 +321,19 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 1
     //                                          Preset: Amp
-    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)));
+    m_buttonBox.button_1().onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootAmp)));
 
     // ---------------------------------------- BUTTON 2
     //                                          Preset:  Subwoofer
     m_buttonBox
         .button_2()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootSubwoofer)));
 
     // ---------------------------------------- BUTTON 3
     //                                          Preset:  Podium
     m_buttonBox
         .button_3()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootPodium)));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootPodium)));
 
     // ---------------------------------------- BUTTON 4
     //                                          Request for Amplification to Human Player
@@ -342,15 +343,15 @@ public class RobotContainer {
     //                                          Preset: Under Stage
     m_buttonBox
         .button_5()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kShootStage)));
+        .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootStage)));
 
     // ---------------------------------------- BUTTON 6
     //                                          Preset: Long Pass
-    m_buttonBox.button_6().onTrue(new InstantCommand(() -> m_presetStorage.set(Preset.kLongPass)));
+    m_buttonBox.button_6().onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kLongPass)));
 
     // ---------------------------------------- BUTTON 7
     //                                          Set Arm to Stow Preset
-    m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
+    m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow));
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
@@ -484,7 +485,7 @@ public class RobotContainer {
 
       case EXIT:
         return new SpinAndShootCommand(
-            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer);
 
       case PRINT:
         return Commands.print("Print Auto Command");
@@ -494,14 +495,14 @@ public class RobotContainer {
 
       case TRAJECTORY_DTP:
         return new SequentialCommandGroup(
-            new InstantCommand(() -> m_presetStorage.set(Preset.kShootSubwoofer)),
+            new InstantCommand(() -> m_presetStorage.set(Presets.kShootSubwoofer)),
             new DeferredCommand(m_presetAutoDTPSupplier, Set.of()),
-            new InstantCommand(() -> m_presetStorage.set(Preset.kShootAmp)),
+            new InstantCommand(() -> m_presetStorage.set(Presets.kShootAmp)),
             new DeferredCommand(m_presetAutoDTPSupplier, Set.of()));
 
       case SHOOT_IN_PLACE:
         return new SpinAndShootCommand(
-            m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer);
+            m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer);
       case TRAJECTORY:
         return m_autoChooser.getSelected();
     }

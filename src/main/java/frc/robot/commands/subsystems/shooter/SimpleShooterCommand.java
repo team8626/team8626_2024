@@ -7,7 +7,7 @@ package frc.robot.commands.subsystems.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Preset;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class SimpleShooterCommand extends Command {

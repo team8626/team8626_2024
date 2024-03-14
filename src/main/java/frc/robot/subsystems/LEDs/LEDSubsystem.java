@@ -132,6 +132,10 @@ public class LEDSubsystem extends SubsystemBase {
         flow(LEDConstants.kSectionMain, Color.kPurple, 0.5);
         break;
 
+      case AUTOSHOOT:
+        flow(LEDConstants.kSectionMain, Color.kGreen, 0.1);
+        break;
+
       case SHOOTING:
         flow(LEDConstants.kSectionMain, Color.kGreen, 0.5);
         break;

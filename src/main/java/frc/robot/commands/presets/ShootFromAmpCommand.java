@@ -10,7 +10,7 @@ import frc.robot.commands.subsystems.shooter.ShooterCommand;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -24,7 +24,7 @@ public class ShootFromAmpCommand extends SequentialCommandGroup {
       IntakeSubsystem intake,
       ShooterSubsystem shooter) {
     addCommands(
-        new SetArmCommand(armRot, armExt, () -> Preset.kShootAmp),
-        new ShooterCommand(intake, shooter, () -> Preset.kShootAmp));
+        new SetArmCommand(armRot, armExt, () -> Presets.kShootAmp),
+        new ShooterCommand(intake, shooter, () -> Presets.kShootAmp));
   }
 }

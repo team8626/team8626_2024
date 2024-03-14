@@ -13,7 +13,7 @@ import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Preset;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import java.util.function.Supplier;
 
