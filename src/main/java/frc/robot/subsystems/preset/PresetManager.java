@@ -15,6 +15,8 @@ import frc.robot.subsystems.preset.Presets.Preset;
 
 public class PresetManager implements ImplementDashboard {
   private Preset m_preset;
+  private Pose2d m_closestPose;
+
   StructPublisher<Pose2d> m_publisher =
       NetworkTableInstance.getDefault()
           .getStructTopic("SmartDashboard/Preset/Pose2d", Pose2d.struct)
@@ -36,12 +38,23 @@ public class PresetManager implements ImplementDashboard {
     return m_preset.getPose();
   }
 
+  public Pose2d getNearest(Pose2d newPose) {
+    if (m_preset.getPoses() != null) {
+      m_closestPose = newPose.nearest(m_preset.getPoses());
+    } else {
+      m_closestPose = m_preset.getPose();
+    }
+    return m_closestPose;
+  }
+
   @Override
   public void initDashboard() {}
 
   @Override
   public void updateDashboard() {
     m_publisher.set(m_preset.getPose());
+    m_publisher.set(m_closestPose);
+
     SmartDashboard.putString("Preset/Preset", m_preset.getString());
   }
 
