@@ -21,7 +21,7 @@ public class PresetManager implements ImplementDashboard {
   private Preset m_preset;
   StructPublisher<Pose2d> m_publisher =
       NetworkTableInstance.getDefault()
-          .getStructTopic("SmartDashboard/Preset/Pose2d", Pose2d.struct)
+          .getStructTopic("SmartDashboard/Presets/Pose2d", Pose2d.struct)
           .publish();
 
   public PresetManager() {
@@ -42,6 +42,7 @@ public class PresetManager implements ImplementDashboard {
 
   public static Preset getAimAndShootPreset(Pose2d robotPose) {
 
+    double maxArmRotationInsideFrame = 201; /* Degrees */
     double targetX = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).getX();
     double targetY = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).getY();
 
@@ -63,7 +64,7 @@ public class PresetManager implements ImplementDashboard {
 
     Rotation2d robotRotation = AllianceFlipUtil.apply(targetRotation);
 
-    double ooomf = 0;
+    double ooomf = 0; // m.s-1
     double vZ = Math.sqrt((ooomf * ooomf) + (targetHeight - z0) * 2 * 9.81);
     double tm = (vZ - ooomf) / 9.81;
     double vX = targetDistance / tm;
@@ -75,6 +76,10 @@ public class PresetManager implements ImplementDashboard {
                 launchAngle.getDegrees()
                     + 180
                     - 30)); /* Horizontal arm: 180deg, Shooter/Arm: -30deg */
+
+    if (armAngle.getDegrees() > maxArmRotationInsideFrame) {
+      armAngle = new Rotation2d(Units.degreesToRadians(maxArmRotationInsideFrame));
+    }
 
     double launchVelocity = Math.sqrt((vX * vX) + (vZ * vZ));
     double launchRPM =
@@ -123,7 +128,7 @@ public class PresetManager implements ImplementDashboard {
   @Override
   public void updateDashboard() {
     m_publisher.set(m_preset.getPose());
-    SmartDashboard.putString("Preset/Preset", m_preset.getString());
+    SmartDashboard.putString("Presets/Preset", m_preset.getString());
   }
 
   @Override
