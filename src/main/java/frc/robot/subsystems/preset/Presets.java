@@ -45,8 +45,8 @@ public class Presets {
         3000,
         5000,
         List.of(
-            new Pose2d(0.74, 6.6, Rotation2d.fromDegrees(60)),
             new Pose2d(1.3, 5.55, Rotation2d.fromDegrees(0)),
+            new Pose2d(0.74, 6.6, Rotation2d.fromDegrees(60)),
             new Pose2d(0.74, 4.5, Rotation2d.fromDegrees(-60))));
 
     private double m_rot;
@@ -88,7 +88,7 @@ public class Presets {
       this.m_ext = Ext_In;
       this.m_topRPM = TopRPM;
       this.m_bottomRPM = BottomRPM;
-      this.m_robotPose = null;
+      this.m_robotPose = robotPoses.get(0);
       this.m_robotPoses = robotPoses;
     }
 
