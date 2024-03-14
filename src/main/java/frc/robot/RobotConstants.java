@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -12,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.commands.subsystems.drive.ImaginaryBoundaryDriveCommand;
 
 /**
  * Contains various field dimensions and useful reference points. Dimensions are in meters, and sets
@@ -57,9 +57,13 @@ public class RobotConstants {
             new Translation3d(0.208264, 0, 0.346066),
             new Rotation3d(0, Units.degreesToRadians(20), 0));
 
-    // The layout of the AprilTags on the field
+    // // The layout of the AprilTags on the field
+    // public static final AprilTagFieldLayout kTagLayout =
+    //     AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+
+    // The layout of BoundaryDrive
     public static final AprilTagFieldLayout kTagLayout =
-        AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+        ImaginaryBoundaryDriveCommand.getBoundaryTagLayout();
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)

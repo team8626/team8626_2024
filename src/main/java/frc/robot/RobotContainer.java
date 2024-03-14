@@ -30,6 +30,7 @@ import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.DriveToPoseTrajPIDCommand;
+import frc.robot.commands.subsystems.drive.ImaginaryBoundaryDriveCommand;
 import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
@@ -82,6 +83,8 @@ public class RobotContainer {
   Supplier<Command> m_presetAutoDTPSupplier =
       () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
 
+  private ImaginaryBoundary m_imaginaryBoundary = new ImaginaryBoundary(3, 3, 1);
+
   private final CommandXboxController m_xboxController =
       new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
 
@@ -92,6 +95,7 @@ public class RobotContainer {
       new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
 
   private boolean isSlowDrive = false;
+  private boolean isImaginaryBoundaryDrive = false;
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
@@ -110,6 +114,18 @@ public class RobotContainer {
                       ? -Constants.OperatorConstants.kIncrementalRotationSpeed
                       : Constants.OperatorConstants.kIncrementalRotationSpeed,
                   true));
+    }
+  }
+
+  public class ImaginaryBoundary {
+    public double m_width;
+    public double m_height;
+    public double m_activationZone;
+
+    public ImaginaryBoundary(double width, double height, double activationZone) {
+      m_width = width;
+      m_height = height;
+      m_activationZone = activationZone;
     }
   }
 
@@ -454,10 +470,27 @@ public class RobotContainer {
                     * driveSpeedFactor,
             () -> -m_xboxController.getRightX() * rotationSpeedFactor);
 
-    m_drivebase.setDefaultCommand(
-        !RobotBase.isSimulation()
-            ? driveFieldOrientedAnglularVelocity
-            : driveFieldOrientedDirectAngleSim);
+    Command imaginaryBoundaryCommand =
+        new ImaginaryBoundaryDriveCommand(
+            m_drivebase,
+            m_imaginaryBoundary,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftY() * invert, 0.1)
+                    * driveSpeedFactor,
+            () ->
+                MathUtil.applyDeadband(-m_xboxController.getLeftX() * invert, 0.1)
+                    * driveSpeedFactor,
+            () -> -m_xboxController.getRightX() * rotationSpeedFactor);
+
+    if (!isImaginaryBoundaryDrive) {
+      m_drivebase.setDefaultCommand(
+          !RobotBase.isSimulation()
+              ? driveFieldOrientedAnglularVelocity
+              : driveFieldOrientedDirectAngleSim);
+    } else {
+      m_drivebase.setDefaultCommand(
+          !RobotBase.isSimulation() ? imaginaryBoundaryCommand : driveFieldOrientedDirectAngleSim);
+    }
 
     // Manual Arm Control on test controller
     // X-> Rotation
