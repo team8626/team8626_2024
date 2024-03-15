@@ -35,7 +35,6 @@ import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShooterCommand;
-import frc.robot.commands.subsystems.shooter.SimpleShooterCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
@@ -126,19 +125,18 @@ public class RobotContainer {
     commandMap.put(
         "AutoIntake",
         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kFloorPickup)
-            .andThen(
-                new IntakeCommand(m_intake)
-                    .andThen(new IntakeAdjustmentCommand(m_intake)) 
-                    .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow))));
+            .andThen(new IntakeCommand(m_intake)));
 
     commandMap.put(
         "SetupForSpeaker",
         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootSubwoofer)
+            .alongWith(new IntakeAdjustmentCommand(m_intake))
             .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootSubwoofer))));
 
     commandMap.put(
         "SetupForStage",
         new SetArmCommand(m_armRot, m_armExt, () -> Preset.kShootStage)
+            .alongWith(new IntakeAdjustmentCommand(m_intake))
             .alongWith(new InstantCommand(() -> m_shooter.start(Preset.kShootStage))));
 
     commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
@@ -148,10 +146,7 @@ public class RobotContainer {
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Preset.kShootSubwoofer));
 
-    commandMap.put(
-        "LightShooter",
-        new ShooterCommand(
-             m_intake, m_shooter, () -> Preset.kShootAmp));
+    commandMap.put("LightShooter", new ShooterCommand(m_intake, m_shooter, () -> Preset.kShootAmp));
 
     commandMap.put(
         "ShootForSpeaker",
