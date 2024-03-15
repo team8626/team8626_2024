@@ -88,7 +88,7 @@ public class Presets {
       this.m_ext = Ext_In;
       this.m_topRPM = TopRPM;
       this.m_bottomRPM = BottomRPM;
-      this.m_robotPose = null;
+      this.m_robotPose = robotPoses.get(0);
       this.m_robotPoses = robotPoses;
     }
 
