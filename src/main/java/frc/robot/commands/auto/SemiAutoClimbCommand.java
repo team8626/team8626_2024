@@ -25,10 +25,10 @@ public class SemiAutoClimbCommand extends SequentialCommandGroup {
         new SequentialCommandGroup(
             new SetArmCommand(armRot, armExt, () -> Preset.kClimbReady),
             new InstantCommand(() -> climber.setPower(-1.0)),
-            //TODO: Not Sure about this Time..
-            new WaitCommand(3),
+            // TODO: Not Sure about this Time..
+            new WaitCommand(2),
             new SetArmCommand(armRot, armExt, () -> Preset.kClimbEnd),
-            new WaitCommand(1),
+            new WaitCommand(3),
             new InstantCommand(() -> climber.setPower(0))));
   }
 }

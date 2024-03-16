@@ -333,7 +333,6 @@ public class RobotContainer {
         .povDown()
         .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbEnd));
 
-
     m_testController
         .povRight()
         .toggleOnTrue(
