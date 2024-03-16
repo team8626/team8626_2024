@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Presets;
 
 public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDashboard {
 
@@ -96,7 +96,7 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     if (RobotBase.isReal()) {
       this.reset();
     } else if (RobotBase.isSimulation()) {
-      m_desiredExtensionInches = Preset.kStart.getExtInches();
+      m_desiredExtensionInches = Presets.kStart.getExtInches();
       m_currentExtInches = m_desiredExtensionInches;
     }
   }
