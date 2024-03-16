@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AutoClimbCommand;
 import frc.robot.commands.auto.RotateThenDriveToNote;
+import frc.robot.commands.auto.SemiAutoClimbCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -332,6 +333,15 @@ public class RobotContainer {
         .povDown()
         .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kClimbEnd));
 
+
+    m_testController
+        .povRight()
+        .toggleOnTrue(
+            new SemiAutoClimbCommand(m_armRot, m_armExt, m_climber)
+                .alongWith(
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
+
     // ---------------------------------------- BUTTON BOX ------------------------------
     //
     //           +-----------------+
@@ -379,7 +389,7 @@ public class RobotContainer {
     m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Preset.kStow));
 
     // ---------------------------------------- BUTTON 8
-    //                                          Rotate to NOTE
+    //                                          Fully Autonomous Climbing command
     m_buttonBox
         .button_8()
         .toggleOnTrue(new AutoClimbCommand(m_drivebase, m_armRot, m_armExt, m_climber));
