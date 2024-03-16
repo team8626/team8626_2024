@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AimAndShootCommand;
-import frc.robot.commands.auto.RotateThenDriveToNote;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -188,13 +187,11 @@ public class RobotContainer {
     m_xboxController
         .leftTrigger()
         .toggleOnTrue(
-            new IntakeCommand(m_intake)
-                .deadlineWith(
-                    new SequentialCommandGroup(
-                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup),
-                        new RotateThenDriveToNote(m_drivebase, m_intake)))
-                .andThen(new IntakeAdjustmentCommand(m_intake))
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kSourcePickup)
+                .andThen(
+                    new IntakeCommand(m_intake)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))
+                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings
@@ -205,8 +202,11 @@ public class RobotContainer {
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
                 .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
 
-    // ---------------------------------------- Right Trigger Toggle Slow Mode
-    m_xboxController.rightTrigger().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+    // ---------------------------------------- Right Trigger
+    //                                          Aim and Shoot
+    m_xboxController
+        .rightTrigger()
+        .toggleOnTrue(new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
 
     // ---------------------------------------- POV
     //                                          Robot angle
@@ -242,6 +242,9 @@ public class RobotContainer {
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+    // ---------------------------------------- A
+    //                                          Toggle Slow
+    m_xboxController.a().onTrue(new InstantCommand(() -> toggleSlowDrive()));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -355,9 +358,6 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
-    m_buttonBox
-        .button_8()
-        .toggleOnTrue(new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
