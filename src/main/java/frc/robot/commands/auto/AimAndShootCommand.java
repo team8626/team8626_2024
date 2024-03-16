@@ -20,6 +20,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class AimAndShootCommand extends SequentialCommandGroup {
+  boolean m_stopShooter = true;
 
   public AimAndShootCommand(
       SwerveSubsystem drive,
@@ -32,14 +33,34 @@ public class AimAndShootCommand extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.AUTOSHOOT)),
         new TurnToAngleCommand(
-            drive, () -> PresetManager.getAimAndShootPreset(drive.getPose()).getPose(), true),
-        new SpinAndShootCommand(
-            intake,
-            shooter,
-            armRot,
-            armExt,
-            () -> PresetManager.getAimAndShootPreset(drive.getPose())),
+            drive, () -> PresetManager.getAimAndShootPreset(drive.getPose()).getPose(), true));
+
+    if (m_stopShooter) {
+      addCommands(
+          new SpinAndShootCommand(
+              intake,
+              shooter,
+              armRot,
+              armExt,
+              () -> PresetManager.getAimAndShootPreset(drive.getPose())));
+    } else {
+      addCommands(
+          new SpinAndShootCommand(
+                  intake,
+                  shooter,
+                  armRot,
+                  armExt,
+                  () -> PresetManager.getAimAndShootPreset(drive.getPose()))
+              .doNotStopFlyWheels());
+    }
+
+    addCommands(
         new SetArmCommand(armRot, armExt, () -> Presets.kStow),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)));
+  }
+
+  public AimAndShootCommand doNotStopFlyWheels() {
+    this.m_stopShooter = false;
+    return this;
   }
 }

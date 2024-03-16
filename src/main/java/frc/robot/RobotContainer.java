@@ -191,7 +191,9 @@ public class RobotContainer {
                 .andThen(
                     new IntakeCommand(m_intake)
                         .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
+                        .andThen(
+                            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                                .extensionFirst())));
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings
@@ -200,7 +202,8 @@ public class RobotContainer {
         .toggleOnTrue(
             new SpinAndShootCommand(
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
+                .andThen(
+                    new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst()));
 
     // ---------------------------------------- Right Trigger
     //                                          Aim and Shoot
@@ -354,7 +357,9 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 7
     //                                          Set Arm to Stow Preset
-    m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow));
+    m_buttonBox
+        .button_7()
+        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst());
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
