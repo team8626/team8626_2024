@@ -11,21 +11,32 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants;
-// import frc.robot.Presets.Preset;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.utils.AllianceFlipUtil;
 
 public class PresetManager implements ImplementDashboard {
+
   private Preset m_preset;
-  StructPublisher<Pose2d> m_publisher =
+  private StructPublisher<Pose2d> m_publisher =
       NetworkTableInstance.getDefault()
           .getStructTopic("SmartDashboard/Presets/Pose2d", Pose2d.struct)
           .publish();
 
+  StructPublisher<Pose2d> publisher_dummy =
+      NetworkTableInstance.getDefault().getStructTopic("MyPreset", Pose2d.struct).publish();
+
+  private static double m_ooomf = 2; // m.s-1
+  private static double m_angleAdjust = -9;
+  private static double m_launchRPMTopMultiplier = 0.65;
+
   public PresetManager() {
     m_preset = Presets.kShootSubwoofer;
+
+    // SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", angleAdjust);
+    // SmartDashboard.getNumber("Presets/Ooomf", ooomf);
+    // SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", launchRPMTopMultiplier);
   }
 
   public void set(Preset newPreset) {
@@ -41,6 +52,12 @@ public class PresetManager implements ImplementDashboard {
   }
 
   public static Preset getAimAndShootPreset(Pose2d robotPose) {
+
+    // angleAdjust =
+    //     SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", angleAdjust);
+    // ooomf = SmartDashboard.getNumber("Presets/Ooomf", ooomf);
+    // launchRPMTopMultiplier =
+    //     SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", launchRPMTopMultiplier);
 
     double maxArmRotationInsideFrame = 201; /* Degrees */
     double targetX = AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening).getX();
@@ -64,10 +81,14 @@ public class PresetManager implements ImplementDashboard {
 
     Rotation2d robotRotation = AllianceFlipUtil.apply(targetRotation);
 
-    double ooomf = 0; // m.s-1
-    double vZ = Math.sqrt((ooomf * ooomf) + (targetHeight - z0) * 2 * 9.81);
-    double tm = (vZ - ooomf) / 9.81;
+    // double ooomf = 0; // m.s-1
+
+    double vZ = Math.sqrt((m_ooomf * m_ooomf) + (targetHeight - z0) * 2 * 9.81);
+    double tm = (vZ - m_ooomf) / 9.81;
     double vX = targetDistance / tm;
+
+    // double angleAdjust = -9;
+    // double launchRPMTopMultiplier = 0.6;
 
     Rotation2d launchAngle = new Rotation2d(Math.atan(vZ / vX));
     Rotation2d armAngle =
@@ -75,7 +96,8 @@ public class PresetManager implements ImplementDashboard {
             Units.degreesToRadians(
                 launchAngle.getDegrees()
                     + 180
-                    - 30)); /* Horizontal arm: 180deg, Shooter/Arm: -30deg */
+                    - 30 /* Horizontal arm: 180deg, Shooter/Arm: -30deg */
+                    + m_angleAdjust)); /* Adjust after tuning */
 
     if (armAngle.getDegrees() > maxArmRotationInsideFrame) {
       armAngle = new Rotation2d(Units.degreesToRadians(maxArmRotationInsideFrame));
@@ -117,18 +139,29 @@ public class PresetManager implements ImplementDashboard {
         "AUTO AIM",
         armAngle.getDegrees(),
         0.0,
-        (int) launchRPM,
+        (int) (launchRPM * m_launchRPMTopMultiplier),
         (int) launchRPM,
         new Pose2d(robotX, robotY, robotRotation));
   }
 
   @Override
-  public void initDashboard() {}
+  public void initDashboard() {
+    SmartDashboard.putNumber("Presets/AimPreset/Launch Angle Adjust (deg)", m_angleAdjust);
+    SmartDashboard.putNumber("Presets/Ooomf", m_ooomf);
+    SmartDashboard.putNumber("Presets/AimPreset/TopRPMMultiplier", m_launchRPMTopMultiplier);
+  }
 
   @Override
   public void updateDashboard() {
     m_publisher.set(m_preset.getPose());
+    publisher_dummy.set(m_preset.getPose());
     SmartDashboard.putString("Presets/Preset", m_preset.getString());
+
+    m_angleAdjust =
+        SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", m_angleAdjust);
+    m_ooomf = SmartDashboard.getNumber("Presets/Ooomf", m_ooomf);
+    m_launchRPMTopMultiplier =
+        SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", m_launchRPMTopMultiplier);
   }
 
   @Override
