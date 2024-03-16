@@ -17,6 +17,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.preset.PresetManager;
 import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class AimAndShootCommand extends SequentialCommandGroup {
@@ -32,7 +33,11 @@ public class AimAndShootCommand extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.AUTOSHOOT)),
         new TurnToAngleCommand(
-            drive, () -> PresetManager.getAimAndShootPreset(drive.getPose()).getPose(), true),
+            drive,
+            () -> PresetManager.getAimAndShootPreset(drive.getPose()).getPose(),
+            Constants.Auton.kDriveRotPosSetpointTolerance,
+            Constants.Auton.kDriveRotVelSetpointTolerance,
+            true),
         new SpinAndShootCommand(
             intake,
             shooter,
