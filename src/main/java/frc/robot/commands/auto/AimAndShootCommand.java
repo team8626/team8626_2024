@@ -21,6 +21,7 @@ import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class AimAndShootCommand extends SequentialCommandGroup {
+  boolean m_stopShooter = true;
 
   public AimAndShootCommand(
       SwerveSubsystem drive,
@@ -37,14 +38,34 @@ public class AimAndShootCommand extends SequentialCommandGroup {
             () -> PresetManager.getAimAndShootPreset(drive.getPose()).getPose(),
             Constants.Auton.kDriveRotPosSetpointTolerance,
             Constants.Auton.kDriveRotVelSetpointTolerance,
-            true),
-        new SpinAndShootCommand(
-            intake,
-            shooter,
-            armRot,
-            armExt,
-            () -> PresetManager.getAimAndShootPreset(drive.getPose())),
+            true));
+
+    if (m_stopShooter) {
+      addCommands(
+          new SpinAndShootCommand(
+              intake,
+              shooter,
+              armRot,
+              armExt,
+              () -> PresetManager.getAimAndShootPreset(drive.getPose())));
+    } else {
+      addCommands(
+          new SpinAndShootCommand(
+                  intake,
+                  shooter,
+                  armRot,
+                  armExt,
+                  () -> PresetManager.getAimAndShootPreset(drive.getPose()))
+              .doNotStopFlyWheels());
+    }
+
+    addCommands(
         new SetArmCommand(armRot, armExt, () -> Presets.kStow),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)));
+  }
+
+  public AimAndShootCommand doNotStopFlyWheels() {
+    this.m_stopShooter = false;
+    return this;
   }
 }

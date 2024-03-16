@@ -217,7 +217,9 @@ public class RobotContainer {
                 .andThen(
                     new IntakeCommand(m_intake)
                         .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
+                        .andThen(
+                            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                                .extensionFirst())));
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings
@@ -226,7 +228,8 @@ public class RobotContainer {
         .toggleOnTrue(
             new SpinAndShootCommand(
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
+                .andThen(
+                    new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst()));
 
     // ---------------------------------------- Right Trigger
     //                                          Aim and Shoot
@@ -392,7 +395,9 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 7
     //                                          Set Arm to Stow Preset
-    m_buttonBox.button_7().onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow));
+    m_buttonBox
+        .button_7()
+        .onTrue(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst());
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
@@ -411,25 +416,18 @@ public class RobotContainer {
         .debounce(0.1)
         .onTrue(new RumbleCommand(m_xboxController.getHID(), 1, 0.5, RumbleType.kBothRumble));
 
-    // // Shooter Auto Spin Trigger
-    // Trigger autoSpinRadiusTrigger =
-    //     new Trigger(
-    //         () -> {
-    //           Pose2d currentPose = m_drivebase.getPose();
-    //           Pose2d presetPose = m_presetStorage.get().getPose();
+    // Shooter Auto Spin Trigger
+    Trigger autoSpinRadiusTrigger =
+        new Trigger(
+            () -> {
+              Pose2d currentPose = m_drivebase.getPose();
 
-    //           return (RobotConstants.kAutoSpinRadius
-    //               > Math.hypot(
-    //                   presetPose.getX() - currentPose.getX(),
-    //                   presetPose.getY() - currentPose.getY()));
-    //         });
+              return (Math.abs(Presets.kShootSubwoofer.getPose().getY() - currentPose.getY())
+                  < 4.0); // 4.0m to the speaker
+            });
 
-    // autoSpinRadiusTrigger = autoSpinRadiusTrigger.debounce(1);
-
-    // autoSpinRadiusTrigger
-    //     .and(() -> m_intake.isFull())
-    //     .onTrue(m_shooter.setRPMCommand(() -> m_presetStorage.get()));
-    // autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
+    autoSpinRadiusTrigger.and(() -> m_intake.isFull()).onTrue(m_shooter.setRPMCommand(3000, 3500));
+    autoSpinRadiusTrigger.onFalse(new InstantCommand(() -> m_shooter.stop()));
   }
 
   private void configureDefaultCommands() {
