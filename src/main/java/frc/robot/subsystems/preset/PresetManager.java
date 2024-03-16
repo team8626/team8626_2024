@@ -105,7 +105,9 @@ public class PresetManager implements ImplementDashboard {
 
     double launchVelocity = Math.sqrt((vX * vX) + (vZ * vZ));
     double launchRPM =
-        (launchVelocity / (Math.PI * ShooterConstants.kFlywheelDiameterMeters / 2)) * 60;
+        Math.min(
+            (launchVelocity / (Math.PI * ShooterConstants.kFlywheelDiameterMeters / 2)) * 60,
+            ShooterConstants.kMaxRPM);
 
     SmartDashboard.putNumber("Presets/AimPreset/Robot X", robotX);
     SmartDashboard.putNumber("Presets/AimPreset/Robot Y", robotY);
