@@ -117,6 +117,7 @@ public class Presets {
     }
 
     public List<Pose2d> getPoses() {
+      if (m_robotPoses == null) return null;
       List<Pose2d> list = new ArrayList<Pose2d>();
       for (int i = 0; i < 2; i++) {
         list.add(AllianceFlipUtil.apply(m_robotPoses.get(i)));
