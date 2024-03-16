@@ -56,11 +56,6 @@ public class AutoClimbCommand extends SequentialCommandGroup {
             new TurnToAngleCommand(drive, () -> climbPose, true),
             new SetArmCommand(armRot, armExt, () -> Preset.kClimbPreset),
             new TranslateToPositionCommand(drive, climbPose, true),
-            new SetArmCommand(armRot, armExt, () -> Preset.kClimbReady),
-            new InstantCommand(() -> climber.setPower(-1.0)),
-            new WaitCommand(2),
-            new SetArmCommand(armRot, armExt, () -> Preset.kClimbEnd),
-            new WaitCommand(1),
-            new InstantCommand(() -> climber.setPower(0))));
+            new SemiAutoClimbCommand(armRot, armExt, climber)));
   }
 }
