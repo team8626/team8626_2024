@@ -408,7 +408,11 @@ public class RobotContainer {
     //                                          Fully Autonomous Climbing command
     m_buttonBox
         .button_8()
-        .toggleOnTrue(new AutoClimbCommand(m_drivebase, m_armRot, m_armExt, m_climber));
+        .toggleOnTrue(
+            new AutoClimbCommand(m_drivebase, m_armRot, m_armExt, m_climber)
+                .alongWith(
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension
