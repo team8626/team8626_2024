@@ -6,8 +6,6 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -34,22 +32,25 @@ public class AutoClimbCommand extends SequentialCommandGroup {
     setName("Auto Climb Command");
     List<Pose2d> climbPoses =
         List.of(
-            new Pose2d(4.42, 4.85, new Rotation2d(Units.degreesToRadians(-60))),
-            new Pose2d(5.8, 4.11, new Rotation2d(Units.degreesToRadians(180))),
-            new Pose2d(4.42, 3.33, new Rotation2d(Units.degreesToRadians(60))));
-    Pose2d climbPose = AllianceFlipUtil.apply(drive.getPose().nearest(climbPoses));
-    final double backupDistanceMeters = -1;
+            AllianceFlipUtil.apply(
+                new Pose2d(4.42, 4.85, new Rotation2d(Units.degreesToRadians(-60)))),
+            AllianceFlipUtil.apply(
+                new Pose2d(5.8, 4.11, new Rotation2d(Units.degreesToRadians(180)))),
+            AllianceFlipUtil.apply(
+                new Pose2d(4.42, 3.33, new Rotation2d(Units.degreesToRadians(60)))));
+    Pose2d climbPose = drive.getPose().nearest(climbPoses);
+    final double backupDistanceMeters = 1;
     addCommands(
         new SequentialCommandGroup(
             new TurnToAngleCommand(drive, () -> climbPose, true),
             new TranslateToPositionCommand(
                 drive,
-                climbPose.plus(
-                    new Transform2d(
-                        new Translation2d(
-                            backupDistanceMeters * Math.cos(climbPose.getRotation().getRadians()),
-                            backupDistanceMeters * Math.sin(climbPose.getRotation().getRadians())),
-                        new Rotation2d(0))),
+                new Pose2d(
+                    climbPose.getX()
+                        - backupDistanceMeters * Math.cos(climbPose.getRotation().getRadians()),
+                    climbPose.getY()
+                        - backupDistanceMeters * Math.sin(climbPose.getRotation().getRadians()),
+                    climbPose.getRotation()),
                 true),
             new TurnToAngleCommand(drive, () -> climbPose, true),
             new SetArmCommand(armRot, armExt, () -> Preset.kClimbPreset),
