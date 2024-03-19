@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -30,7 +32,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.setArmMotorsMode(IdleMode.kCoast);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -40,6 +44,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.setArmMotorsMode(IdleMode.kBrake);
     m_autonomousCommand =
         // Force intake and adjust preloaded NOTE
         new IntakeCommand(m_robotContainer.m_intake)
@@ -68,6 +73,8 @@ public class Robot extends TimedRobot {
     } else {
       m_robotContainer.invert = 1;
     }
+
+    m_robotContainer.setArmMotorsMode(IdleMode.kBrake);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
