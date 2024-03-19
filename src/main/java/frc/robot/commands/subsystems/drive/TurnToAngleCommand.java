@@ -22,15 +22,23 @@ public class TurnToAngleCommand extends Command {
 
   private Supplier<Pose2d> m_desiredPoseSupplier;
   private double rotDesiredPos;
+  private double m_angleTolerance;
+  private double m_omegaTolerance;
 
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
   public TurnToAngleCommand(
-      SwerveSubsystem drive, Supplier<Pose2d> desiredPoseSupplier, boolean finish) {
+      SwerveSubsystem drive,
+      Supplier<Pose2d> desiredPoseSupplier,
+      double angleTolerance,
+      double omegaTolerance,
+      boolean finish) {
     m_drive = drive;
 
     m_desiredPoseSupplier = desiredPoseSupplier;
+    m_angleTolerance = angleTolerance;
+    m_omegaTolerance = omegaTolerance;
 
     m_finish = finish;
 
@@ -75,9 +83,7 @@ public class TurnToAngleCommand extends Command {
 
     m_rotPID.setPID(rotPValue, rotIValue, rotDValue);
 
-    m_rotPID.setTolerance(
-        Constants.Auton.kDriveRotPosSetpointTolerance,
-        Constants.Auton.kDriveRotVelSetpointTolerance);
+    m_rotPID.setTolerance(m_angleTolerance, m_omegaTolerance);
 
     m_rotPID.reset(m_drive.getOdometryHeading().getRadians());
 

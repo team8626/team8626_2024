@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import java.util.function.Supplier;
 
 public class TranslateToPositionCommand extends Command {
 
@@ -22,7 +23,8 @@ public class TranslateToPositionCommand extends Command {
   private final ProfiledPIDController m_yPID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
 
-  private static Pose2d m_pose;
+  private Supplier<Pose2d> m_desiredPoseSupplier;
+  private Pose2d m_pose;
 
   private double m_xDesiredPos;
   private double m_yDesiredPos;
@@ -30,11 +32,11 @@ public class TranslateToPositionCommand extends Command {
   // Will only work when atSetpoint() set
   private boolean m_finish;
 
-  public TranslateToPositionCommand(SwerveSubsystem drive, Pose2d desiredPose, boolean finish) {
+  public TranslateToPositionCommand(
+      SwerveSubsystem drive, Supplier<Pose2d> desiredPoseSupplier, boolean finish) {
     m_drive = drive;
 
-    m_xDesiredPos = desiredPose.getX();
-    m_yDesiredPos = desiredPose.getY();
+    m_desiredPoseSupplier = desiredPoseSupplier;
 
     m_finish = finish;
 
@@ -58,6 +60,9 @@ public class TranslateToPositionCommand extends Command {
   @Override
   public void initialize() {
     m_pose = m_drive.getPose();
+
+    m_xDesiredPos = m_desiredPoseSupplier.get().getX();
+    m_yDesiredPos = m_desiredPoseSupplier.get().getY();
 
     double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);

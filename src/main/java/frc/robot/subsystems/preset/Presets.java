@@ -3,92 +3,46 @@ package frc.robot.subsystems.preset;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.FieldConstants;
-import frc.utils.AllianceFlipUtil;
 
 public class Presets {
-  public enum Preset {
-    /**
-     * NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES. Getting a Preset pose using {@link
-     * #getPose()} will return Pose based on the current alliance.
-     */
-    kStart("START", 180, 0),
-    kStow("STOW", 198, 0),
-    kFloorPickup("FLOOR PICKUP", 202, 11),
-    kClimbPreset("CLIMB PRESET", 110, 10),
-    kClimbReady("CLIMB READY", 110, 7),
-    kClimbEnd("CLIMB FINISH", 180, 0),
+  /**
+   * NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES. Getting a Preset pose using {@link #getPose()}
+   * will return Pose based on the current alliance.
+   */
+  public static final Preset kStart = new Preset("START", 180, 0);
 
-    kShootAmp(
-        "AMP",
-        80,
-        10,
-        1000,
-        1000,
-        new Pose2d(FieldConstants.ampCenter.getX(), 7.95, Rotation2d.fromDegrees(-90))),
-    kShootSubwoofer(
-        "SUBWOOFER",
-        201,
-        0,
-        3000,
-        5000,
-        new Pose2d(
-            1.3, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0))),
-    kShootPodium("PODIUM", 180, 0, 2400, 4700, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3))),
-    kShootStage(
-        "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5))),
-    kLongPass("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
+  public static final Preset kStow = new Preset("STOW", 198, 0);
+  public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 11);
+  public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
-    private double m_rot;
-    private double m_ext;
-    private int m_topRPM;
-    private int m_bottomRPM;
-    private Pose2d m_robotPose;
-    private String m_string;
+  public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 110, 10);
+  public static final Preset kClimbReady = new Preset("CLIMB READY", 110, 7);
+  public static final Preset kClimbEnd = new Preset("CLIMB FINISH", 180, 0);
 
-    Preset(String Name, double Rot_Deg, double Ext_In) {
-      this(Name, Rot_Deg, Ext_In, 0, 0);
-    }
+  public static final Preset kShootAmp =
+      new Preset(
+          "AMP",
+          80,
+          10,
+          1000,
+          1000,
+          new Pose2d(FieldConstants.ampCenter.getX(), 7.95, Rotation2d.fromDegrees(-90)));
+  public static final Preset kShootSubwoofer =
+      new Preset(
+          "SUBWOOFER",
+          201,
+          0,
+          3000,
+          5000,
+          new Pose2d(
+              1.3, FieldConstants.Speaker.centerSpeakerOpening.getY(), Rotation2d.fromDegrees(0)));
 
-    Preset(String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM) {
-      this(Name, Rot_Deg, Ext_In, 0, 0, new Pose2d());
-    }
+  public static final Preset kShootPodium =
+      new Preset("PODIUM", 180, 0, 2400, 4700, new Pose2d(2.6, 4.3, Rotation2d.fromDegrees(-23.3)));
 
-    Preset(
-        String Name, double Rot_Deg, double Ext_In, int TopRPM, int BottomRPM, Pose2d robotPose) {
-      this.m_string = Name;
-      this.m_rot = Rot_Deg;
-      this.m_ext = Ext_In;
-      this.m_topRPM = TopRPM;
-      this.m_bottomRPM = BottomRPM;
-      this.m_robotPose = robotPose;
-    }
-
-    public double getRotDegrees() {
-      return m_rot;
-    }
-
-    public double getExtInches() {
-      return m_ext;
-    }
-
-    public int getTopRPM() {
-      return m_topRPM;
-    }
-
-    public int getBottomRPM() {
-      return m_bottomRPM;
-    }
-
-    /**
-     * NOTE: ALL PRESET ARE WITH BLUE ALLIANCE VALUES. Getting a Preset pose using {@link
-     * #getPose()} will return Pose based on the current alliance.
-     */
-    public Pose2d getPose() {
-      return AllianceFlipUtil.apply(m_robotPose);
-    }
-
-    public String getString() {
-      return m_string.toUpperCase();
-    }
-  }
+  public static final Preset kShootStage =
+      new Preset(
+          "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5)));
+  public static final Preset kLongPass =
+      new Preset("LONG PASS", 190, 0, 5400, 5400, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 }

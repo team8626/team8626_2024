@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Presets;
 import java.util.function.DoubleSupplier;
 
 public class ArmRotationSubsystem extends SubsystemBase implements ImplementDashboard {
@@ -99,10 +99,10 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     updateDashboard();
 
     if (Robot.isReal()) {
-      m_desiredAngleDeg = Preset.kStow.getRotDegrees();
+      m_desiredAngleDeg = Presets.kStow.getRotDegrees();
 
     } else if (Robot.isSimulation()) {
-      m_desiredAngleDeg = Preset.kStart.getRotDegrees();
+      m_desiredAngleDeg = Presets.kStart.getRotDegrees();
       m_currentAngleDeg = m_desiredAngleDeg;
     }
   }

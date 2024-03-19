@@ -4,32 +4,37 @@
 
 package frc.robot.commands.subsystems.shooter;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
-import frc.robot.subsystems.preset.Preset;
+import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class SimpleShooterCommand extends Command {
+public class ShootAmpCommand extends Command {
   /** Creates a new SimpleShooterCommand. */
   private ShooterSubsystem m_shooter;
 
-  private int m_speedTop;
-  private int m_speedBottom;
+  private IntakeSubsystem m_intake;
+  private Timer m_timer;
 
-  public SimpleShooterCommand(Preset preset, ShooterSubsystem shooter) {
+  public ShootAmpCommand(IntakeSubsystem intake, ShooterSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(intake, shooter);
     m_shooter = shooter;
-    m_speedBottom = preset.getBottomRPM();
-    m_speedTop = preset.getTopRPM();
+    m_intake = intake;
+    m_timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.setRPM(m_speedBottom, m_speedTop);
-    m_shooter.start();
+    m_shooter.startDutyCycle(0.4);
+    m_intake.start(IntakeConstants.kSpeed_Shoot);
+
+    m_timer.reset();
+    m_timer.start();
     // LEDSubsystem.setMode(LedMode.SHOOTING);
   }
 
@@ -42,6 +47,7 @@ public class SimpleShooterCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_intake.stop();
     m_shooter.stop();
     LEDSubsystem.setMode(LedMode.DEFAULT);
   }
@@ -49,6 +55,11 @@ public class SimpleShooterCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    boolean retval = false;
+
+    if (m_timer.hasElapsed(1)) {
+      retval = true;
+    }
+    return retval;
   }
 }

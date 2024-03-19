@@ -18,6 +18,7 @@ public class LEDConstants {
     DISABLED,
     DEFAULT,
     PRESHOOTING,
+    AUTOSHOOT,
     SHOOTING,
     FOLLOWNOTE,
     DRIVETOPOSE,

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
-import frc.robot.subsystems.preset.Presets.Preset;
+import frc.robot.subsystems.preset.Preset;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -20,6 +20,7 @@ public class SetArmCommand extends Command {
 
   private Timer m_timer = new Timer();
   private double m_waitTime;
+  private boolean m_extensionFirst = false;
 
   double m_desiredExtensionInches, m_desiredAngleDegrees;
 
@@ -53,7 +54,6 @@ public class SetArmCommand extends Command {
     m_armRot = armRot;
     m_preset = desiredState;
     m_waitTime = 0;
-
     // m_desiredExtensionInches = desiredState.getExtInches();
     // m_desiredAngleDegrees = desiredState.getRotDegrees();
 
@@ -82,6 +82,11 @@ public class SetArmCommand extends Command {
     setName("SetArmCommand");
   }
 
+  public SetArmCommand extensionFirst() {
+    this.m_extensionFirst = true;
+    return this;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -89,7 +94,11 @@ public class SetArmCommand extends Command {
 
     System.out.printf("[SetArmCommand] Preset: %s\n", m_preset.get().getString());
 
-    m_armRot.setAngleDeg(m_preset.get().getRotDegrees());
+    if (m_extensionFirst) {
+      m_armExt.setLengthInches(m_preset.get().getExtInches());
+    } else {
+      m_armRot.setAngleDeg(m_preset.get().getRotDegrees());
+    }
 
     System.out.printf("[SetArmCommand] New rot: %f\n", m_preset.get().getRotDegrees());
     // m_armExt.setLengthInches(m_preset.getExtInches());
@@ -97,17 +106,17 @@ public class SetArmCommand extends Command {
 
   @Override
   public void execute() {
-    if (MathUtil.isNear(m_preset.get().getRotDegrees(), m_armRot.getRotDegrees(), 50)) {
-      m_armExt.setLengthInches(m_preset.get().getExtInches());
-      // System.out.printf(
-      //     "[SetArmCommand] New ext: %f (Current Rot: %f want %f)\n",
-      //     m_preset.get().getExtInches(), m_armRot.getRotDegrees(),
-      // m_preset.get().getRotDegrees());
+
+    if (m_extensionFirst) {
+      if (m_armExt.atSetpoint()) {
+        m_armRot.setAngleDeg(m_preset.get().getRotDegrees());
+      }
+
     } else {
-      // System.out.printf(
-      //     "[SetArmCommand] Delay ext: %f (Current Rot: %f waiting for %f +/-20)\n",
-      //     m_preset.get().getExtInches(), m_armRot.getRotDegrees(),
-      // m_preset.get().getRotDegrees());
+      if (MathUtil.isNear(m_preset.get().getRotDegrees(), m_armRot.getRotDegrees(), 50)) {
+        m_armExt.setLengthInches(m_preset.get().getExtInches());
+      } else {
+      }
     }
   }
 

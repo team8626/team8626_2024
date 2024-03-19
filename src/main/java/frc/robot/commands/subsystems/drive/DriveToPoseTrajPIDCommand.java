@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.Supplier;
 
@@ -24,7 +25,12 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
-        new TurnToAngleCommand(drive, desiredPose, true),
+        new TurnToAngleCommand(
+            drive,
+            desiredPose,
+            Constants.Auton.kDriveRotPosSetpointTolerance,
+            Constants.Auton.kDriveRotVelSetpointTolerance,
+            true),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 
@@ -38,7 +44,12 @@ public class DriveToPoseTrajPIDCommand extends SequentialCommandGroup {
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DRIVETOPOSE)),
         new DriveToPosePPCommand(drive, desiredPose),
         // new TranslateToPositionCommand(drive, desiredPose, true),
-        new TurnToAngleCommand(drive, () -> desiredPose, true),
+        new TurnToAngleCommand(
+            drive,
+            () -> desiredPose,
+            Constants.Auton.kDriveRotPosSetpointTolerance,
+            Constants.Auton.kDriveRotVelSetpointTolerance,
+            true),
         new InstantCommand(() -> LEDSubsystem.setMode(LedMode.DEFAULT)),
         new InstantCommand(() -> drive.lock()).onlyIf(() -> lockPose));
 

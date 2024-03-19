@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.util.Units;
+
 /** Add your docs here. */
 public class ShooterConstants {
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
-  public static final int kMaxRPM = 5700;
+  public static final int kMaxRPM = 5500;
+  public static final double kFlywheelDiameterMeters = Units.inchesToMeters(3);
 
   public static final double kP_top = 0.00005;
   public static final double kI_top = 0.0000004;
