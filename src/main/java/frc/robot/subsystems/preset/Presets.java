@@ -44,5 +44,5 @@ public class Presets {
       new Preset(
           "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5)));
   public static final Preset kLongPass =
-      new Preset("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
+      new Preset("LONG PASS", 190, 0, 5400, 5400, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 }
