@@ -34,6 +34,7 @@ import frc.robot.commands.subsystems.drive.TurnToAngleCommand;
 import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
+import frc.robot.commands.subsystems.shooter.ShootAmpCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
@@ -225,9 +226,19 @@ public class RobotContainer {
     //                                          Shooting to stored preset settings
     m_xboxController
         .rightBumper()
+        .and(() -> m_presetStorage.get() != Presets.kShootAmp)
         .toggleOnTrue(
             new SpinAndShootCommand(
                     m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
+                .andThen(
+                    new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst()));
+
+    m_xboxController
+        .rightBumper()
+        .and(() -> m_presetStorage.get() == Presets.kShootAmp)
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kShootAmp)
+                .andThen(new ShootAmpCommand(m_intake, m_shooter))
                 .andThen(
                     new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst()));
 
