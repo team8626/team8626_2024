@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
