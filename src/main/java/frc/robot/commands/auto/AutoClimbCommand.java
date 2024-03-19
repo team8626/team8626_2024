@@ -5,8 +5,6 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
 import frc.robot.commands.subsystems.drive.TranslateToPositionCommand;
@@ -17,56 +15,54 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.utils.AllianceFlipUtil;
-import java.util.List;
+import java.util.function.Supplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoClimbCommand extends SequentialCommandGroup {
 
+  private Pose2d m_climbPose;
+
   public AutoClimbCommand(
       SwerveSubsystem drive,
       ArmRotationSubsystem armRot,
       ArmExtensionSubsystem armExt,
-      ClimberSubsystem climber) {
+      ClimberSubsystem climber,
+      Supplier<Pose2d> climbPoseSupplier) {
     setName("Auto Climb Command");
-    List<Pose2d> climbPoses =
-        List.of(
-            AllianceFlipUtil.apply(
-                new Pose2d(4.42, 4.85, new Rotation2d(Units.degreesToRadians(-60)))),
-            AllianceFlipUtil.apply(
-                new Pose2d(5.8, 4.11, new Rotation2d(Units.degreesToRadians(180)))),
-            AllianceFlipUtil.apply(
-                new Pose2d(4.42, 3.33, new Rotation2d(Units.degreesToRadians(60)))));
-    Pose2d climbPose = drive.getPose().nearest(climbPoses);
+
+    m_climbPose = climbPoseSupplier.get();
     final double backupDistanceMeters = 1;
     addCommands(
         new SequentialCommandGroup(
             new TurnToAngleCommand(
                 drive,
-                () -> climbPose,
+                climbPoseSupplier,
                 Constants.Auton.kDriveRotPosSetpointTolerance,
                 Constants.Auton.kDriveRotVelSetpointTolerance,
                 true),
             new TranslateToPositionCommand(
+                // new DriveToPoseTrajPIDCommand(
                 drive,
                 () ->
                     new Pose2d(
-                        climbPose.getX()
-                            - backupDistanceMeters * Math.cos(climbPose.getRotation().getRadians()),
-                        climbPose.getY()
-                            - backupDistanceMeters * Math.sin(climbPose.getRotation().getRadians()),
-                        climbPose.getRotation()),
+                        climbPoseSupplier.get().getX()
+                            - backupDistanceMeters
+                                * Math.cos(climbPoseSupplier.get().getRotation().getRadians()),
+                        climbPoseSupplier.get().getY()
+                            - backupDistanceMeters
+                                * Math.sin(climbPoseSupplier.get().getRotation().getRadians()),
+                        climbPoseSupplier.get().getRotation()),
                 true),
             new TurnToAngleCommand(
                 drive,
-                () -> climbPose,
+                climbPoseSupplier,
                 Constants.Auton.kDriveRotPosSetpointTolerance,
                 Constants.Auton.kDriveRotVelSetpointTolerance,
                 true),
             new SetArmCommand(armRot, armExt, () -> Presets.kClimbPreset),
-            new TranslateToPositionCommand(drive, () -> climbPose, true),
+            new TranslateToPositionCommand(drive, () -> climbPoseSupplier.get(), true),
             new SemiAutoClimbCommand(armRot, armExt, climber)));
   }
 }

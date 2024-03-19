@@ -414,10 +414,17 @@ public class RobotContainer {
     m_buttonBox
         .button_8()
         .toggleOnTrue(
-            new AutoClimbCommand(m_drivebase, m_armRot, m_armExt, m_climber)
+            new AutoClimbCommand(
+                    m_drivebase,
+                    m_armRot,
+                    m_armExt,
+                    m_climber,
+                    () -> PresetManager.getClosedClimbingStart(m_drivebase.getPose()))
                 .alongWith(
                     new InstantCommand(
-                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds))
+                .handleInterrupt(() -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF))
+                .handleInterrupt(() -> LEDSubsystem.setMode(LedMode.DEFAULT)));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension

@@ -45,11 +45,11 @@ public class TranslateToPositionCommand extends Command {
     setName("Drive To Pose PID Command");
 
     SmartDashboard.putNumber(
-        "Drive Position P Value", SmartDashboard.getNumber("Drive Position P Value", 12.03125));
+        "Drive Position P Value", SmartDashboard.getNumber("Drive Position P Value", 5));
     SmartDashboard.putNumber(
         "Drive Position I Value", SmartDashboard.getNumber("Drive Position I Value", 0));
     SmartDashboard.putNumber(
-        "Drive Position D Value", SmartDashboard.getNumber("Drive Position D Value", 1));
+        "Drive Position D Value", SmartDashboard.getNumber("Drive Position D Value", 0.45));
 
     SmartDashboard.putNumber("Drive Velocity Constraint", Constants.Auton.kMaxSpeedMetersPerSecond);
     SmartDashboard.putNumber(
