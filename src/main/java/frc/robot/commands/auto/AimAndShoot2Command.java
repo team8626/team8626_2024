@@ -36,12 +36,12 @@ public class AimAndShoot2Command extends Command {
   private double m_rotationTimeout = 0; // Seconds: 0 -> No Timeout;
 
   private double m_rotPID_P = 5;
-  private double m_rotPID_I = 0.7;
+  private double m_rotPID_I = 0.75;
   private double m_rotPID_D = 0.25;
   private double m_rotMaxVelocityRadPerSec = Constants.Auton.kMaxAngularSpeedRadiansPerSecond;
   private double m_rotMaxAccelerationRadPerSecSqr =
       Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared;
-  private double m_rotToleranceAngleDeg = 2;
+  private double m_rotToleranceAngleDeg = 1;
   private double m_rotToleranceVelocityDegPerSec = 1;
   private Pose2d m_targetPose = new Pose2d();
 
