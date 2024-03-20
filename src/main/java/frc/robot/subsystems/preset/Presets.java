@@ -12,7 +12,7 @@ public class Presets {
   public static final Preset kStart = new Preset("START", 180, 0);
 
   public static final Preset kStow = new Preset("STOW", 198, 0);
-  public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 11);
+  public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 12);
   public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
   public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 110, 10);

@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.AimAndShootCommand;
+import frc.robot.commands.auto.AimAndShoot2Command;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -159,7 +159,7 @@ public class RobotContainer {
             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
     commandMap.put(
         "AimAndShoot",
-        new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
 
     commandMap.put(
         "SetupForSpeaker",
@@ -246,7 +246,13 @@ public class RobotContainer {
     //                                          Aim and Shoot
     m_xboxController
         .rightTrigger()
-        .toggleOnTrue(new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        .toggleOnTrue(
+            new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
+                .withPoseRotationTimeout(2)
+                .handleInterrupt(
+                    () ->
+                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                            .extensionFirst()));
 
     // ---------------------------------------- POV
     //                                          Robot angle
