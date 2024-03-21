@@ -290,7 +290,26 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
-    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    // m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new SequentialCommandGroup(
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> m_presetStorage.get().getPose(),
+                    Constants.Auton.kDriveRotPosSetpointTolerance + Math.toRadians(3),
+                    Constants.Auton.kDriveRotVelSetpointTolerance + Math.toRadians(2),
+                    true),
+                new TranslateToPositionCommand(
+                    m_drivebase, () -> m_presetStorage.get().getPose(), true),
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> m_presetStorage.get().getPose(),
+                    Constants.Auton.kDriveRotPosSetpointTolerance,
+                    Constants.Auton.kDriveRotVelSetpointTolerance,
+                    true)));
+
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
