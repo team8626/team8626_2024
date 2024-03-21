@@ -179,7 +179,8 @@ public class RobotContainer {
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
 
-    commandMap.put("LightShooter", new ShooterCommand(m_intake, m_shooter, () -> Presets.kShootAmp));
+    commandMap.put(
+        "LightShooter", new ShooterCommand(m_intake, m_shooter, () -> Presets.kShootAmp));
 
     commandMap.put(
         "ShootForSpeaker",
