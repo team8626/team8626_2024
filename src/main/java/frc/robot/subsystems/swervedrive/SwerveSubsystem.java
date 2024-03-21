@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import static frc.robot.RobotConstants.Vision.kATBackCameraName;
+import static frc.robot.RobotConstants.Vision.kATFrontCameraName;
+import static frc.robot.RobotConstants.Vision.kATRobotToBackCam;
+import static frc.robot.RobotConstants.Vision.kATRobotToFrontCam;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -31,12 +35,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.Vision;
-
-import static frc.robot.RobotConstants.Vision.kATBackCameraName;
-import static frc.robot.RobotConstants.Vision.kATFrontCameraName;
-import static frc.robot.RobotConstants.Vision.kATRobotToBackCam;
-import static frc.robot.RobotConstants.Vision.kATRobotToFrontCam;
-
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonCamera;

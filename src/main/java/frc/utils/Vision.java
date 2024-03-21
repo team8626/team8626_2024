@@ -39,7 +39,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
