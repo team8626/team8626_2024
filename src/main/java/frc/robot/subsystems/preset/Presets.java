@@ -15,7 +15,7 @@ public class Presets {
   public static final Preset kStart = new Preset("START", 180, 0);
 
   public static final Preset kStow = new Preset("STOW", 198, 0);
-  public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 11);
+  public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 12);
   public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
   public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 85, 0);
@@ -46,7 +46,7 @@ public class Presets {
       new Preset(
           "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5)));
   public static final Preset kLongPass =
-      new Preset("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
+      new Preset("LONG PASS", 190, 0, 5400, 5400, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
 
   public static List<Pose2d> kClimbPoses =
       List.of(
