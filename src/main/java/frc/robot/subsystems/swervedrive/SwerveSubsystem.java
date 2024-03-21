@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.swervedrive;
 
+import static frc.robot.RobotConstants.Vision.kAT2RobotToCam;
+import static frc.robot.RobotConstants.Vision.kATCamera2Name;
+import static frc.robot.RobotConstants.Vision.kATCameraName;
+import static frc.robot.RobotConstants.Vision.kATRobotToCam;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -53,7 +58,12 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Vision Suppport - Team 8626 */
   private Pose2d currentDTP = new Pose2d();
 
-  private Vision m_vision = new Vision(this);
+  private PhotonCamera front = new PhotonCamera(kATCamera2Name);
+  private PhotonCamera back = new PhotonCamera(kATCameraName);
+
+  private Vision frontVision = new Vision(this, front, kAT2RobotToCam);
+  private Vision backVision = new Vision(this, back, kATRobotToCam);
+
   /** Publisher for robot pose (AdvantageScope) */
   private StructPublisher<Pose3d> m_publisher =
       NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose3d.struct).publish();
@@ -352,16 +362,28 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   public void periodic() {
 
     // Correct pose estimate with vision measurements
-    var visionEst = m_vision.getEstimatedGlobalPose();
-    visionEst.ifPresent(
+    var backVisionEst = backVision.getEstimatedGlobalPose();
+    var frontVisionEst = frontVision.getEstimatedGlobalPose();
+
+    backVisionEst.ifPresentOrElse(
         est -> {
           var estPose = est.estimatedPose.toPose2d();
           // Change our trust in the measurement based on the tags we can see
-          var estStdDevs = m_vision.getEstimationStdDevs(estPose);
+          var estStdDevs = backVision.getEstimationStdDevs(estPose);
 
           swerveDrive.addVisionMeasurement(
               est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-        });
+        },
+        () ->
+            frontVisionEst.ifPresent(
+                est -> {
+                  var estPose = est.estimatedPose.toPose2d();
+                  // Change our trust in the measurement based on the tags we can see
+                  var estStdDevs = frontVision.getEstimationStdDevs(estPose);
+
+                  swerveDrive.addVisionMeasurement(
+                      est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                }));
   }
 
   @Override
