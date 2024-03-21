@@ -52,9 +52,9 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Vision implements ImplementDashboard {
   private final PhotonCamera ATCamera;
+  private final Transform3d CameraPose;
   private final PhotonPoseEstimator photonEstimator;
   private double lastEstTimestamp = 0;
-  SwerveSubsystem drive;
 
   StructPublisher<Pose2d> m_publisher =
       NetworkTableInstance.getDefault().getStructTopic("tag", Pose2d.struct).publish();
@@ -63,13 +63,13 @@ public class Vision implements ImplementDashboard {
   private PhotonCameraSim cameraSim;
   private VisionSystemSim visionSim;
 
-  public Vision(SwerveSubsystem swerveSubsystem, PhotonCamera camera, Transform3d robotToCam) {
-    drive = swerveSubsystem;
+  public Vision(PhotonCamera camera, Transform3d robotToCam) {
     ATCamera = camera;
+    CameraPose = robotToCam;
 
     photonEstimator =
         new PhotonPoseEstimator(
-            kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ATCamera, robotToCam);
+            kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, ATCamera, CameraPose);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation
@@ -89,7 +89,7 @@ public class Vision implements ImplementDashboard {
       // targets.
       cameraSim = new PhotonCameraSim(ATCamera, cameraProp);
       // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, robotToCam);
+      visionSim.addCamera(cameraSim, CameraPose);
 
       cameraSim.enableDrawWireframe(true);
     }

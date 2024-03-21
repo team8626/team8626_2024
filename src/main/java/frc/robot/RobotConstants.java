@@ -44,14 +44,14 @@ public class RobotConstants {
 
   public static class Vision {
     // april tag camera constants
-    public static final String kATCameraName = "Arducam_AT002";
-    public static final Transform3d kATRobotToCam =
+    public static final String kATBackCameraName = "Arducam_AT002";
+    public static final Transform3d kATRobotToBackCam =
         new Transform3d(
             new Translation3d(-0.222275, -0.276124, 0.251296),
             new Rotation3d(0, Units.degreesToRadians(-30), Units.degreesToRadians(167.04746)));
 
-    public static final String kATCamera2Name = "Arducam_AT001";
-    public static final Transform3d kAT2RobotToCam =
+    public static final String kATFrontCameraName = "Arducam_AT001";
+    public static final Transform3d kATRobotToFrontCam =
         new Transform3d(
             new Translation3d(0.197621, -0.275290, 0.502921),
             new Rotation3d(0, Units.degreesToRadians(-22.5), Units.degreesToRadians(0)));

@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems.swervedrive;
 
-import static frc.robot.RobotConstants.Vision.kAT2RobotToCam;
-import static frc.robot.RobotConstants.Vision.kATCamera2Name;
-import static frc.robot.RobotConstants.Vision.kATCameraName;
-import static frc.robot.RobotConstants.Vision.kATRobotToCam;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -35,6 +31,12 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.utils.Vision;
+
+import static frc.robot.RobotConstants.Vision.kATBackCameraName;
+import static frc.robot.RobotConstants.Vision.kATFrontCameraName;
+import static frc.robot.RobotConstants.Vision.kATRobotToBackCam;
+import static frc.robot.RobotConstants.Vision.kATRobotToFrontCam;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import org.photonvision.PhotonCamera;
@@ -58,11 +60,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
   /** Vision Suppport - Team 8626 */
   private Pose2d currentDTP = new Pose2d();
 
-  private PhotonCamera front = new PhotonCamera(kATCamera2Name);
-  private PhotonCamera back = new PhotonCamera(kATCameraName);
+  private PhotonCamera front = new PhotonCamera(kATFrontCameraName);
+  private PhotonCamera back = new PhotonCamera(kATBackCameraName);
 
-  private Vision frontVision = new Vision(this, front, kAT2RobotToCam);
-  private Vision backVision = new Vision(this, back, kATRobotToCam);
+  private Vision frontVision = new Vision(front, kATRobotToFrontCam);
+  private Vision backVision = new Vision(back, kATRobotToBackCam);
 
   /** Publisher for robot pose (AdvantageScope) */
   private StructPublisher<Pose3d> m_publisher =
