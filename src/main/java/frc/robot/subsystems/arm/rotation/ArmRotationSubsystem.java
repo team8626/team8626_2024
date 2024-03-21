@@ -179,7 +179,7 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
   @Override
   public void updateDashboard() {
     SmartDashboard.putNumber("Arm/Rotation/DesiredDegres", m_desiredAngleDeg);
-    SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_rotationEncoder.getPosition());
+    SmartDashboard.putNumber("Arm/Rotation/CurrentDegres", m_currentAngleDeg);
     SmartDashboard.putNumber("Arm/Rotation/AMPs_L", m_rotationMotor_L.getOutputCurrent());
     SmartDashboard.putNumber("Arm/Rotation/AMPs_R", m_rotationMotor_R.getOutputCurrent());
     SmartDashboard.putBoolean("Arm/Rotation/atSetPoint", atSetpoint());
