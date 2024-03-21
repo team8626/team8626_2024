@@ -61,13 +61,13 @@ public class RobotContainer {
   // DriveSubsystem m_drive = new DriveSubsystem();
   Dashboard m_dashboard;
 
-  // DriveSubsystem m_drive = new DriveSubsystem();
-  public final SwerveSubsystem m_drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-
   // public final ArmSubsystem m_arm = new ArmSubsystem();
   public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
   public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
+
+  // DriveSubsystem m_drive = new DriveSubsystem();
+  public final SwerveSubsystem m_drivebase =
+      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), m_armRot, m_armExt);
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();

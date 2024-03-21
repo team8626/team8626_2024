@@ -60,11 +60,52 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Field": {
+        "Robot": {
+          "length": 0.75,
+          "width": 0.75
+        },
+        "XModules": {
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
+        "height": 8.013679504394531,
+        "left": 46,
+        "right": 1088,
+        "top": 36,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "VisionSystemSim-main": {
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
     "Server": {
+      "Publishers": {
+        "open": true
+      },
       "open": true
     },
     "visible": true
