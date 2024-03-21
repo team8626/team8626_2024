@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AimAndShootCommand;
+import frc.robot.commands.auto.AutoClimbCommand;
+import frc.robot.commands.auto.SemiAutoClimbCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -337,9 +339,9 @@ public class RobotContainer {
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
 
     m_testController
-        .povLeft()
+        .povRight()
         .onTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbReady)
+            new SemiAutoClimbCommand(m_armRot, m_armExt, m_climber)
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
@@ -396,6 +398,20 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
+    m_buttonBox
+        .button_8()
+        .toggleOnTrue(
+            new AutoClimbCommand(
+                    m_drivebase,
+                    m_armRot,
+                    m_armExt,
+                    m_climber,
+                    () -> PresetManager.getClosedClimbingStart(m_drivebase.getPose()))
+                .alongWith(
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds))
+                .handleInterrupt(() -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF))
+                .handleInterrupt(() -> LEDSubsystem.setMode(LedMode.DEFAULT)));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension

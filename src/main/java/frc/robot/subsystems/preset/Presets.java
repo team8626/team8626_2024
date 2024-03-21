@@ -2,7 +2,10 @@ package frc.robot.subsystems.preset;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.FieldConstants;
+import frc.utils.AllianceFlipUtil;
+import java.util.List;
 
 public class Presets {
   /**
@@ -15,8 +18,7 @@ public class Presets {
   public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 11);
   public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
-  public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 110, 10);
-  public static final Preset kClimbReady = new Preset("CLIMB READY", 110, 7);
+  public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 85, 0);
   public static final Preset kClimbEnd = new Preset("CLIMB FINISH", 180, 0);
 
   public static final Preset kShootAmp =
@@ -45,4 +47,13 @@ public class Presets {
           "STAGE", 163.5, 0, 5000, 5000, new Pose2d(4.85, 4.5, Rotation2d.fromDegrees(-13.5)));
   public static final Preset kLongPass =
       new Preset("LONG PASS", 190, 0, 5500, 5500, new Pose2d(10, 1, Rotation2d.fromDegrees(-25)));
+
+  public static List<Pose2d> kClimbPoses =
+      List.of(
+          AllianceFlipUtil.apply(
+              new Pose2d(4.42, 4.85, new Rotation2d(Units.degreesToRadians(-60)))),
+          AllianceFlipUtil.apply(
+              new Pose2d(5.8, 4.11, new Rotation2d(Units.degreesToRadians(180)))),
+          AllianceFlipUtil.apply(
+              new Pose2d(4.42, 3.33, new Rotation2d(Units.degreesToRadians(60)))));
 }

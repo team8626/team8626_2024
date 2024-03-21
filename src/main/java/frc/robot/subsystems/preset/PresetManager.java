@@ -144,6 +144,10 @@ public class PresetManager implements ImplementDashboard {
         new Pose2d(robotX, robotY, robotRotation));
   }
 
+  public static Pose2d getClosedClimbingStart(Pose2d robotPose) {
+    return AllianceFlipUtil.apply(robotPose.nearest(Presets.kClimbPoses));
+  }
+
   @Override
   public void initDashboard() {
     SmartDashboard.putNumber("Presets/AimPreset/Launch Angle Adjust (deg)", m_angleAdjust);
