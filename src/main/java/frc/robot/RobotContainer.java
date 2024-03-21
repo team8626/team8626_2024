@@ -207,9 +207,8 @@ public class RobotContainer {
         .toggleOnTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
                 .andThen(
-                    new IntakeCommand(m_intake)
-                        .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
+                    new IntakeCommand(m_intake, m_armRot, m_armExt)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))));
 
     m_xboxController
         .leftTrigger()
