@@ -16,6 +16,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,6 +35,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.subsystems.Dashboard.DashboardUses;
 import frc.robot.subsystems.Dashboard.ImplementDashboard;
+import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
+import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
+import frc.robot.subsystems.preset.Presets;
 import frc.utils.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -60,9 +64,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
 
   private PhotonCamera front = new PhotonCamera(kATFrontCameraName);
   private PhotonCamera back = new PhotonCamera(kATBackCameraName);
-
   private Vision frontVision = new Vision(front, kATRobotToFrontCam);
   private Vision backVision = new Vision(back, kATRobotToBackCam);
+
+  private ArmExtensionSubsystem m_armExt;
+  private ArmRotationSubsystem m_armRot;
 
   /** Publisher for robot pose (AdvantageScope) */
   private StructPublisher<Pose3d> m_publisher =
@@ -73,7 +79,11 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
    *
    * @param directory Directory of swerve drive config files.
    */
-  public SwerveSubsystem(File directory) {
+  public SwerveSubsystem(
+      File directory, ArmRotationSubsystem armRot, ArmExtensionSubsystem armExt) {
+
+    m_armExt = armExt;
+    m_armRot = armRot;
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
@@ -377,12 +387,16 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
         () ->
             frontVisionEst.ifPresent(
                 est -> {
-                  var estPose = est.estimatedPose.toPose2d();
-                  // Change our trust in the measurement based on the tags we can see
-                  var estStdDevs = frontVision.getEstimationStdDevs(estPose);
+                  if (MathUtil.isNear(Presets.kStow.getExtInches(), m_armExt.getExtInches(), 1)
+                      && MathUtil.isNear(
+                          Presets.kStow.getRotDegrees(), m_armRot.getRotDegrees(), 5)) {
+                    var estPose = est.estimatedPose.toPose2d();
+                    // Change our trust in the measurement based on the tags we can see
+                    var estStdDevs = frontVision.getEstimationStdDevs(estPose);
 
-                  swerveDrive.addVisionMeasurement(
-                      est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                    swerveDrive.addVisionMeasurement(
+                        est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                  }
                 }));
   }
 
