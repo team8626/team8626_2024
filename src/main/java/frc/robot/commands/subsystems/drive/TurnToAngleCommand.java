@@ -52,6 +52,9 @@ public class TurnToAngleCommand extends Command {
         "Drive Rotation I Value", SmartDashboard.getNumber("Drive Rotation I Value", 0.7));
     SmartDashboard.putNumber(
         "Drive Rotation D Value", SmartDashboard.getNumber("Drive Rotation D Value", 0.25));
+    SmartDashboard.putNumber(
+        "Drive Rotation Integrator Zone",
+        SmartDashboard.getNumber("Drive Rotation Integrator Zone", 0));
 
     SmartDashboard.putNumber(
         "Rotation Velocity Constraint", Constants.Auton.kMaxAngularSpeedRadiansPerSecond);
@@ -68,6 +71,7 @@ public class TurnToAngleCommand extends Command {
     double rotPValue = SmartDashboard.getNumber("Drive Rotation P Value", 0);
     double rotIValue = SmartDashboard.getNumber("Drive Rotation I Value", 0);
     double rotDValue = SmartDashboard.getNumber("Drive Rotation D Value", 0);
+    double rotIZone = SmartDashboard.getNumber("Drive Rotation Integrator Zone", 0);
 
     double rotationMaxVelocity =
         SmartDashboard.getNumber(
@@ -77,11 +81,16 @@ public class TurnToAngleCommand extends Command {
             "Rotation Acceleration Constraint",
             Constants.Auton.kMaxAngularSpeedRadiansPerSecondSquared);
 
+    // TODO: Change Unit? If so, increase constraint constants
     m_rotPID.setConstraints(
         new TrapezoidProfile.Constraints(
             Math.toDegrees(rotationMaxVelocity), Math.toDegrees(rotationMaxAcceleration)));
 
     m_rotPID.setPID(rotPValue, rotIValue, rotDValue);
+
+    // TODO: Implement?
+    // Will be able to have a stronger I for steady state error without causing overshoot
+    // m_rotPID.setIZone(rotIZone);
 
     m_rotPID.setTolerance(m_angleTolerance, m_omegaTolerance);
 
