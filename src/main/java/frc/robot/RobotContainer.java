@@ -24,7 +24,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.auto.AimAndShootCommand;
+import frc.robot.commands.auto.AutoClimbCommand;
+import frc.robot.commands.auto.SemiAutoClimbCommand;
+import frc.robot.commands.auto.AimAndShoot2Command;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
 import frc.robot.commands.subsystems.arm.SetArmCommand;
@@ -62,13 +64,13 @@ public class RobotContainer {
   // DriveSubsystem m_drive = new DriveSubsystem();
   Dashboard m_dashboard;
 
-  // DriveSubsystem m_drive = new DriveSubsystem();
-  public final SwerveSubsystem m_drivebase =
-      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-
   // public final ArmSubsystem m_arm = new ArmSubsystem();
   public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
   public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
+
+  // DriveSubsystem m_drive = new DriveSubsystem();
+  public final SwerveSubsystem m_drivebase =
+      new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), m_armRot, m_armExt);
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
@@ -158,7 +160,7 @@ public class RobotContainer {
             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
     commandMap.put(
         "AimAndShoot",
-        new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
 
     commandMap.put(
         "SetupForSpeaker",
@@ -209,9 +211,8 @@ public class RobotContainer {
         .toggleOnTrue(
             new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
                 .andThen(
-                    new IntakeCommand(m_intake)
-                        .andThen(new IntakeAdjustmentCommand(m_intake))
-                        .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow))));
+                    new IntakeCommand(m_intake, m_armRot, m_armExt)
+                        .andThen(new IntakeAdjustmentCommand(m_intake))));
 
     m_xboxController
         .leftTrigger()
@@ -248,7 +249,13 @@ public class RobotContainer {
     //                                          Aim and Shoot
     m_xboxController
         .rightTrigger()
-        .toggleOnTrue(new AimAndShootCommand(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        .toggleOnTrue(
+            new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
+                .withPoseRotationTimeout(2)
+                .handleInterrupt(
+                    () ->
+                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                            .extensionFirst()));
 
     // ---------------------------------------- POV
     //                                          Robot angle
@@ -292,9 +299,25 @@ public class RobotContainer {
     // ---------------------------------------- X
     //                                          Drive to Pose
 
-    Supplier<Command> m_presetDTPSupplier =
-        () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
-    m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    // m_xboxController.x().toggleOnTrue(new DeferredCommand(m_presetDTPSupplier, Set.of()));
+    m_xboxController
+        .x()
+        .toggleOnTrue(
+            new SequentialCommandGroup(
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> m_presetStorage.get().getPose(),
+                    Constants.Auton.kDriveRotPosSetpointTolerance + Math.toRadians(3),
+                    Constants.Auton.kDriveRotVelSetpointTolerance + Math.toRadians(2),
+                    true),
+                new TranslateToPositionCommand(
+                    m_drivebase, () -> m_presetStorage.get().getPose(), true),
+                new TurnToAngleCommand(
+                    m_drivebase,
+                    () -> m_presetStorage.get().getPose(),
+                    Constants.Auton.kDriveRotPosSetpointTolerance,
+                    Constants.Auton.kDriveRotVelSetpointTolerance,
+                    true)));
 
     // ---------------------------------------- Y
     //                                          Eject
@@ -356,9 +379,9 @@ public class RobotContainer {
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
 
     m_testController
-        .povLeft()
+        .povRight()
         .onTrue(
-            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbReady)
+            new SemiAutoClimbCommand(m_armRot, m_armExt, m_climber)
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));
@@ -417,6 +440,20 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 8
     //                                          Climb
+    m_buttonBox
+        .button_8()
+        .toggleOnTrue(
+            new AutoClimbCommand(
+                    m_drivebase,
+                    m_armRot,
+                    m_armExt,
+                    m_climber,
+                    () -> PresetManager.getClosedClimbingStart(m_drivebase.getPose()))
+                .alongWith(
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds))
+                .handleInterrupt(() -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF))
+                .handleInterrupt(() -> LEDSubsystem.setMode(LedMode.DEFAULT)));
 
     // ---------------------------------------- BUTTON 9
     //                                          Zero The Arm Extension

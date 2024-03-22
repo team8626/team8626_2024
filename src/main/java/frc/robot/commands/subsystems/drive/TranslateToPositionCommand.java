@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.Supplier;
@@ -45,11 +46,11 @@ public class TranslateToPositionCommand extends Command {
     setName("Drive To Pose PID Command");
 
     SmartDashboard.putNumber(
-        "Drive Position P Value", SmartDashboard.getNumber("Drive Position P Value", 12.03125));
+        "Drive Position P Value", SmartDashboard.getNumber("Drive Position P Value", 5));
     SmartDashboard.putNumber(
         "Drive Position I Value", SmartDashboard.getNumber("Drive Position I Value", 0));
     SmartDashboard.putNumber(
-        "Drive Position D Value", SmartDashboard.getNumber("Drive Position D Value", 1));
+        "Drive Position D Value", SmartDashboard.getNumber("Drive Position D Value", 0.45));
 
     SmartDashboard.putNumber("Drive Velocity Constraint", Constants.Auton.kMaxSpeedMetersPerSecond);
     SmartDashboard.putNumber(
@@ -64,7 +65,9 @@ public class TranslateToPositionCommand extends Command {
     m_xDesiredPos = m_desiredPoseSupplier.get().getX();
     m_yDesiredPos = m_desiredPoseSupplier.get().getY();
 
-    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 0);
+    Commands.print("(" + m_xDesiredPos + "  " + m_yDesiredPos + ")").schedule();
+
+    double drivePValue = SmartDashboard.getNumber("Drive Position P Value", 1);
     double driveIValue = SmartDashboard.getNumber("Drive Position I Value", 0);
     double driveDValue = SmartDashboard.getNumber("Drive Position D Value", 0);
 
