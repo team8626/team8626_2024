@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 public class ShooterConstants {
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
-  public static final int kMaxRPM = 5700;
+  public static final int kMaxRPM = 5500;
   public static final double kFlywheelDiameterMeters = Units.inchesToMeters(3);
 
   public static final double kP_top = 0.00005;

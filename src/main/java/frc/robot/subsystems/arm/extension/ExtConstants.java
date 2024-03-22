@@ -11,7 +11,7 @@ public class ExtConstants {
   public static final int kCPR = 8192;
 
   public static final double kMinExtInches = 0;
-  public static final double kMaxExtInches = 11;
+  public static final double kMaxExtInches = 12;
   public static final double kExtPulleyDiameter = 2; // Inches
 
   // public static final float kExtMinExtRotDeg = (float) 0; // Degres

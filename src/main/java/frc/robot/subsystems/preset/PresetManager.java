@@ -27,7 +27,7 @@ public class PresetManager implements ImplementDashboard {
   StructPublisher<Pose2d> publisher_dummy =
       NetworkTableInstance.getDefault().getStructTopic("MyPreset", Pose2d.struct).publish();
 
-  private static double m_ooomf = 2; // m.s-1
+  private static double m_ooomf = 2.5; // m.s-1
   private static double m_angleAdjust = -9;
   private static double m_launchRPMTopMultiplier = 0.65;
 
@@ -105,7 +105,9 @@ public class PresetManager implements ImplementDashboard {
 
     double launchVelocity = Math.sqrt((vX * vX) + (vZ * vZ));
     double launchRPM =
-        (launchVelocity / (Math.PI * ShooterConstants.kFlywheelDiameterMeters / 2)) * 60;
+        Math.min(
+            (launchVelocity / (Math.PI * ShooterConstants.kFlywheelDiameterMeters / 2)) * 60,
+            ShooterConstants.kMaxRPM);
 
     SmartDashboard.putNumber("Presets/AimPreset/Robot X", robotX);
     SmartDashboard.putNumber("Presets/AimPreset/Robot Y", robotY);
@@ -142,6 +144,10 @@ public class PresetManager implements ImplementDashboard {
         (int) (launchRPM * m_launchRPMTopMultiplier),
         (int) launchRPM,
         new Pose2d(robotX, robotY, robotRotation));
+  }
+
+  public static Pose2d getClosedClimbingStart(Pose2d robotPose) {
+    return AllianceFlipUtil.apply(robotPose.nearest(Presets.kClimbPoses));
   }
 
   @Override

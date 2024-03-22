@@ -39,6 +39,9 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
   private int m_currentRPM_Top = 0;
 
   private boolean m_enabled = false;
+  private boolean m_dutyCycle = false;
+  private double m_dutyCycleSpeed = 0;
+
   private boolean m_isAtSpeed = false;
   private ShooterStatus m_status = ShooterStatus.IDLE;
 
@@ -155,7 +158,15 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     m_enabled = true;
   }
 
+  public void startDutyCycle(double newSpeed) {
+    m_dutyCycleSpeed = MathUtil.clamp(newSpeed, -1.0, 1.0);
+    m_dutyCycle = true;
+    m_enabled = true;
+  }
+
   public void stop() {
+    m_dutyCycleSpeed = 0;
+    m_dutyCycle = false;
     m_enabled = false;
   }
 
@@ -206,9 +217,13 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
     m_desiredRPM_Top = MathUtil.clamp(m_desiredRPM_Top, 0, ShooterConstants.kMaxRPM);
 
     if (Robot.isReal()) {
-      if (m_enabled) {
+      if (m_enabled && !m_dutyCycle) {
         m_pidController_Bottom.setReference(m_desiredRPM_Bottom, CANSparkMax.ControlType.kVelocity);
         m_pidController_Top.setReference(m_desiredRPM_Top, CANSparkMax.ControlType.kVelocity);
+      } else if (m_enabled && m_dutyCycle) {
+        m_pidController_Bottom.setReference(m_dutyCycleSpeed, CANSparkMax.ControlType.kDutyCycle);
+        m_pidController_Top.setReference(m_dutyCycleSpeed, CANSparkMax.ControlType.kDutyCycle);
+
       } else {
         m_pidController_Bottom.setReference(0, CANSparkMax.ControlType.kDutyCycle);
         m_pidController_Top.setReference(0, CANSparkMax.ControlType.kDutyCycle);
