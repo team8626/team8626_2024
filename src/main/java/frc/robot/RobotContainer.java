@@ -158,7 +158,8 @@ public class RobotContainer {
         new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
             .andThen(new IntakeCommand(m_intake))
             .andThen(new IntakeAdjustmentCommand(m_intake))
-            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
+            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)))
+            .withTimeout(5);
     commandMap.put(
         "AimAndShoot",
         new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
