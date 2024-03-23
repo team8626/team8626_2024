@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -52,6 +53,7 @@ import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.utils.AllianceFlipUtil;
 import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
@@ -323,9 +325,24 @@ public class RobotContainer {
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+
     // ---------------------------------------- A
     //                                          Toggle Slow
     m_xboxController.a().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    // ---------------------------------------- B
+    //                                          Turn to Source Angle
+    m_xboxController
+        .b()
+        .toggleOnTrue(
+            new TurnToAngleCommand(
+                m_drivebase,
+                () ->
+                    AllianceFlipUtil.apply(
+                        new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(-60)))),
+                Units.degreesToRadians(2),
+                Units.degreesToRadians(2),
+                true));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
