@@ -27,8 +27,8 @@ public class PresetManager implements ImplementDashboard {
   StructPublisher<Pose2d> publisher_dummy =
       NetworkTableInstance.getDefault().getStructTopic("MyPreset", Pose2d.struct).publish();
 
-  private static double m_ooomf = 2.5; // m.s-1
-  private static double m_angleAdjust = -9;
+  private static double m_ooomf = 2.3; // m.s-1
+  private static double m_angleAdjust = -8;
   private static double m_launchRPMTopMultiplier = 0.65;
 
   public PresetManager() {
