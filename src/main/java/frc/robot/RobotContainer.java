@@ -449,7 +449,7 @@ public class RobotContainer {
                     m_armRot,
                     m_armExt,
                     m_climber,
-                    () -> PresetManager.getClosedClimbingStart(m_drivebase.getPose()))
+                    () -> PresetManager.getClosestClimbingStart(m_drivebase.getPose()))
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds))

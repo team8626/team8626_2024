@@ -35,7 +35,7 @@ public class PresetManager implements ImplementDashboard {
     m_preset = Presets.kShootSubwoofer;
 
     // SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", angleAdjust);
-    // SmartDashboard.getNumber("Presets/Ooomf", ooomf);
+    // SmartDashboard.getNumber("Presets/AimPreset/Ooomf", ooomf);
     // SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", launchRPMTopMultiplier);
   }
 
@@ -55,7 +55,7 @@ public class PresetManager implements ImplementDashboard {
 
     // angleAdjust =
     //     SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", angleAdjust);
-    // ooomf = SmartDashboard.getNumber("Presets/Ooomf", ooomf);
+    // ooomf = SmartDashboard.getNumber("Presets/AimPreset/Ooomf", ooomf);
     // launchRPMTopMultiplier =
     //     SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", launchRPMTopMultiplier);
 
@@ -146,14 +146,14 @@ public class PresetManager implements ImplementDashboard {
         new Pose2d(robotX, robotY, robotRotation));
   }
 
-  public static Pose2d getClosedClimbingStart(Pose2d robotPose) {
+  public static Pose2d getClosestClimbingStart(Pose2d robotPose) {
     return AllianceFlipUtil.apply(robotPose.nearest(Presets.kClimbPoses));
   }
 
   @Override
   public void initDashboard() {
     SmartDashboard.putNumber("Presets/AimPreset/Launch Angle Adjust (deg)", m_angleAdjust);
-    SmartDashboard.putNumber("Presets/Ooomf", m_ooomf);
+    SmartDashboard.putNumber("Presets/AimPreset/Ooomf", m_ooomf);
     SmartDashboard.putNumber("Presets/AimPreset/TopRPMMultiplier", m_launchRPMTopMultiplier);
   }
 
@@ -165,7 +165,7 @@ public class PresetManager implements ImplementDashboard {
 
     m_angleAdjust =
         SmartDashboard.getNumber("Presets/AimPreset/Launch Angle Adjust (deg)", m_angleAdjust);
-    m_ooomf = SmartDashboard.getNumber("Presets/Ooomf", m_ooomf);
+    m_ooomf = SmartDashboard.getNumber("Presets/AimPreset/Ooomf", m_ooomf);
     m_launchRPMTopMultiplier =
         SmartDashboard.getNumber("Presets/AimPreset/TopRPMMultiplier", m_launchRPMTopMultiplier);
   }
