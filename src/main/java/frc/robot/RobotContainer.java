@@ -159,7 +159,8 @@ public class RobotContainer {
             .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
     commandMap.put(
         "AimAndShoot",
-        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
+            .withPoseRotationTimeout(2.0));
 
     commandMap.put(
         "SetupForSpeaker",
@@ -181,7 +182,8 @@ public class RobotContainer {
             m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
 
     commandMap.put(
-        "LightShooter", new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootAmp));
+        "LightShooter",
+        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootAmp));
 
     commandMap.put(
         "ShootForSpeaker",
