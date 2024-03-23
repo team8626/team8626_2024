@@ -53,16 +53,8 @@ public class RobotConstants {
     public static final String kATFrontCameraName = "Arducam_AT001";
     public static final Transform3d kATRobotToFrontCam =
         new Transform3d(
-            new Translation3d(0.197621, -0.275290, 0.502921),
-            new Rotation3d(0, Units.degreesToRadians(-22.5), Units.degreesToRadians(0)));
-
-    // Object Detection camera Constants
-    public static final String kODCameraName = "Arducam_OD003";
-    public static final Pose3d kODCamPose =
-        new Pose3d(
-            new Translation3d(0.208264, 0, 0.346066),
-            new Rotation3d(0, Units.degreesToRadians(20), 0));
-
+            new Translation3d(0.197621, 0.005613, 0.504500),
+            new Rotation3d(0, Units.degreesToRadians(-19.562757), Units.degreesToRadians(17)));
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout =
         AprilTagFields.kDefaultField.loadAprilTagLayoutField();
