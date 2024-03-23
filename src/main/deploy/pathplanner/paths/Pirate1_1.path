@@ -8,36 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7399568096428406,
-        "y": 6.099913628611104
+        "x": 0.9900000000000002,
+        "y": 7.033012701892219
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.2170740974666825,
-        "y": 7.613997965159442
+        "x": 1.9363703450249163,
+        "y": 7.583999824807686
       },
       "prevControl": {
-        "x": 0.8030177123730293,
-        "y": 7.592913853229745
+        "x": 1.3044383659451844,
+        "y": 7.532608779875297
       },
       "nextControl": {
-        "x": 3.700203309074809,
-        "y": 7.636111978881517
+        "x": 3.351968170807358,
+        "y": 7.699121473781551
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.468781679192858,
-        "y": 7.613997965159442
+        "x": 8.1,
+        "y": 7.45
       },
       "prevControl": {
-        "x": 4.948091046618307,
-        "y": 7.613997965159442
+        "x": 7.377503650439074,
+        "y": 7.687212789507619
+      },
+      "nextControl": {
+        "x": 8.741275734560398,
+        "y": 7.239453876229181
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.4,
+        "y": 6.2
+      },
+      "prevControl": {
+        "x": 6.420476510505038,
+        "y": 6.2
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,26 +62,26 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": 0,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.6516527407949164,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "PirateShooter",
   "previewStartingState": {
     "rotation": 60.0,
     "velocity": 0

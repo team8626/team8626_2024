@@ -31,15 +31,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note2-Speaker2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetupForSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note2-Speaker2"
+                }
+              }
+            ]
           }
         },
         {
@@ -68,15 +75,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note3-Speaker2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetupForSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note3-Speaker2"
+                }
+              }
+            ]
           }
         },
         {
@@ -105,15 +119,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note1-Speaker2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetupForSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note1-Speaker2"
+                }
+              }
+            ]
           }
         },
         {
