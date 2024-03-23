@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.6224950104794882,
-      "y": 4.5288255167588405
-    },
-    "rotation": -58.96606865231939
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -30,16 +24,29 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Centerline 5"
+                  "pathName": "Speaker2-Note2"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "SetupForSpeaker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetupForSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note2-Speaker2"
+                }
+              }
+            ]
           }
         },
         {
@@ -61,7 +68,51 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Centerline 4"
+                  "pathName": "Speaker2-Note3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetupForSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Note3-Speaker2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker2-Note1"
                 }
               }
             ]

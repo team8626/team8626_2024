@@ -156,10 +156,7 @@ public class RobotContainer {
     commandMap.put(
         "AutoIntake",
         new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
-            .andThen(new IntakeCommand(m_intake))
-            .andThen(new IntakeAdjustmentCommand(m_intake))
-            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)))
-            .withTimeout(5);
+            .andThen(new IntakeCommand(m_intake)));
     commandMap.put(
         "AimAndShoot",
         new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
@@ -177,6 +174,11 @@ public class RobotContainer {
             .alongWith(new IntakeAdjustmentCommand(m_intake))
             .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootStage))));
 
+    commandMap.put(
+        "PrepareAutoShot",
+        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+            .alongWith(new IntakeAdjustmentCommand(m_intake))
+            .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootSubwoofer))));
     commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
 
     commandMap.put(
