@@ -41,6 +41,7 @@ import frc.robot.commands.subsystems.shooter.ShootAmpCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
+import frc.robot.subsystems.LEDs.LEDConstants.LedErrorMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
@@ -48,6 +49,7 @@ import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.powermonitor.PowerMonitor;
 import frc.robot.subsystems.preset.PresetManager;
 import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -79,6 +81,7 @@ public class RobotContainer {
 
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public final PresetManager m_presetStorage = new PresetManager();
+  public final PowerMonitor m_buckConverterMonitor = new PowerMonitor();
 
   Supplier<Command> m_presetDTPSupplier =
       //   () ->
@@ -149,7 +152,14 @@ public class RobotContainer {
 
     m_dashboard =
         new Dashboard(
-            m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_climber, m_presetStorage);
+            m_drivebase,
+            m_armRot,
+            m_armExt,
+            m_intake,
+            m_shooter,
+            m_climber,
+            m_presetStorage,
+            m_buckConverterMonitor);
   }
 
   private void configureCommandMap() {
@@ -441,7 +451,8 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 4
     //                                          Request for Amplification to Human Player
-    m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
+    // m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
+    m_buttonBox.button_4().toggleOnTrue(m_leds.setErrorModeCommand(LedErrorMode.ERROR_GIMME_LIGHT));
 
     // ---------------------------------------- BUTTON 5
     //                                          Preset: Under Stage

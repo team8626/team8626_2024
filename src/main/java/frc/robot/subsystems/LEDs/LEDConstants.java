@@ -41,12 +41,13 @@ public class LEDConstants {
     ERROR_DRIVE_FL,
     ERROR_DRIVE_FR,
     ERROR_DRIVE_BL,
-    ERROR_DRIVE_BR
+    ERROR_DRIVE_BR,
+    ERROR_GIMME_LIGHT
   }
 
   public static enum errorSections {
     FRONT_RIGHT(0, new int[] {0, 1, 2, 3, 4}),
-    BACK_RIGHT(1, new int[] {20, 21, 22, 23, 24}),
+    BACK_RIGHT(1, new int[] {25, 26, 27, 28, 29}),
     BACK_LEFT(2, new int[] {45, 46, 47, 48, 49}),
     FRONT_LEFT(3, new int[] {70, 71, 72, 73, 74});
 
