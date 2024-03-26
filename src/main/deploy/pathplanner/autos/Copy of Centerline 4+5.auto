@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6224950104794882,
-      "y": 4.5288255167588405
+      "x": 0.74,
+      "y": 4.5
     },
-    "rotation": -58.96606865231939
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -30,22 +30,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Centerline 1"
+                  "pathName": "Speaker3-Centerline5"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetupForSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootForSpeaker"
           }
         },
         {
@@ -55,28 +43,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoIntake"
+                  "name": "SetupForSpeaker"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Centerline 2"
+                  "pathName": "Copy of Speaker3-Centerline5"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetupForStage"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootForStage"
           }
         }
       ]

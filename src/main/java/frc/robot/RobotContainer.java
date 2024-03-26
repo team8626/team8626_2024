@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -40,6 +41,7 @@ import frc.robot.commands.subsystems.shooter.ShootAmpCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
+import frc.robot.subsystems.LEDs.LEDConstants.LedErrorMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
@@ -47,11 +49,13 @@ import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.powermonitor.PowerMonitor;
 import frc.robot.subsystems.preset.PresetManager;
 import frc.robot.subsystems.preset.Presets;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.utils.AllianceFlipUtil;
 import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
@@ -77,6 +81,7 @@ public class RobotContainer {
 
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public final PresetManager m_presetStorage = new PresetManager();
+  public final PowerMonitor m_buckConverterMonitor = new PowerMonitor();
 
   Supplier<Command> m_presetDTPSupplier =
       //   () ->
@@ -118,10 +123,9 @@ public class RobotContainer {
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
 
+  public final HashMap<String, Command> commandMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
   public int invert;
-
-  public final HashMap<String, Command> commandMap = new HashMap<>();
 
   private class RotateSlowCommand extends RunCommand {
     public RotateSlowCommand(boolean clockwise) {
@@ -139,7 +143,6 @@ public class RobotContainer {
   Command driveFieldOrientedAnglularVelocity;
 
   public RobotContainer() {
-
     configureCommandMap();
     configureBindings();
     configureDefaultCommands();
@@ -149,19 +152,25 @@ public class RobotContainer {
 
     m_dashboard =
         new Dashboard(
-            m_drivebase, m_armRot, m_armExt, m_intake, m_shooter, m_climber, m_presetStorage);
+            m_drivebase,
+            m_armRot,
+            m_armExt,
+            m_intake,
+            m_shooter,
+            m_climber,
+            m_presetStorage,
+            m_buckConverterMonitor);
   }
 
   private void configureCommandMap() {
     commandMap.put(
         "AutoIntake",
         new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
-            .andThen(new IntakeCommand(m_intake))
-            .andThen(new IntakeAdjustmentCommand(m_intake))
-            .andThen(new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)));
+            .andThen(new IntakeCommand(m_intake)));
     commandMap.put(
         "AimAndShoot",
-        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt));
+        new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
+            .withPoseRotationTimeout(2.0));
 
     commandMap.put(
         "SetupForSpeaker",
@@ -175,12 +184,21 @@ public class RobotContainer {
             .alongWith(new IntakeAdjustmentCommand(m_intake))
             .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootStage))));
 
+    commandMap.put(
+        "PrepareAutoShot",
+        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+            .alongWith(new IntakeAdjustmentCommand(m_intake))
+            .alongWith(new InstantCommand(() -> m_shooter.start(Presets.kShootSubwoofer))));
     commandMap.put("Amp", new ShootFromAmpCommand(m_armRot, m_armExt, m_intake, m_shooter));
 
     commandMap.put(
         "Shooter",
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
+
+    commandMap.put(
+        "LightShooter",
+        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootAmp));
 
     commandMap.put(
         "ShootForSpeaker",
@@ -320,9 +338,24 @@ public class RobotContainer {
     // ---------------------------------------- Y
     //                                          Eject
     m_xboxController.y().toggleOnTrue(new EjectIntakeCommand(m_intake));
+
     // ---------------------------------------- A
     //                                          Toggle Slow
     m_xboxController.a().onTrue(new InstantCommand(() -> toggleSlowDrive()));
+
+    // ---------------------------------------- B
+    //                                          Turn to Source Angle
+    m_xboxController
+        .b()
+        .toggleOnTrue(
+            new TurnToAngleCommand(
+                m_drivebase,
+                () ->
+                    AllianceFlipUtil.apply(
+                        new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(-60)))),
+                Units.degreesToRadians(2),
+                Units.degreesToRadians(2),
+                true));
 
     // ---------------------------------------- TEST CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
@@ -418,7 +451,8 @@ public class RobotContainer {
 
     // ---------------------------------------- BUTTON 4
     //                                          Request for Amplification to Human Player
-    m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
+    // m_buttonBox.button_4().toggleOnTrue(m_leds.setModeCommand(LedMode.AMPLIFICATION));
+    m_buttonBox.button_4().toggleOnTrue(m_leds.setErrorModeCommand(LedErrorMode.ERROR_GIMME_LIGHT));
 
     // ---------------------------------------- BUTTON 5
     //                                          Preset: Under Stage
@@ -446,7 +480,7 @@ public class RobotContainer {
                     m_armRot,
                     m_armExt,
                     m_climber,
-                    () -> PresetManager.getClosedClimbingStart(m_drivebase.getPose()))
+                    () -> PresetManager.getClosestClimbingStart(m_drivebase.getPose()))
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds))

@@ -12,82 +12,75 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoIntake"
-                }
-              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "Speaker2-Note2"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetupForSpeaker"
-                }
               },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Note2-Speaker2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootForSpeaker"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "AutoIntake"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAndShoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker2-Note3"
+                  "pathName": "Note2-Note3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "Note3-Test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAndShoot"
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "SetupForSpeaker"
+                  "pathName": "Test-Note1"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Note3-Speaker2"
+                  "name": "AutoIntake"
                 }
               }
             ]
@@ -96,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootForSpeaker"
+            "name": "AimAndShoot"
           }
         }
       ]

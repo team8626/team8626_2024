@@ -31,28 +31,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetupForSpeaker"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Note2-Speaker2"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "ShootForSpeaker"
+            "name": "AimAndShoot"
           }
         },
         {
@@ -68,10 +49,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker2-Note3"
+                  "pathName": "Note2-Note3"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Note3-Test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAndShoot"
           }
         },
         {
@@ -81,13 +74,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SetupForSpeaker"
+                  "name": "AutoIntake"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Note3-Speaker2"
+                  "pathName": "Test-Note1"
                 }
               }
             ]
@@ -96,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootForSpeaker"
+            "name": "AimAndShoot"
           }
         }
       ]

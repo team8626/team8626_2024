@@ -18,7 +18,7 @@ public class Presets {
   public static final Preset kFloorPickup = new Preset("FLOOR PICKUP", 202, 12);
   public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
-  public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 85, 0);
+  public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 80, 0);
   public static final Preset kClimbEnd = new Preset("CLIMB FINISH", 180, 0);
 
   public static final Preset kShootAmp =
@@ -51,9 +51,9 @@ public class Presets {
   public static List<Pose2d> kClimbPoses =
       List.of(
           AllianceFlipUtil.apply(
-              new Pose2d(4.42, 4.85, new Rotation2d(Units.degreesToRadians(-60)))),
+              new Pose2d(4.59, 4.59, new Rotation2d(Units.degreesToRadians(-60)))),
           AllianceFlipUtil.apply(
-              new Pose2d(5.8, 4.11, new Rotation2d(Units.degreesToRadians(180)))),
+              new Pose2d(5.5, 4.11, new Rotation2d(Units.degreesToRadians(180)))),
           AllianceFlipUtil.apply(
-              new Pose2d(4.42, 3.33, new Rotation2d(Units.degreesToRadians(60)))));
+              new Pose2d(4.59, 3.62, new Rotation2d(Units.degreesToRadians(60)))));
 }

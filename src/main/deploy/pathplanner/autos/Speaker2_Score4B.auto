@@ -98,6 +98,37 @@
           "data": {
             "name": "ShootForSpeaker"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker2-Note1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepareAutoShot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AimAndShoot"
+          }
         }
       ]
     }

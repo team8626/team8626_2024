@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.74,
+      "y": 6.6
+    },
+    "rotation": 60.0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -24,26 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker2-Note2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetupForSpeaker"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Note2-Speaker2"
+                  "pathName": "Pirate1_1"
                 }
               }
             ]
@@ -52,7 +39,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootForSpeaker"
+            "name": "LightShooter"
           }
         },
         {
@@ -68,10 +55,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker2-Note3"
+                  "pathName": "Pirate1_2"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LightShooter"
           }
         },
         {
@@ -81,13 +74,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SetupForSpeaker"
+                  "name": "AutoIntake"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Note3-Speaker2"
+                  "pathName": "Pirate1_3"
                 }
               }
             ]
@@ -96,7 +89,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootForSpeaker"
+            "name": "SetupForStage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootForStage"
           }
         }
       ]

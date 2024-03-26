@@ -97,6 +97,18 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   /**
+   * Set color of the specified Error Section
+   *
+   * @param section
+   * @param color
+   */
+  public static void errorSolid(errorSections section, Color color) {
+    for (int j = 0; j < section.getIndexes().length; j++) {
+      int ledIndex = section.getIndexes()[j];
+      m_buffer.setLED(ledIndex, color);
+    }
+  }
+  /**
    * Set color of the specified Error Sections
    *
    * @param sections
@@ -192,7 +204,11 @@ public class LEDSubsystem extends SubsystemBase {
       case ERROR_DRIVE_BR:
         error(errorSections.BACK_RIGHT, Color.kYellowGreen);
         break;
+      case ERROR_GIMME_LIGHT:
+        errorSolid(errorSections.BACK_LEFT, Color.kWhite);
+        errorSolid(errorSections.BACK_RIGHT, Color.kWhite);
 
+        break;
       case NO_ERROR:
       default:
         // Do Nothing
@@ -317,5 +333,10 @@ public class LEDSubsystem extends SubsystemBase {
   public Command setModeCommand(LedMode newMode) {
     return startEnd(() -> setMode(newMode), () -> setMode(LedMode.DEFAULT))
         .withName("[LEDManager] SetMode");
+  }
+
+  public Command setErrorModeCommand(LedErrorMode newMode) {
+    return startEnd(() -> setErrorMode(newMode), () -> setErrorMode(LedErrorMode.NO_ERROR))
+        .withName("[LEDManager] SetErrorMode");
   }
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6224950104794882,
-        "y": 4.5288255167588405
+        "x": 0.74,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.727929260070958,
-        "y": 1.4492165996419513
+        "x": 2.84543424959147,
+        "y": 1.4203910828831108
       },
       "isLocked": false,
       "linkedName": "Source Side of Speaker"
