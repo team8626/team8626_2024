@@ -148,6 +148,11 @@ public class ArmRotationSubsystem extends SubsystemBase implements ImplementDash
     return retval;
   }
 
+  public void setMotorsMode(IdleMode mode) {
+    m_rotationMotor_L.setIdleMode(mode);
+    m_rotationMotor_R.setIdleMode(mode);
+  }
+
   public double getRotDegrees() {
     return m_currentAngleDeg;
   }

@@ -126,6 +126,10 @@ public class ArmExtensionSubsystem extends SubsystemBase implements ImplementDas
     }
   }
 
+  public void setMotorsMode(IdleMode mode) {
+    m_extensionMotor_L.setIdleMode(mode);
+  }
+
   public void reset() {
     // TODO: Move arm to safe angle for retracting
     m_armZeroed = false;
