@@ -19,7 +19,7 @@ public class Presets {
   public static final Preset kSourcePickup = new Preset("SOURCE PICKUP", 127, 11);
 
   public static final Preset kClimbPreset = new Preset("CLIMB PRESET", 80, 0);
-  public static final Preset kClimbEnd = new Preset("CLIMB FINISH", 180, 0);
+  public static final Preset kClimbEnd = new Preset("CLIMB FINISH", 202, 0);
 
   public static final Preset kShootAmp =
       new Preset(
