@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AimAndShoot2Command;
 import frc.robot.commands.auto.AutoClimbCommand;
+import frc.robot.commands.auto.SemiAutoClimbBrakeCommand;
 import frc.robot.commands.auto.SemiAutoClimbCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
@@ -412,7 +413,7 @@ public class RobotContainer {
     m_testController
         .povRight()
         .onTrue(
-            new SemiAutoClimbCommand(m_armRot, m_armExt, m_climber)
+            new SemiAutoClimbBrakeCommand(m_armRot, m_armExt, m_climber)
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.RAINBOW), m_leds)));

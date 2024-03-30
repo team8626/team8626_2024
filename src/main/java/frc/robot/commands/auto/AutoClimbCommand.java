@@ -64,6 +64,6 @@ public class AutoClimbCommand extends SequentialCommandGroup {
             //     true),
             new SetArmCommand(armRot, armExt, () -> Presets.kClimbPreset),
             new TranslateToPositionCommand(drive, () -> climbPoseSupplier.get(), true),
-            new SemiAutoClimbCommand(armRot, armExt, climber)));
+            new SemiAutoClimbBrakeCommand(armRot, armExt, climber)));
   }
 }
