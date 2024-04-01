@@ -218,8 +218,8 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
 
     if (Robot.isReal()) {
       if (m_enabled && !m_dutyCycle) {
-        m_pidController_Bottom.setReference(m_desiredRPM_Bottom, CANSparkMax.ControlType.kVelocity);
-        m_pidController_Top.setReference(m_desiredRPM_Top, CANSparkMax.ControlType.kVelocity);
+        m_pidController_Bottom.setReference(m_desiredRPM_Bottom / ShooterConstants.kShooterGearRatio, CANSparkMax.ControlType.kVelocity);
+        m_pidController_Top.setReference(m_desiredRPM_Top / ShooterConstants.kShooterGearRatio, CANSparkMax.ControlType.kVelocity);
       } else if (m_enabled && m_dutyCycle) {
         m_pidController_Bottom.setReference(m_dutyCycleSpeed, CANSparkMax.ControlType.kDutyCycle);
         m_pidController_Top.setReference(m_dutyCycleSpeed, CANSparkMax.ControlType.kDutyCycle);
@@ -228,8 +228,8 @@ public class ShooterSubsystem extends SubsystemBase implements ImplementDashboar
         m_pidController_Bottom.setReference(0, CANSparkMax.ControlType.kDutyCycle);
         m_pidController_Top.setReference(0, CANSparkMax.ControlType.kDutyCycle);
       }
-      m_currentRPM_Bottom = (int) m_encoder_Bottom.getVelocity();
-      m_currentRPM_Top = (int) m_encoder_Top.getVelocity();
+      m_currentRPM_Bottom = (int) m_encoder_Bottom.getVelocity()  * ShooterConstants.kShooterGearRatio;
+      m_currentRPM_Top = (int) m_encoder_Top.getVelocity() * ShooterConstants.kShooterGearRatio;
 
     } else if (Robot.isSimulation()) {
       if (m_enabled) {
