@@ -38,6 +38,7 @@ import frc.robot.commands.subsystems.intake.EjectIntakeCommand;
 import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShootAmpCommand;
+import frc.robot.commands.subsystems.shooter.SimpleShooterCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
@@ -166,7 +167,7 @@ public class RobotContainer {
     commandMap.put(
         "AutoIntake",
         new SetArmCommand(m_armRot, m_armExt, () -> Presets.kFloorPickup)
-            .andThen(new IntakeCommand(m_intake)));
+            .andThen(new IntakeCommand(m_intake, m_armRot, m_armExt)));
     commandMap.put(
         "AimAndShoot",
         new AimAndShoot2Command(m_drivebase, m_intake, m_shooter, m_armRot, m_armExt)
@@ -196,21 +197,21 @@ public class RobotContainer {
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer));
 
-    commandMap.put(
-        "LightShooter",
-        new SpinAndShootCommand(m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootAmp));
+    commandMap.put("LightShooter", new SimpleShooterCommand(Presets.kShootAmp, m_shooter));
 
     commandMap.put(
         "ShootForSpeaker",
         new SpinAndShootCommand(
                 m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootSubwoofer)
-            .doNotStopFlyWheels());
+            .doNotStopFlyWheels()
+            .withTimeout(3));
 
     commandMap.put(
         "ShootForStage",
         new SpinAndShootCommand(
             m_intake, m_shooter, m_armRot, m_armExt, () -> Presets.kShootStage));
 
+    commandMap.put("LED", new InstantCommand(() -> LEDSubsystem.setMode(LedMode.FOLLOWNOTE)));
     NamedCommands.registerCommands(commandMap);
   }
 

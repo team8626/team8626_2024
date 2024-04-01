@@ -146,9 +146,9 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
             new PIDConstants(5.0, 0.0, 0.0),
             // Translation PID constants
             new PIDConstants(
-                swerveDrive.swerveController.config.headingPIDF.p,
-                swerveDrive.swerveController.config.headingPIDF.i,
-                swerveDrive.swerveController.config.headingPIDF.d),
+                0.05, /*swerveDrive.swerveController.config.headingPIDF.p*/
+                0, // swerveDrive.swerveController.config.headingPIDF.i,
+                0), // swerveDrive.swerveController.config.headingPIDF.d),
             // Rotation PID constants
             4.5,
             // Max module speed, in m/s
