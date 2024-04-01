@@ -44,6 +44,7 @@ import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedErrorMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.arm.extension.ArmExtensionIOReal;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -70,7 +71,7 @@ public class RobotContainer {
 
   // public final ArmSubsystem m_arm = new ArmSubsystem();
   public final ArmRotationSubsystem m_armRot = new ArmRotationSubsystem();
-  public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem();
+  public final ArmExtensionSubsystem m_armExt = new ArmExtensionSubsystem(new ArmExtensionIOReal());
 
   // DriveSubsystem m_drive = new DriveSubsystem();
   public final SwerveSubsystem m_drivebase =
@@ -155,7 +156,7 @@ public class RobotContainer {
         new Dashboard(
             m_drivebase,
             m_armRot,
-            m_armExt,
+            m_armExt.getIO(),
             m_intake,
             m_shooter,
             m_climber.getIO(),
