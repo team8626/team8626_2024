@@ -46,6 +46,7 @@ import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
+import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -77,7 +78,7 @@ public class RobotContainer {
 
   public final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
-  public final ClimberSubsystem m_climber = new ClimberSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem(new ClimberIOReal());
 
   public final LEDSubsystem m_leds = new LEDSubsystem();
   public final PresetManager m_presetStorage = new PresetManager();
@@ -157,7 +158,7 @@ public class RobotContainer {
             m_armExt,
             m_intake,
             m_shooter,
-            m_climber,
+            m_climber.getIO(),
             m_presetStorage,
             m_buckConverterMonitor);
   }
