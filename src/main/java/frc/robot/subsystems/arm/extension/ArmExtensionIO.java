@@ -17,9 +17,6 @@ public interface ArmExtensionIO extends ImplementDashboard {
     public boolean armZeroed = false;
     public boolean atSetpoint;
     public double leftMotorAmperage;
-    public double m_extensionP;
-    public double m_extensionFeedForward;
-    public double m_extensionD;
   }
 
   public default void updateInputs(ArmExtensionInputs inputs) {}

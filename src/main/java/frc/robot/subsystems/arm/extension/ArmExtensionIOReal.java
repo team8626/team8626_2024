@@ -37,10 +37,11 @@ public class ArmExtensionIOReal implements ArmExtensionIO {
   private boolean m_armIsResetting = false;
   private boolean m_armZeroed = false;
 
-  private double m_kExtensionP = ExtConstants.kExtP;
-  private double m_kExtensionI = ExtConstants.kExtI;
-  private double m_kExtensionD = ExtConstants.kExtD;
-  private double m_kExtensionFF = ExtConstants.kExtFF;
+  // PID and FF are outputs here as they are updated in updateDashboard
+  @AutoLogOutput private double m_kExtensionP = ExtConstants.kExtP;
+  @AutoLogOutput private double m_kExtensionI = ExtConstants.kExtI;
+  @AutoLogOutput private double m_kExtensionD = ExtConstants.kExtD;
+  @AutoLogOutput private double m_kExtensionFF = ExtConstants.kExtFF;
   private double m_kExtensionMaxOutput = ExtConstants.kExtMaxOutput;
   private double m_kExtensionMinOutput = ExtConstants.kExtMinOutput;
 
@@ -196,9 +197,6 @@ public class ArmExtensionIOReal implements ArmExtensionIO {
     inputs.armZeroed = m_armZeroed;
     inputs.atSetpoint = atSetpoint();
     inputs.leftMotorAmperage = m_extensionMotor_L.getOutputCurrent();
-    inputs.m_extensionP = m_kExtensionP;
-    inputs.m_extensionD = m_kExtensionD;
-    inputs.m_extensionFeedForward = m_kExtensionFF;
   }
 
   @Override
@@ -226,7 +224,6 @@ public class ArmExtensionIOReal implements ArmExtensionIO {
     if ((extP != m_kExtensionP)) {
       m_theOtherPIDController.setP(extP);
       // m_extensionPIDController.setP(extP);
-
       m_kExtensionP = extP;
     }
     if ((extD != m_kExtensionD)) {
