@@ -43,6 +43,7 @@ public class IntakeSubsystem extends SubsystemBase{
   }
   @Override
   public void periodic() {
+    m_io.periodic();
     m_io.updateInputs(inputs);
     Logger.processInputs("IntakeSubsystem", inputs);
   }

@@ -22,13 +22,28 @@ public interface IntakeIO extends ImplementDashboard {
   }
 
   public default void updateInputs(IntakeIOInputs inputs) {}
-  ;
-  public default void setSpeed(double speed){};
-  public default void start(){};
-  public default void start(double speed){};
-  public default void stop(){};
-  public default void setStatus(IntakeStatus status){};
-  public boolean isFull();
-  public boolean isEmpty();
-  public boolean limitReached();
+
+  public default void periodic() {}
+
+  public default void setSpeed(double speed){}
+
+  public default void start(){}
+
+  public default void start(double speed){}
+
+  public default void stop(){}
+
+  public default void setStatus(IntakeStatus status){}
+
+  public default boolean isFull() {
+    return false;
+  }
+
+  public default boolean isEmpty() {
+    return true;
+  }
+
+  public default boolean limitReached() {
+    return false;
+  }
 }

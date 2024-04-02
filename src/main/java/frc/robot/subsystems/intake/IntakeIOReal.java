@@ -8,10 +8,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Dashboard.DashboardUses;
-import frc.robot.subsystems.Dashboard.ImplementDashboard;
 import frc.robot.subsystems.intake.IntakeConstants.IntakeStates.IntakeStatus;
 
 public class IntakeIOReal implements IntakeIO {
@@ -19,9 +17,8 @@ public class IntakeIOReal implements IntakeIO {
   // MotorType.kBrushless);
   private CANSparkMax m_motor1;
   private CANSparkMax m_motor2;
-  private DigitalInput m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
-  private DigitalInput m_infrared2 = new DigitalInput(IntakeConstants.kIRSensor2);
-
+  private DigitalInput m_infrared1; 
+  private DigitalInput m_infrared2;
   private double m_speed = IntakeConstants.kSpeed_Intake;
   private boolean m_enabled = false;
   private IntakeStatus m_status = IntakeStatus.IDLE;
@@ -33,6 +30,8 @@ public class IntakeIOReal implements IntakeIO {
   public IntakeIOReal() {
     m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
     m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
+    m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
+    m_infrared2 = new DigitalInput(IntakeConstants.kIRSensor2);
 
     m_motor1.setInverted(false);
     m_motor2.setInverted(false);
@@ -99,6 +98,17 @@ public class IntakeIOReal implements IntakeIO {
   public void setStatus(IntakeStatus newStatus) {
     m_status = newStatus;
     System.out.printf("[INTAKE] New Status: %s\n", m_status.getString());
+  }
+
+  @Override
+  public void periodic() {
+    if (Robot.isReal()) {
+      m_bottomSensor = !m_infrared1.get();
+      m_exitSensor = !m_infrared2.get();
+    } else if (Robot.isSimulation()) {
+      m_bottomSensor = SmartDashboard.getBoolean("Intake/BottomSensor", m_bottomSensor);
+      m_exitSensor = SmartDashboard.getBoolean("Intake/ExitSensor", m_exitSensor);
+    }
   }
 
   @Override
