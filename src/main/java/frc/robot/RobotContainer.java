@@ -49,6 +49,7 @@ import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.climber.ClimberIOReal;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.powermonitor.PowerMonitor;
 import frc.robot.subsystems.preset.PresetManager;
@@ -76,7 +77,7 @@ public class RobotContainer {
   public final SwerveSubsystem m_drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"), m_armRot, m_armExt);
 
-  public final IntakeSubsystem m_intake = new IntakeSubsystem();
+  public final IntakeSubsystem m_intake = new IntakeSubsystem(new IntakeIOReal());
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final ClimberSubsystem m_climber = new ClimberSubsystem(new ClimberIOReal());
 
@@ -156,7 +157,7 @@ public class RobotContainer {
             m_drivebase,
             m_armRot,
             m_armExt,
-            m_intake,
+            m_intake.getIO(),
             m_shooter,
             m_climber.getIO(),
             m_presetStorage,
