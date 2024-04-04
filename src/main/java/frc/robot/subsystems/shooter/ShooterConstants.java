@@ -10,26 +10,27 @@ import edu.wpi.first.math.util.Units;
 public class ShooterConstants {
   public static final int kCANMotor1 = 24;
   public static final int kCANMotor2 = 25;
-  public static final int kMaxRPM = 5500;
+  public static final int kShooterGearRatio = 2;
+  public static final int kMaxRPM = 5500 * kShooterGearRatio; // Max NEO Speed * Gear Ratio;
   public static final double kFlywheelDiameterMeters = Units.inchesToMeters(3);
 
-  public static final double kP_top = 0.00005;
-  public static final double kI_top = 0.0000004;
-  public static final double kD_top = 0.0;
-  public static final double kIz_top = 5000;
-  public static final double kFF_top = 0.0;
+  public static final double kP_top = 0.00055;
+  public static final double kI_top = 0.000;
+  public static final double kD_top = 0.000;
+  public static final double kIz_top = 2500;
+  public static final double kFF_top = 0.000210;
   public static final double kMaxOutput_top = 1;
   public static final double kMinOutput_top = -1;
 
-  public static final double kP_bottom = 0.00005;
-  public static final double kI_bottom = 0.0000004;
-  public static final double kD_bottom = 0.0;
-  public static final double kIz_bottom = 5000;
-  public static final double kFF_bottom = 0;
+  public static final double kP_bottom = 0.00055;
+  public static final double kI_bottom = 0.000;
+  public static final double kD_bottom = 0.000;
+  public static final double kIz_bottom = 2500;
+  public static final double kFF_bottom = 0.00020;
   public static final double kMaxOutput_bottom = 1;
   public static final double kMinOutput_bottom = -1;
 
-  public static final int kRPMTolerance = 10;
+  public static final int kRPMTolerance = 75;
 
   public class ShooterStates {
     public static enum ShooterStatus {

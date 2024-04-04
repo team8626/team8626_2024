@@ -6,6 +6,7 @@ package frc.robot.commands.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
@@ -84,6 +85,8 @@ public class SpinAndShootCommand extends Command {
     m_intake.stop();
     m_timer.stop();
     LEDSubsystem.setMode(LedMode.DEFAULT);
+
+    SmartDashboard.putNumber("Commands/SpinAndShootCommand/Duration", m_timer.get());
   }
 
   // Returns true when the command should end.
@@ -94,7 +97,6 @@ public class SpinAndShootCommand extends Command {
     if (m_intake.isEmpty()) {
       m_timer.start();
 
-      // TODO: Can we mnake it shorter than 1s?
       if (m_timer.hasElapsed(0.25) || m_stopShooter) {
         retval = true;
       }

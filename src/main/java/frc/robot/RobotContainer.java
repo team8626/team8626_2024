@@ -408,7 +408,13 @@ public class RobotContainer {
                 .alongWith(
                     new InstantCommand(
                         () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
-
+    m_testController
+        .povLeft()
+        .toggleOnTrue(
+            new SetArmCommand(m_armRot, m_armExt, () -> Presets.kClimbEnd)
+                .alongWith(
+                    new InstantCommand(
+                        () -> LEDSubsystem.setAmbienceMode(LedAmbienceMode.OFF), m_leds)));
     m_testController
         .povRight()
         .onTrue(
