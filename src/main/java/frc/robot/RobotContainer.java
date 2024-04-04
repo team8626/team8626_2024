@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.auto.AimAndShoot2Command;
 import frc.robot.commands.auto.AutoClimbCommand;
@@ -39,11 +38,14 @@ import frc.robot.commands.subsystems.intake.IntakeAdjustmentCommand;
 import frc.robot.commands.subsystems.intake.IntakeCommand;
 import frc.robot.commands.subsystems.shooter.ShootAmpCommand;
 import frc.robot.commands.subsystems.shooter.SpinAndShootCommand;
+import frc.robot.subsystems.ButtonBoxOI;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.LEDs.LEDConstants.LedAmbienceMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedErrorMode;
 import frc.robot.subsystems.LEDs.LEDConstants.LedMode;
 import frc.robot.subsystems.LEDs.LEDSubsystem;
+import frc.robot.subsystems.TestControllerIO;
+import frc.robot.subsystems.XboxControllerOI;
 import frc.robot.subsystems.arm.extension.ArmExtensionSubsystem;
 import frc.robot.subsystems.arm.rotation.ArmRotationSubsystem;
 import frc.robot.subsystems.climber.ClimberIOReal;
@@ -57,7 +59,6 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.utils.AllianceFlipUtil;
-import frc.utils.CommandButtonController;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
@@ -111,14 +112,11 @@ public class RobotContainer {
   Supplier<Command> m_presetAutoDTPSupplier =
       () -> new DriveToPoseTrajPIDCommand(m_drivebase, m_presetStorage.get().getPose(), false);
 
-  private final CommandXboxController m_xboxController =
-      new CommandXboxController(Constants.OperatorConstants.kXboxControllerPort);
+  private final XboxControllerOI m_xboxController = new XboxControllerOI();
 
-  private final CommandXboxController m_testController =
-      new CommandXboxController(Constants.OperatorConstants.kTestControllerPort);
+  private final TestControllerIO m_testController = new TestControllerIO();
 
-  private final CommandButtonController m_buttonBox =
-      new CommandButtonController(Constants.OperatorConstants.kButtonBoxPort);
+  private final ButtonBoxOI m_buttonBox = new ButtonBoxOI();
 
   private boolean isSlowDrive = false;
   private double driveSpeedFactor = 1;
@@ -244,15 +242,6 @@ public class RobotContainer {
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings
-    m_xboxController
-        .rightBumper()
-        .and(() -> m_presetStorage.get() != Presets.kShootAmp)
-        .toggleOnTrue(
-            new SpinAndShootCommand(
-                    m_intake, m_shooter, m_armRot, m_armExt, () -> m_presetStorage.get())
-                .andThen(
-                    new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow).extensionFirst()));
-
     m_xboxController
         .rightBumper()
         .and(() -> m_presetStorage.get() == Presets.kShootAmp)
