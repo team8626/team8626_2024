@@ -215,6 +215,10 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    m_xboxController.createLogging();
+    m_testController.createLogging();
+    m_buttonBox.createLogging();
+
     // ---------------------------------------- MAIN CONTROLLER -------------------------
     // ----------------------------------------------------------------------------------
     //
