@@ -34,8 +34,8 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
     m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
     m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
 
-    m_motor1.setInverted(true);
-    m_motor2.setInverted(true);
+    m_motor1.setInverted(false);
+    m_motor2.setInverted(false);
   }
 
   public void setSpeed(double speed) {
