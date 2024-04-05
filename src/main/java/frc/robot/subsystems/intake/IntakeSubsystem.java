@@ -39,7 +39,6 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
     m_motor1.setSmartCurrentLimit(20);
     m_motor2.setSmartCurrentLimit(20);
-
   }
 
   public void setSpeed(double speed) {
