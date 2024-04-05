@@ -20,28 +20,28 @@
         "y": 0.7571153451458685
       },
       "prevControl": {
-        "x": 7.8417161681299525,
-        "y": 0.14072405335887817
+        "x": 8.438583768248833,
+        "y": 0.30888425755925014
       },
       "nextControl": {
-        "x": 8.25419984359314,
-        "y": 1.8532973905605548
+        "x": 7.528783196455281,
+        "y": 1.2183298996227623
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.4,
-        "y": 1.8456055597007024
+        "x": 3.840360092757223,
+        "y": 2.9342415027422653
       },
       "prevControl": {
-        "x": 6.420476510505038,
-        "y": 1.8456055597007024
+        "x": 4.526724734005026,
+        "y": 2.232971382609432
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "yes"
     }
   ],
   "rotationTargets": [
@@ -61,11 +61,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": -33.68508809875431,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "PirateShooter",
+  "folder": null,
   "previewStartingState": {
     "rotation": -60.0,
     "velocity": 0
