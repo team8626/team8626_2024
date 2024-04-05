@@ -31,13 +31,11 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushed);
-    // TODO: Use Same Motors
-
+    m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1, MotorType.kBrushless);
     m_motor2 = new CANSparkMax(IntakeConstants.kCANMotor2, MotorType.kBrushless);
 
     m_motor1.setInverted(true);
-    m_motor2.setInverted(false);
+    m_motor2.setInverted(true);
   }
 
   public void setSpeed(double speed) {
