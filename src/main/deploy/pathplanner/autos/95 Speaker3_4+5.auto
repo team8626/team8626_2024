@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6224950104794882,
-      "y": 4.5288255167588405
+      "x": 0.74,
+      "y": 4.5
     },
-    "rotation": -58.96606865231939
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -18,19 +18,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pirate2_1"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "AutoIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Centerline 5"
                 }
               }
             ]
@@ -39,38 +39,26 @@
         {
           "type": "named",
           "data": {
-            "name": "SetupForSpeaker"
+            "name": "AimAndShoot"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ShootForSpeaker"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pirate2_2"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "AutoIntake"
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Centerline 4"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PrepareAutoShot"
           }
         },
         {

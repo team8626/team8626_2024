@@ -15,7 +15,7 @@ public class IntakeConstants {
   public static final double kSpeed_Intake = 0.9;
   public static final double kSpeed_Coast = 0.3;
   public static final double kSpeed_Shoot = 1;
-  public static final double kSpeed_Adjust = -0.1;
+  public static final double kSpeed_Adjust = -0.4;
   public static final double kSpeed_Discard = -1;
 
   public class IntakeStates {

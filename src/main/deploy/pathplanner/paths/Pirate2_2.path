@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.4,
-        "y": 1.85
+        "x": 3.840360092757223,
+        "y": 2.9342415027422653
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.546613392705953,
-        "y": 1.9457916566502775
+        "x": 5.416837176266945,
+        "y": 0.9537131111299264
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "yes"
     },
     {
       "anchor": {
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 5.4,
-        "y": 1.85
+        "x": 4.222736102879613,
+        "y": 4.813341376682754
       },
       "prevControl": {
-        "x": 6.4,
-        "y": 1.85
+        "x": 5.222736102879613,
+        "y": 4.813341376682754
       },
       "nextControl": null,
       "isLocked": false,
@@ -59,7 +59,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "PirateShooter",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

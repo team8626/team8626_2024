@@ -236,10 +236,10 @@ public class RobotContainer {
             new SetArmCommand(m_armRot, m_armExt, () -> Presets.kSourcePickup)
                 .andThen(
                     new IntakeCommand(m_intake)
-                        .andThen(new IntakeAdjustmentCommand(m_intake))
                         .andThen(
                             new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
-                                .extensionFirst())));
+                                .extensionFirst())
+                        .andThen(new IntakeAdjustmentCommand(m_intake))));
 
     // ---------------------------------------- Right Bumper
     //                                          Shooting to stored preset settings

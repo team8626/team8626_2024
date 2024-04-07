@@ -17,8 +17,8 @@ import frc.robot.subsystems.intake.IntakeConstants.IntakeStates.IntakeStatus;
 public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard {
   // private CANSparkMax m_motor1 = new CANSparkMax(IntakeConstants.kCANMotor1,
   // MotorType.kBrushless);
-  private CANSparkMax m_motor1;
-  private CANSparkMax m_motor2;
+  private CANSparkMax m_motor1; // Bottom Motor
+  private CANSparkMax m_motor2; // Top Motor
   private DigitalInput m_infrared1 = new DigitalInput(IntakeConstants.kIRSensor1);
   private DigitalInput m_infrared2 = new DigitalInput(IntakeConstants.kIRSensor2);
 
@@ -36,6 +36,12 @@ public class IntakeSubsystem extends SubsystemBase implements ImplementDashboard
 
     m_motor1.setInverted(false);
     m_motor2.setInverted(false);
+
+    m_motor1.setSmartCurrentLimit(20);
+    m_motor2.setSmartCurrentLimit(20);
+
+    m_motor1.burnFlash();
+    m_motor2.burnFlash();
   }
 
   public void setSpeed(double speed) {
