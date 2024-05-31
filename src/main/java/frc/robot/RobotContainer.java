@@ -25,8 +25,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.auto.AimAndDriveCommand;
 import frc.robot.commands.auto.AimAndShoot2Command;
 import frc.robot.commands.auto.AutoClimbCommand;
+import frc.robot.commands.auto.EasyAmpCommand;
 import frc.robot.commands.auto.SemiAutoClimbCommand;
 import frc.robot.commands.miscellaneous.RumbleCommand;
 import frc.robot.commands.presets.ShootFromAmpCommand;
@@ -122,6 +124,8 @@ public class RobotContainer {
   private boolean isSlowDrive = false;
   private double driveSpeedFactor = 1;
   private double rotationSpeedFactor = 1;
+
+  private boolean isEasyAmp = false;
 
   public final HashMap<String, Command> commandMap = new HashMap<>();
   public final SendableChooser<Command> m_autoChooser;
@@ -353,7 +357,7 @@ public class RobotContainer {
                 () ->
                     AllianceFlipUtil.apply(
                         new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(-60)))),
-                Units.degreesToRadians(2),
+                Units.degreesToRadians(4),
                 Units.degreesToRadians(2),
                 true));
 
@@ -449,11 +453,23 @@ public class RobotContainer {
         .button_2()
         .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootSubwoofer)));
 
+    // // ---------------------------------------- BUTTON 3
+    // //                                          Preset:  Podium
+    // m_buttonBox
+    //     .button_3()
+    //     .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootPodium)));
+
     // ---------------------------------------- BUTTON 3
-    //                                          Preset:  Podium
+    //                                          Preset:  Podium (Enable AutoAimDrive)
     m_buttonBox
         .button_3()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootPodium)));
+        .toggleOnTrue(
+            new AimAndDriveCommand(
+                    m_drivebase, m_intake, m_shooter, m_armRot, m_armExt, m_xboxController, this)
+                .handleInterrupt(
+                    () ->
+                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                            .extensionFirst()));
 
     // ---------------------------------------- BUTTON 4
     //                                          Request for Amplification to Human Player
@@ -461,10 +477,18 @@ public class RobotContainer {
     m_buttonBox.button_4().toggleOnTrue(m_leds.setErrorModeCommand(LedErrorMode.ERROR_GIMME_LIGHT));
 
     // ---------------------------------------- BUTTON 5
-    //                                          Preset: Under Stage
+    //                                          Preset: Stage (Enable EasyAmp)
     m_buttonBox
         .button_5()
-        .onTrue(new InstantCommand(() -> m_presetStorage.set(Presets.kShootStage)));
+        .toggleOnTrue(
+            new EasyAmpCommand(m_drivebase, m_testController, this)
+                .andThen(
+                    new SetArmCommand(m_armRot, m_armExt, () -> Presets.kShootAmp)
+                        .andThen(new ShootAmpCommand(m_intake, m_shooter)))
+                .handleInterrupt(
+                    () ->
+                        new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
+                            .extensionFirst()));
 
     // ---------------------------------------- BUTTON 6
     //                                          Preset: Long Pass
@@ -522,6 +546,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
+
     // AbsoluteDriveAdv closedAbsoluteDriveAdv =
     //     new AbsoluteDriveAdv(
     //         m_drivebase,
