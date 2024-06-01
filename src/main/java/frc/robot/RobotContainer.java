@@ -466,7 +466,7 @@ public class RobotContainer {
         .toggleOnTrue(
             new AimAndDriveCommand(
                     m_drivebase, m_intake, m_shooter, m_armRot, m_armExt, m_xboxController, this)
-                    .alongWith(new InstantCommand(() -> m_presetStorage.set(Presets.kShootSubwoofer)))
+                .alongWith(new InstantCommand(() -> m_presetStorage.set(Presets.kShootSubwoofer)))
                 .handleInterrupt(
                     () ->
                         new SetArmCommand(m_armRot, m_armExt, () -> Presets.kStow)
@@ -483,7 +483,7 @@ public class RobotContainer {
         .button_5()
         .toggleOnTrue(
             new EasyAmpCommand(m_drivebase, m_xboxController, this)
-            .alongWith(new InstantCommand(() -> m_presetStorage.set(Presets.kShootAmp)))
+                .alongWith(new InstantCommand(() -> m_presetStorage.set(Presets.kShootAmp)))
                 .andThen(
                     new SetArmCommand(m_armRot, m_armExt, () -> Presets.kShootAmp)
                         .andThen(new ShootAmpCommand(m_intake, m_shooter)))
