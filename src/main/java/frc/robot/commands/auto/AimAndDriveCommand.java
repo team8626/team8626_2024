@@ -139,9 +139,7 @@ public class AimAndDriveCommand extends Command {
 
     Preset targetPreset = PresetManager.getAimAndShootPreset(m_drive.getPose());
     m_targetPose = targetPreset.getPose();
-
-    // Initiate al Subsystems
-    LEDSubsystem.setMode(LedMode.AUTOSHOOT);
+    
     m_shooter.start(targetPreset);
     m_armRot.setAngleDeg(targetPreset.getRotDegrees());
     m_armExt.setLengthInches(targetPreset.getExtInches());

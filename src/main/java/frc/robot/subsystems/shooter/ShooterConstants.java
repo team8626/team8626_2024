@@ -18,7 +18,7 @@ public class ShooterConstants {
   public static final double kI_top = 0.000;
   public static final double kD_top = 0.000;
   public static final double kIz_top = 2500;
-  public static final double kFF_top = 0.000210;
+  public static final double kFF_top = 0.00020;
   public static final double kMaxOutput_top = 1;
   public static final double kMinOutput_top = -1;
 
