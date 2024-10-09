@@ -21,7 +21,7 @@ public class RotConstants {
   public static final double kRotD = 0.00;
   public static final double kRotFF = 0.00;
   public static final double kRotMinOutput = -1;
-  public static final double kRotMaxOutput = +0.5;
+  public static final double kRotMaxOutput = +1;
 
   public static final double kMaxAngleForSafeRetraction = 195;
 

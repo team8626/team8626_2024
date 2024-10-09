@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.74,
-        "y": 4.5
+        "x": 0.7596767137908951,
+        "y": 4.521407774291274
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7400000000000009,
-        "y": 3.5
+        "x": 1.7596767137908969,
+        "y": 3.5214077742912737
       },
       "isLocked": false,
       "linkedName": "Source Side of Speaker"
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 0.74,
-        "y": 4.5
+        "x": 3.325616304003409,
+        "y": 3.015538716256861
       },
       "prevControl": {
-        "x": 5.6641957398103155,
-        "y": 0.5058638472295526
+        "x": 4.296313347249352,
+        "y": 2.6127344800928345
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source Side of Speaker"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -73,7 +73,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -57.99538171474452,
+    "rotation": -51.830299770142474,
     "rotateFast": false
   },
   "reversed": false,

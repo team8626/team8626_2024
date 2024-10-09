@@ -30,7 +30,7 @@ public class ShooterConstants {
   public static final double kMaxOutput_bottom = 1;
   public static final double kMinOutput_bottom = -1;
 
-  public static final int kRPMTolerance = 75;
+  public static final int kRPMTolerance = 200;
 
   public class ShooterStates {
     public static enum ShooterStatus {
