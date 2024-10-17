@@ -92,7 +92,7 @@ public class EasyAmpCommand extends Command {
             Presets.kShootAmp.getPose().getRotation().getRadians()),
         true);
 
-    if (m_xboxController.rightTrigger().getAsBoolean()) {
+    if (m_xboxController.rightBumper().getAsBoolean()) {
       SHOOT = true;
     }
   }

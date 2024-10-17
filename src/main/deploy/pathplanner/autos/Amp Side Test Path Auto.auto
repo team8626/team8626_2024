@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.74,
-      "y": 4.5
+      "x": 0.7873554012443676,
+      "y": 6.580176011842187
     },
-    "rotation": -60.0
+    "rotation": -121.97268046516842
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker3-Centerline5"
+                  "pathName": "Speaker1-Note1"
                 }
               },
               {
@@ -37,25 +37,19 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of Speaker3-Centerline5"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "AimAndShoot"
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "New Path"
+                  "pathName": "Speaker1-Centerline1"
                 }
               },
               {
@@ -68,15 +62,46 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AimAndShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "New New Path"
+            "pathName": "amp test fix piece1 Path"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BRUH HUB"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AimAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Note to Center Path"
           }
         }
       ]

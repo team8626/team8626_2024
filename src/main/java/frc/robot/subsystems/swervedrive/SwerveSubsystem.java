@@ -321,8 +321,8 @@ public class SwerveSubsystem extends SubsystemBase implements ImplementDashboard
           // Make the robot move
           swerveDrive.drive(
               new Translation2d(
-                  Math.pow(translationX.getAsDouble(), 3) * swerveDrive.getMaximumVelocity(),
-                  Math.pow(translationY.getAsDouble(), 3) * swerveDrive.getMaximumVelocity()),
+                  Math.pow(translationX.getAsDouble(), 3) * 6,
+                  Math.pow(translationY.getAsDouble(), 3) * 6),
               Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity(),
               true,
               false);
