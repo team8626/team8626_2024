@@ -31,6 +31,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    # Install Path Planner Dependency
+    - name: Install Path Planner vendor dependency
+      run: ./gradlew vendordep --url=https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLib.json
+
     #  Check formatting
     - name: Check formatting
       run: ./gradlew spotlessCheck
