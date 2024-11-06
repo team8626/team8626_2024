@@ -101,6 +101,11 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+}
+
 // Spotless formatting
 project.compileJava.dependsOn(spotlessApply)
 spotless {
