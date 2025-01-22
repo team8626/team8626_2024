@@ -10,7 +10,25 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "titleType": 0,
-        "tiles": {}
+        "tiles": {
+          "3,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Field",
+              "_source0": "network_table:///SmartDashboard/Field",
+              "_title": "/SmartDashboard/Field",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Game/Game": "k2024Crescendo",
+              "Visuals/Robot Icon Size": 50.0,
+              "Visuals/Show Outside Circles": false,
+              "Colors/XModules": "#FFFFFFFF"
+            }
+          }
+        }
       }
     },
     {
@@ -1127,15 +1145,28 @@
               "Visuals/Show Outside Circles": false,
               "Colors/XModules": "#FFFFFFFF"
             }
+          },
+          "3,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Path",
+              "_title": "/SmartDashboard/Auto Path",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
     }
   ],
   "windowGeometry": {
-    "x": 46.0,
-    "y": 74.0,
-    "width": 1529.0,
+    "x": 0.0,
+    "y": 73.0,
+    "width": 1512.0,
     "height": 853.0
   }
 }
